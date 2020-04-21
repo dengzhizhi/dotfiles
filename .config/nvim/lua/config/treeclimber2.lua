@@ -1,0 +1,10 @@
+local tc = require('tree-climber')
+local keyopts = { noremap = true, silent = true }
+vim.keymap.set( {'n', 'v', 'o'}, '<A-UP>', function() tc.goto_parent() tc.highlight_node() end, keyopts)
+vim.keymap.set( {'n', 'v', 'o'}, '<A-DOWN>', function() tc.goto_child() tc.highlight_node() end, keyopts)
+vim.keymap.set( {'n', 'v', 'o'}, '<A-RIGHT>', function() tc.goto_next() tc.highlight_node() end, keyopts)
+vim.keymap.set( {'n', 'v', 'o'}, '<A-LEFT>', function() tc.goto_prev() tc.highlight_node() end, keyopts)
+vim.keymap.set({'n', 'v'}, '<c-end>', tc.select_node, keyopts)
+vim.keymap.set('n', '<A-k>', function() tc.swap_prev() tc.highlight_node() end, keyopts)
+vim.keymap.set('n', '<A-j>', function() tc.swap_next() tc.highlight_node() end, keyopts)
+vim.keymap.set('n', '<space>hn<space>', tc.highlight_node, keyopts)

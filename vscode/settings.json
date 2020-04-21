@@ -1,0 +1,111 @@
+{
+  "editor.cursorSurroundingLines": 10,
+  "vscode-neovim.neovimExecutablePaths.darwin": "/Users/zdeng/bin/nvim/0.8.2/bin/nvim",
+  "editor.scrollBeyondLastLine": false,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "jest.enableSnapshotUpdateMessages": false,
+  /* JFE settings from go/jfe-vscode */
+  "eslint.options": {
+    "reportUnusedDisableDirectives": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "jest.jestCommandLine": "yarn test",
+  "jest.autoRun": "off",
+  "flow.useNPMPackagedFlow": true,
+  "flow.stopFlowOnExit": false,
+  "flow.pathToFlow": "${workspaceRoot}/node_modules/.bin/flow",
+  "javascript.validate.enable": false,
+  "typescript.validate.enable": false,
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "teams.json"
+      ],
+      "url": "./schemas/teams.schema.json"
+    }
+  ],
+  "gitlens.remotes": [
+    {
+      "domain": "<remote>",
+      "type": "BitbucketServer"
+    }
+  ],
+  "gitlens.integrations.enabled": true,
+  /* End JFE settings */
+  /* Typescript settings */
+  // "typescript.validate.enable": true,
+  // "[typescriptreact]": {
+  //   "editor.defaultFormatter": "vscode.typescript-language-features"
+  // },
+  /* End Typescript settings */
+  /* Open in external vim (need edonet/vscode-command-runner plugin) */
+  "command-runner.terminal.autoFocus": false,
+  // zsh is too heavy, use sh for speed
+  "command-runner.terminal.shellPath": "/bin/sh",
+  "command-runner.commands": {
+    "open_in_kitty_nvim": "ed.clj -e vim-kitty -f \"${file}\" -l ${lineNumber} -c ${columnNumber}",
+    "open_in_vimr": "ed.clj -e vimr -f \"${file}\" -l ${lineNumber} -c ${columnNumber}",
+    "open_in_sublime": "ed.clj -e sublime -f \"${file}\" -l ${lineNumber} -c ${columnNumber}",
+    "jump_to_selected": "ed.clj -e vscode -f \"${selectedText}\"",
+    "open_in_pycharm": "pycharm --line ${lineNumber} --column ${columnNumber} \"${file}\"",
+    "open_in_idea": "idea --line ${lineNumber} --column ${columnNumber} \"${file}\"",
+    "open_in_webstorm": "webstorm --line ${lineNumber} --column ${columnNumber} \"${file}\"",
+    "open_in_repo_site": "codelink.clj -f \"${file}\" -l ${lineNumber} -o",
+    "copy_repo_site_link": "codelink.clj -f \"${file}\" -l ${lineNumber} -c"
+  },
+  /* End Open in external vim */
+  "open-in-vim.integrated-terminal.pathToShell": "/bin/zsh",
+  "open-in-vim.useNeovim": true,
+  "todo-tree.tree.showScanModeButton": false,
+  "terminal.integrated.rendererType": "dom",
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "XXX",
+    "[ ]",
+    "[x]"
+  ],
+  "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+  "workbench.iconTheme": "file-icons",
+  "editor.cursorSmoothCaretAnimation": true,
+  "editor.smoothScrolling": true,
+  "workbench.colorTheme": "Solarized Dark",
+  "editor.accessibilitySupport": "off",
+  "security.workspace.trust.untrustedFiles": "open",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "python.linting.pycodestyleEnabled": true,
+  "python.venvPath": "~/.virtualenvs",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "black-formatter.path": [
+    "/usr/local/bin/black"
+  ],
+  "python.linting.pylintEnabled": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "vscode-neovim.neovimInitVimPaths.darwin": "/Users/zdeng/.config/nvim/init.vim",
+  "vscode-neovim.neovimInitVimPaths.linux": "/Users/zdeng/.config/nvim/init.vim",
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "window.zoomLevel": 2,
+  "editor.minimap.enabled": false,
+  "editor.fontFamily": "DroidSansMono Nerd Font Mono",
+  "editor.fontLigatures": false,
+}

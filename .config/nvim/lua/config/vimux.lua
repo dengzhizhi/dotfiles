@@ -1,0 +1,16 @@
+vim.cmd('source ' .. vim.g.nvimrc .. '/lua/config/vimux_mapping.vim')
+-- vim.api.nvim_set_keymap("n", "<space>dj<space>", [[:call VimuxRunCommand(getline('.'))<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("x", "<space>dj<space>", [[:<c-u>call VimuxRunCommand(join(getline(line("'<"), line("'>")), "\n"))<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("x", "<space>djj<space>", [["cy:<c-u>call VimuxRunCommand(@c)<cr>]], { silent = true })
+--
+-- vim.api.nvim_set_keymap("n", "<space>dk<space>", [[:call VimuxRunCommand("")<left><left>]], { silent = false })
+--
+-- vim.api.nvim_set_keymap("n", "<space>dh<space>", [[:VimuxOpenRunner<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("n", "<space>dn<space>", [[:VimuxCloseRunner<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("n", "<space>du<space>", [[:VimuxTogglePane<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("n", "<space>dc<space>", [[:call VimuxRunCommand("bb repl")")<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("n", "<space>dcc<space>", [[:call VimuxRunCommand(":repl/quit")")<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("n", "<space>dl<space>", [[:call VimuxSendKeys("C-L")<cr>]], { silent = true })
+--
+-- vim.api.nvim_set_keymap("n", "<space>dii<space>", [[:call VimuxRunCommand("cd <c-r>=expand("%:p:h")<cr>")<cr>]], { silent = true })
+-- vim.api.nvim_set_keymap("n", "<space>dio<space>", [[:call VimuxRunCommand("cd <c-r>=getcwd()<cr>")<cr>]], { silent = true })

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: named_arraw_function
+# key: naf                                          
+# --
+${1:$$(yas-choose-value '("const" "export const"))} ${2:name} = ($3) => {
+    $4
+}

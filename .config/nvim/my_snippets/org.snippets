@@ -1,0 +1,45 @@
+snippet <s "src black"
+#+begin_src $1
+$2
+#+end_src
+endsnippet
+
+snippet <q "quote black"
+#+begin_quote
+$0
+#+end_quote
+endsnippet
+
+snippet <e "example black"
+#+begin_example
+$0
+#+end_example
+endsnippet
+
+snippet *d "Header with date"
+* <`!v strftime('%Y-%m-%d')`> $0
+endsnippet
+
+snippet **d "2nd Header with date"
+** <`!v strftime('%Y-%m-%d')`> $0
+endsnippet
+
+snippet ***d "3rd Header with date"
+*** <`!v strftime('%Y-%m-%d')`> $0
+endsnippet
+
+snippet ****d "4th Header with date"
+**** <`!v strftime('%Y-%m-%d')`> $0
+endsnippet
+
+snippet kn "kill-new link"
+[[elisp:(kill-new "$1")][$1]]
+endsnippet
+
+snippet title "Title section"
+#+TITLE: $0
+#+STARTUP: hideblocks
+#+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://dengzhizhi.github.io/solarized-css/org-info.min.js
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://dengzhizhi.github.io/solarized-css/solarized-light.min.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://dengzhizhi.github.io/solarized-css/blockquote.css" />
+endsnippet

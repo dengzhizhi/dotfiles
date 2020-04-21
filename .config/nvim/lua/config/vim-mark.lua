@@ -1,0 +1,5 @@
+vim.api.nvim_set_keymap("n", "<space>fdj<space>", "<Plug>MarkSet", {})
+vim.api.nvim_set_keymap("v", "<space>fdj<space>", "<Plug>MarkSet", {})
+vim.api.nvim_set_keymap("n", "<space>fdk<space>", "<Plug>MarkRegex", {})
+vim.api.nvim_set_keymap("v", "<space>fdk<space>", "<Plug>MarkRegex", {})
+vim.api.nvim_set_keymap("n", "<space>fdl<space>", "<Plug>MarkClear", {})

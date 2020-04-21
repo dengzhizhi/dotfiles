@@ -1,0 +1,11 @@
+*~
+.DS_Store
+.idea/
+GPATH
+GRTAGS
+GTAGS
+**/.indium.json
+nil/
+**/tags
+**/tags.temp
+**/*.orig

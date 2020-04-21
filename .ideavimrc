@@ -1,0 +1,321 @@
+" Selected Intellimacs modules
+" https://github.com/MarcoIeni/intellimacs/blob/main/docs/KEYBINDINGS.org
+source ~/.intellimacs/spacemacs.vim
+source ~/.intellimacs/extra.vim
+source ~/.intellimacs/major.vim
+source ~/.intellimacs/hybrid.vim
+
+set surround
+set NERDTree
+set argtextobj
+set highlightedyank
+set ideajoin
+set easymotion
+set exchange
+
+set ignorecase smartcase
+set so=5
+set expandtab
+set shiftwidth=4
+set multiple-cursors
+set commentary
+set ideamarks
+set showcmd
+set timeoutlen=60000
+set undolevels=100
+
+set idearefactormode=visual
+
+" Must after spacemacs imports
+set clipboard=
+
+nnoremap ,u :action LocalHistory.ShowHistory<CR>
+
+" Uppercase last inputed word
+nnoremap ,U gUiwe
+inoremap ,U <ESC>gUiwgi
+
+inoremap ,. <ESC>
+inoremap ,,. ,<ESC>
+inoremap ,<CR> ,<CR>
+inoremap ,<SPACE> ,<SPACE>
+inoremap ,<ESC> ,<ESC>
+
+vnoremap ,. <ESC>
+xnoremap ,. <ESC>
+lnoremap ,. <ESC>
+nnoremap ,. <ESC>
+
+nnoremap ,k "
+vnoremap ,k "
+
+inoremap ,m <C-H>
+
+" Exchange two selections, delete one selection first and select the second region before running this key map
+vnoremap ,x <ESC>`.``gvp``P
+
+nnoremap ,c :e ~/.ideavimrc<CR>
+nnoremap ,C :source ~/.ideavimrc<CR>:echo ".ideavimrc reloaded"<CR>
+
+" system clipboard
+nnoremap ,y "+
+vnoremap ,y "+
+
+" quick paste last yarn
+nnoremap ,p "0p
+vnoremap ,p "0p
+
+inoremap ,l <ESC>o
+
+inoremap jk <ESC>
+inoremap jl <Right>
+inoremap jh <Left>
+
+nnoremap ,, ,
+vnoremap ,, ,
+
+" multicursor
+nmap ,cn <A-n>
+vmap ,cn <A-n>
+nmap ,cx <A-x>
+vmap ,cx <A-x>
+nmap ,cp <A-p>
+vmap ,cp <A-p>
+nmap ,cg g<A-n>
+vmap ,cg g<A-n>
+
+"remap split window
+nnoremap <TAB>m :action HideAllWindows<CR>
+
+nnoremap <TAB>S <C-W>s
+nnoremap <TAB>d <C-W>vgd
+nnoremap <TAB>h <C-W>h
+nnoremap <TAB>j <C-W>j
+nnoremap <TAB>k <C-W>k
+nnoremap <TAB>l <C-W>l
+nnoremap <TAB>o <C-W>o
+nnoremap <TAB>s <C-W>s
+nnoremap <TAB>v <C-W>v
+nnoremap <TAB>w <C-W>w
+nnoremap <TAB><TAB> <C-W>w
+nnoremap <TAB><Down> <C-W>j
+nnoremap <TAB><Up> <C-W>k
+nnoremap <TAB><Left> <C-W>h
+nnoremap <TAB><Right> <C-W>l
+
+nnoremap <TAB>L :action MoveTabRight<CR>
+nnoremap <TAB>J :action MoveTabDown<CR>
+nnoremap <TAB>K :action MoveEditorToOppositeTabGroup<CR>
+nnoremap <TAB>O :action ChangeSplitOrientation<CR>
+nnoremap <TAB>nn :action NewScratchBuffer<CR>
+nnoremap <TAB>nl :action Scratch.ChangeLanguage<CR>
+nnoremap <TAB>q ZQ
+nnoremap <TAB>Q :action ReopenClosedTab<CR>
+nnoremap <TAB>c :action RecentChangedFiles<CR>
+nnoremap <TAB>r :action RecentFiles<CR>
+
+"IDEA Action Mapping
+nnoremap <Space>jj :action emacsIDEAs.AceJump<CR>
+vnoremap <Space>jj :action emacsIDEAs.AceJump<CR>
+nnoremap ZQ :action CloseEditor<CR>
+nnoremap ZW :action CloseAllEditorsButActive<CR>
+nnoremap <Space>a<Space> :action GotoAction<CR>
+nnoremap <Space>si<Space> :NERDTreeFind<CR>
+nnoremap <Space>pw<Space> :NERDTreeFocus<CR>
+nnoremap <C-n> :action SelectNextOccurrence<CR>
+nnoremap <Space>vim<Space> :action Tool_External Tools_MacVim<CR>
+
+nnoremap <BS> :action Back<CR>
+nnoremap <C-BS> :action Forward<CR>
+nnoremap <Space>kj<Space> :action Back<CR>
+nnoremap <C-o> :action Back<CR>
+nnoremap <Space>kl<Space> :action Forward<CR>
+nnoremap <C-]> :action Forward<CR>
+
+nnoremap <Space>st<Space> :action SurroundWith<CR>
+vnoremap <Space>st<Space> :<c-u>action SurroundWith<CR>
+nnoremap <Space>se<Space> :action SurroundWithEmmet<CR>
+vnoremap <Space>se<Space> :<c-u>action SurroundWithEmmet<CR>
+nnoremap <Space>sl<Space> :action SurroundWithLiveTemplate<CR>
+vnoremap <Space>sl<Space> :<c-u>action SurroundWithLiveTemplate<CR>
+
+nnoremap <Space>rp<Space> :action ManageRecentProjects<CR>
+nnoremap <Space>rc<Space> :action RecentChanges<CR>
+nnoremap <Space>rcf<Space> :action RecentChangedFiles<CR>
+nnoremap <Space>rof<Space> :action RecentFiles<CR>
+
+nnoremap <Space>ch<Space> :action CallHierarchy<CR>
+
+"nnoremap <Space><Space>fa<Space> :action AddToFavoritesPopup<CR>
+"nnoremap <Space><Space>fw<Space> :action ActivateFavoritesToolWindow<CR>
+
+nnoremap <Space>ccs<Space> :action ChangeColorScheme<CR>
+nnoremap <Space>rsf<Space> :action EditorResetFontSize<CR>
+
+nnoremap <Space>ge<Space> :action GotoNextError<CR>
+nnoremap <Space>gpe<Space> :action GotoPreviousError<CR>
+nnoremap <Space>fsk<Space> :action GotoNextError<CR>
+nnoremap <Space>fsj<Space> :action GotoPreviousError<CR>
+
+nnoremap <Space>gc<Space> :action GotoClass<CR>
+nnoremap <Space>gf<Space> :action GotoFile<CR>
+nnoremap <Space>sp<Space> :action FileStructurePopup<CR>
+
+nnoremap <Space>newf<Space> :action NewFile<CR>
+nnoremap <Space>newc<Space> :action NewClass<CR>
+nnoremap <Space>newd<Space> :action NewDir<CR>
+nnoremap <Space>newpi<Space> :action NewPackageInfo<CR>
+nnoremap <Space>news<Space> :action NewScratchFile<CR>
+
+nnoremap <Space>mvnr<Space> :action Maven.Reimport<CR>:action Gradle.RefreshDependencies<CR>
+nnoremap <Space>fsu<Space> :action FlowJS.Restart.All.Servers<CR>
+
+nnoremap <Space>rcs<Space> :action ChangeSignature<CR>
+nnoremap <Space>rem<Space> :action ExtractMehtod<CR>
+vnoremap <Space>rem<Space> :<C-U>action ExtractMehtod<CR>
+nnoremap <Space>rev<Space> :action IntroduceVariable<CR>
+nnoremap <Space>rrn<Space> :action RenameElement<CR>
+nnoremap <Space>ril<Space> :action Inline<CR>
+nnoremap <Space>rpu<Space> :action MembersPullUp<CR>
+nnoremap <Space>rrr<Space> :action Refactorings.QuickListPopupAction<CR>
+vnoremap <Space>rrr<Space> :<C-U>action Refactorings.QuickListPopupAction<CR>
+nnoremap <Space>mrev :action IntroduceVariable<CR>
+vnoremap <Space>mrev :action IntroduceVariable<CR>
+nnoremap <Space>mrei :action Inline<CR>
+nnoremap <Space>mrcs :action ChangeSignature<CR>
+
+nnoremap <Space>mgu :action GotoSuperMethod<CR>
+
+nnoremap <Space><Space>` :action ShowBookmarks<CR>
+nnoremap <Space><Space>m :action ToggleBookmarkWithMnemonic<CR>
+nnoremap <Space>sdn<Space> :action HideAllWindows<CR>
+
+"Copy
+nnoremap <Space>cppt<Space> :action CopyAsPlainText<CR>:echo "Copied as plain text"<CR>
+nnoremap <Space>cprt<Space> :action CopyAsRichText<CR>:echo "Copied as rich text"<CR>
+vnoremap <Space>cppt<Space> :action CopyAsPlainText<CR>:<C-U>echo "Copied as plain text"<CR>gv
+vnoremap <Space>cprt<Space> :action CopyAsRichText<CR>:<C-U>echo "Copied as rich text"<CR>gv
+nnoremap <Space>cpe<Space> :action CopyElement<CR>
+nnoremap <Space>cpp<Space> :action CopyPaths<CR>:echo "Copied paths"<CR>
+nnoremap <Space>cpr<Space> :action CopyReference<CR>:echo "Copied reference"<CR>
+nnoremap <Space>cpa<Space> magg"+yG`a:echo "Copied the whole document"<CR>
+
+"Cursive edits
+"nnoremap <Space>cebb<Space> :action :cursive.actions.paredit/barf-backwards<CR>
+"nnoremap <Space>cebf<Space> :action :cursive.actions.paredit/barf-forwards<CR>
+"nnoremap <Space>cesb<Space> :action :cursive.actions.paredit/slurp-backwards<CR>
+"nnoremap <Space>cesf<Space> :action :cursive.actions.paredit/slurp-forwards<CR>
+"nnoremap <Space>cej<Space> :action :cursive.actions.paredit/join<CR>
+"nnoremap <Space>ces<Space> :action :cursive.actions.paredit/splice<CR>
+"nnoremap <Space>cesp<Space> :action :cursive.actions.paredit/split<CR>
+"nnoremap <Space>cer<Space> :action :cursive.actions.paredit/raise<CR>
+"nnoremap <Space>cefu<Space> :action :cursive.actions.paredit/move-form-up<CR>
+"nnoremap <Space>cefd<Space> :action :cursive.actions.paredit/move-form-down<CR>
+"nnoremap <Space>cetf<Space> :action :cursive.actions.paredit/thread-form<CR>
+"nnoremap <Space>ceut<Space> :action :cursive.actions.paredit/unthread-form<CR>
+"nnoremap <Space>ceme<Space> :action :cursive.repl.actions/macroexpansion<CR>
+
+"Cursive navigation
+"nnoremap <Space>cnfd<Space> :action :cursive.actions.paredit/forward-down<CR>
+"nnoremap <Space>cnfu<Space> :action :cursive.actions.paredit/forward-up<CR>
+"nnoremap <Space>cnbd<Space> :action :cursive.actions.paredit/backward-down<CR>
+"nnoremap <Space>cnbu<Space> :action :cursive.actions.paredit/backward-up<CR>
+"nnoremap <Space>cnbb<Space> :action :cursive.actions.paredit/backward<CR>
+"nnoremap <Space>cnff<Space> :action :cursive.actions.paredit/forward<CR>
+
+"Cursive repl
+"nnoremap <Space>crs<Space> :action ActivateREPLToolWindow<CR>
+"nnoremap <Space>crc<Space> :action :cursive.repl.actions/clear-repl<CR>
+"nnoremap <Space>crj<Space> :action :cursive.repl.actions/jump-to-repl<CR>
+"nnoremap <Space>crl<Space> :action :cursive.repl.actions/load-file<CR>
+"nnoremap <Space>crsf<Space> :action :cursive.repl.actions/sync-files<CR>
+"nnoremap <Space>crr<Space> :action :cursive.repl.actions/run-top-sexp<CR>
+"nnoremap <Space>crn<Space> :action :cursive.repl.actions/switch-namespace<CR>
+"nnoremap <Space>crh<Space> :action :cursive.repl.actions/search-history<CR>
+"nnoremap <Space>cre<Space> :action :cursive.repl.actions/print-exception<CR>
+"nnoremap <Space>crt<Space> :action :cursive.testing.actions/run-ns-tests<CR>
+"nnoremap <Space>crrt<Space> :action :cursive.testing.actions/rerun-last-test<CR>
+"nnoremap <Space>crst<Space> :action :cursive.testing.actions/run-single-test<CR>
+
+"Indent
+nnoremap <Space>kjr<Space> :action ConvertIndentsToSpaces<CR>
+nnoremap <Space>kjt<Space> :action ConvertIndentsToTabs<CR>
+vnoremap <Space>kjr<Space> :<C-U>action ConvertIndentsToSpaces<CR>
+vnoremap <Space>kjt<Space> :<C-U>action ConvertIndentsToTabs<CR>
+
+"Yank a line without line break
+nnoremap yuu mp_yg_`p
+
+"Copy a line without line break to clipboard
+nnoremap yuc mp_"+yg_`p
+
+"Toggle Wrap
+nnoremap <Space>w<Space> :action EditorToggleUseSoftWraps<CR>
+
+"AceJump
+nmap gsf <Plug>(easymotion-f)
+vmap gsf <Plug>(easymotion-f)
+omap gsf <Plug>(easymotion-f)
+nmap gsF <Plug>(easymotion-F)
+vmap gsF <Plug>(easymotion-F)
+omap gsF <Plug>(easymotion-F)
+nmap gst <Plug>(easymotion-t)
+vmap gst <Plug>(easymotion-t)
+omap gst <Plug>(easymotion-t)
+nmap gsT <Plug>(easymotion-T)
+vmap gsT <Plug>(easymotion-T)
+omap gsT <Plug>(easymotion-T)
+nmap gsw <Plug>(easymotion-w)
+vmap gsw <Plug>(easymotion-w)
+omap gsw <Plug>(easymotion-w)
+nmap gsW <Plug>(easymotion-W)
+vmap gsW <Plug>(easymotion-W)
+omap gsW <Plug>(easymotion-W)
+nmap gse <Plug>(easymotion-e)
+vmap gse <Plug>(easymotion-e)
+omap gse <Plug>(easymotion-e)
+nmap gsE <Plug>(easymotion-E)
+vmap gsE <Plug>(easymotion-E)
+omap gsE <Plug>(easymotion-E)
+nmap gsj <Plug>(easymotion-j)
+vmap gsj <Plug>(easymotion-j)
+omap gsj <Plug>(easymotion-j)
+nmap gsk <Plug>(easymotion-k)
+vmap gsk <Plug>(easymotion-k)
+omap gsk <Plug>(easymotion-k)
+nmap gsn <Plug>(easymotion-n)
+vmap gsn <Plug>(easymotion-n)
+omap gsn <Plug>(easymotion-n)
+nmap gsN <Plug>(easymotion-N)
+vmap gsN <Plug>(easymotion-N)
+omap gsN <Plug>(easymotion-N)
+nmap gs/ <Plug>(easymotion-sn)
+vmap gs/ <Plug>(easymotion-sn)
+omap gs/ <Plug>(easymotion-sn)
+nmap gss <Plug>(easymotion-s)
+vmap gss <Plug>(easymotion-s)
+omap gss <Plug>(easymotion-s)
+nmap gsS <Plug>(easymotion-s2)
+vmap gsS <Plug>(easymotion-s2)
+omap gsS <Plug>(easymotion-s2)
+nmap gsg V<Plug>(easymotion-bd-jk)
+vmap gsg V<Plug>(easymotion-bd-jk)
+omap gsg V<Plug>(easymotion-bd-jk)
+
+"Code assistent
+nnoremap <Space>g<Space> :action Generate<CR>
+nnoremap <Space>i<Space> :action ShowIntentionActions<CR>
+
+" Commands
+command! Scratch action NewScratchBuffer
+command! Lang action Scratch.ChangeLanguage
+command! NewC action NewClass
+command! NewD action NewDir
+command! ItT action ConvertIndentsToTabs
+command! ItS action ConvertIndentsToSpaces
+
+" Fighting Game Mapping
+nnoremap <Space>efj<Space> :action FindInPath<CR>
+nnoremap <Space>fej<Space> :action FindInPath<CR>
+nnoremap <Space>efk<Space> :action StructuralSearchActions<CR>
+nnoremap <Space>fek<Space> :action StructuralSearchActions<CR>

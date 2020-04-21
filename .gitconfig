@@ -1,0 +1,275 @@
+[core]
+    excludesfile = /Users/zdeng/.gitignore_global
+    # Use delta as default pager, pipe it to less so it won't clear screen when exit
+    pager = delta --pager "less"
+    # Other options for fancy diff pager
+    #pager = diff-so-fancy | less --tabs=4 -RFX
+    #pager = less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS --chop-long-lines
+[interactive]
+    diffFilter = delta --color-only --features=interactive
+[delta]
+    features = decorations
+    line-numbers = true
+[delta "interactive"]
+    keep-plus-minus-marks = false
+[delta "decorations"]
+    commit-decoration-style = blue ol
+    commit-style = raw
+    file-style = omit
+    hunk-header-decoration-style = blue box
+    hunk-header-file-style = red
+    hunk-header-line-number-style = "#067a00"
+    hunk-header-style = file line-number syntax
+[diff]
+    tool = nvimdiff
+
+[difftool "nvimdiff"]
+    cmd = nvim -c 'set so=100' -c 'norm! M' -f -d \"$LOCAL\" \"$REMOTE\"
+
+[difftool "difft"]
+    cmd = difft --color always --display side-by-side-show-both \"$LOCAL\" \"$REMOTE\"
+
+[merge]
+    tool = nvimdiff
+
+[mergetool "nvimdiff"]
+    # default vim
+    # cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+    # vim with `set splitbelow splitright` option
+    # cmd = nvim -d $MERGED $REMOTE $BASE $LOCAL -c '$wincmd w' -c 'wincmd J'
+    cmd = nvim -d $MERGED $REMOTE $BASE $LOCAL -c 'wincmd J'
+
+    trustExitCode = true
+    keepBackup = false
+
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+
+[user]
+    name = Zhizhi Deng
+    email = zdeng@example.com
+
+[alias]
+    # alias: br - git branch
+    br = branch
+    # alias: st - git status
+    st = status
+    # alias: stu - git status no untracked files (faster in large repo)
+    stu = status -uno
+    # alias: ci - git commit --verbose
+    ci = commit --verbose
+    # alias: cia - git commit --amend --verbose
+    cia = commit --amend --verbose
+    # alias: co - git checkout
+    co = checkout
+
+    # alias: di - git diff --find-copies-harder (giving more accurate info for copied files, but slower)
+    di = diff --find-copies-harder
+    # alias: dit - Structual diff --find-copies-harder (giving more accurate info for copied files, but slower)
+    dit = "! git difftool -t difft -y --find-copies-harder | delta"
+    # alias: dc - git diff for staged files (giving more accurate info for copied files, but slower)
+    dc = diff --find-copies-harder --cached
+    # alias: dct - Structual diff for staged files (giving more accurate info for copied files, but slower)
+    dct = "! git difftool -t difft -y --find-copies-harder --cached | delta"
+    # alias: ds - git diff file only
+    ds = diff --stat=160,120
+    # alias: dh1 - git diff for head (latest commit)
+    dh1 = diff HEAD~1
+    # alias: dht1 - Structual diff for head (latest commit)
+    dht1 = difftool -t difft -y HEAD~1
+    # alias: dh - git diff for head (latest commit), name only
+    dh = diff --name-only HEAD~1
+    # alias: dfc <hash> - list changed files of a given commit
+    dfc = diff-tree --no-commit-id --name-only -r
+    # alias: dm - diff current branch to master
+    dm = diff master@{u}...HEAD
+    # alias: dmm - diff current branch to main
+    dmm = diff main@{u}...HEAD
+
+    # alias: dmft - structual diff current branch to master using difft
+    dmft = "! git difftool -t difft -y master@{u}...HEAD | delta"
+    # alias: dmmft - structual diff current branch to main using difft
+    dmmft = "! git difftool -t difft -y main@{u}...HEAD | delta"
+    # alias: dmf - list changed files between current branch and master
+    dmf = diff --name-only master@{u}...HEAD
+    # alias: dmfm - list changed files between current branch and main
+    dmfm = diff --name-only main@{u}...HEAD
+
+    # alias: oldest-ancestor - find hash of the oldest common ancestor for two commits, default to master and HEAD
+    oldest-ancestor = !zsh -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1' -
+
+    # alias: aa - add --all
+    aa = add --all
+    # alias: ff - merge --ff-only
+    ff = merge --ff-only
+    # alias: noff - merge --no-ff
+    noff = merge --no-ff
+    # alias: mt - mergetool (merge conflict)
+    mt = mergetool
+    # alias: pom - push origin master
+    pom = push origin master
+
+    # shortcuts to list a few git logs for speed
+    # alias: l3 - last 3 logs in detail
+    l3 = "! git --no-pager log --decorate -n 3 | bat -P"
+    # alias: l5 - last 5 logs in detail
+    l5 = "! git --no-pager log --decorate -n 5 | bat -P"
+    # alias: l10 - last 10 logs, one line each
+    l10 = "! git pl -n 10"
+    # alias: l20 - last 20 logs, one line each
+    l20 = "! git pl -n 20"
+    # alias: l30 - last 30 logs, one line each
+    l30 = "! git pl -n 30"
+    # alias: l <n> - last n logs in detail
+    l = "! git pl -n $1 | delta"
+
+    # alias: div - Divergence (commits we added and commits remote added)
+    div = divergence
+
+    # alias: gn - Goodness (summary of diff lines added/removed/total)
+    gn = goodness
+    # alias: gnc - Goodness for staged files (summary of diff lines added/removed/total)
+    gnc = goodness --cached
+
+    # alias: cb - show current branch name
+    cb = branch --show-current
+    # alias: cbb - Add current branch name to clipboard (copy-current-branch)
+    ccb = "! git cb | pbcopy"
+
+    # logging.
+    # alias: head - git log for head
+    head = !git r -1
+    # alias: h - git log for head
+    h = !git head
+    # alias: hp - head with patch
+    hp = "!. ~/.githelpers && show_git_head"
+    # alias: r - recent commits, only current branch
+    r = !GIT_NO_PAGER=1 git log -30
+    # alias: ra - recent commits, all reachable refs
+    ra = !git r --all
+    # alias: pl - all commits, only current branch
+    pl = "!. ~/.githelpers && pretty_git_log"
+    # alias: la - all commits, all reachable refs
+    la = !git log --all
+    # alias: b - all branches
+    b = "!. ~/.githelpers && pretty_git_branch | nvim -R +AnsiEsc - "
+    # alias: bs - all branches, sorted by last commit date
+    bs = "!. ~/.githelpers && pretty_git_branch_sorted | nvim -R +AnsiEsc -"
+
+    #fetching
+    # alias: fom - fetch master while staying in the currect branch (use before merge-in master)
+    fom = "! git fetch origin master:master"
+    # alias: fom - fetch main while staying in the currect branch (use before merge-in main)
+    fomm = "! git fetch origin main:main"
+    # alias: fa - fetch --all
+    fa = fetch --all
+    # alias: fr - fetch origin (git fr <remote-branch>)
+    fr = fetch origin
+    # alias: ph - pull current branch only
+    ph = "! git pull origin $(git rev-parse --abbrev-ref HEAD)"
+
+    # fzy enabled shortcuts
+    # alias: cob - check out local branch with fzy selection
+    cob = "! git checkout $(git branch | fzy)"
+    # alias: corf - fetch all and check out remote branch with fzy selection
+    corf = "! git fetch --all && git checkout $(git branch -r | fzy | awk '{ st = index($0, \"/\");print substr($0, st+1)}')"
+    # alias: corf - check out remote branch that already in local with fzy selection
+    cor = "! git checkout $(git branch -r | fzy | awk '{ st = index($0, \"/\");print substr($0, st+1)}')"
+    # alias: af - add a file with fzy selection
+    af = "! git add $(git ls-files -m | fzy)"
+    # alias: df - diff a file with fzy selection
+    df = "! git diff $(git ls-files -m | fzy)"
+    # alias: dft - diff a file in diff tool (neovim) with fzy selection
+    dft = "! git difftool -t nvimdiff -y $(git ls-files -m | fzy)"
+    # alias: rmf - remove a untracked file with fzy selection
+    rmf = "! rm $(git ls-files --others --exclude-standard | fzy)"
+    # alias: usf - revert a modified file with fzy selection
+    usf = "! git checkout -- $(git ls-files -m | fzy)"
+    # alias: diffdev - diff a file to master with fzy selection
+    diffdev="! git difftool -t nvimdiff -y master...HEAD $(git diff --name-only master...HEAD | fzy)"
+    # alias: diffmaster - diff a file to master with fzy selection
+    diffmaster="! git difftool -z -t nvimdiff -y master...HEAD -- $(git diff --name-only master...HEAD | fzy)"
+    # alias: diffmain - diff a file to main with fzy selection
+    diffmain="! git difftool -z -t nvimdiff -y main...HEAD -- $(git diff --name-only main...HEAD | fzy)"
+    # alias: diffrev - use difftool to view history revision differences with fzy selection, example: git diffrev 234762...238fec
+    diffrev="! git difftool -t nvimdiff -y $1 -- $(git diff --name-only $1 | fzy)"
+
+    #advance diff
+    # alias: diffallmaster - Use difftool (neovim) to diff all modified files to master
+    diffallmaster="! git difftool -t nvimdiff master...HEAD"
+    # alias: diffallmain - Use difftool (neovim) to diff all modified files to main
+    diffallmain="! git difftool -t nvimdiff main...HEAD"
+    # alias: nvimdiff - Use difftool (neovim) to diff
+    nvimdiff = difftool -t nvimdiff
+
+    # alias: dift - Structual diff (with difftastic)
+    dift = "! git difftool -t difft -y | delta"
+
+    #revert utils
+    # alias: cafter - Find the commit after the given one. Use it to find out the merge commmit
+    cafter = "!git log --reverse --ancestry-path \"$1\"...master | head -n 20 #"
+    # alias: mf - Show changed files in a merge commit
+    mf = "!git show -m -p --name-only -n 1 \"$1\" #"
+    # alias: bm - Find the previous commit before a merge
+    bm = "!git log HEAD@{1} -1"
+
+    # alias: gh - grep in history commits of current directory
+    gh="! git rev-list --all -- . | xargs git grep $1 -- ."
+    # alias: ghl - grep in history commits of given directory
+    ghl="! git rev-list --all -- $2 | xargs git grep $1 -- $2"
+
+    # alias: precommit - yarn precommit
+    precommit = "! yarn precommit"
+
+    # hide (ignore changes) for files
+    # alias: hide - hide the given file from tracking changes (git hide <file-path>)
+    hide = update-index --assume-unchanged
+    # alias: unhide - resume tracking changes for the given file (git unhide <file-path>)
+    unhide = update-index --no-assume-unchanged
+    # alias: hidden - list all the files hidden with `git hide`
+    hidden = !git ls-files -v | grep \"^[a-z]\"
+    # alias: unhide-all - unhide all the files hidden with `git hide`
+    unhide-all = ! git ls-files -v | grep '^[a-z]' | cut -c3- | xargs git unhide --
+    # alias: ignored - list all the ignored files
+    ignored = !git status -s --ignored | grep \"^!!\"
+
+    # alias: change-commits - change a commit field in the history (git change-commits GIT_AUTHOR_EMAIL "old@email.com" "new@email.com" HEAD~10..HEAD)
+    # git change-commits GIT_COMMITTER_NAME "old name" "new name"
+    # git change-commits GIT_AUTHOR_NAME "old name" "new name"
+    # git change-commits GIT_AUTHOR_EMAIL "old@email.com" "new@email.com" HEAD~10..HEAD
+    change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+    # alias: remove-file - Completely remove a file from history (release occupied space)
+    # from https://help.github.com/articles/remove-sensitive-data
+    remove-file = "!f() { git filter-branch -f --index-filter \"git rm --cached --ignore-unmatch $1\" --prune-empty --tag-name-filter cat -- --all; }; f"
+
+    #list all alias
+    # alias: alias - list all alias document comments (the comments starts with `# alias:`)
+    alias = "! cat ~/.gitconfig | grep '^\\s*# alias:' | gsed 's/^\\s*# alias: //' | awk -F- '{ st = index($0,\" - \");printf(\"%-15s %s\\n\", $1, substr($0, st+1))}'"
+
+
+# [init]
+#     templatedir = /Users/zdeng/.config/git/templates
+# [filter "pom-version"]
+#     clean = python /Users/zdeng/.config/git/pom_version_filter.py --action clean  --pom-file-path %f
+#     smudge = python /Users/zdeng/.config/git/pom_version_filter.py --action smudge --pom-file-path %f
+[color]
+    ui = true
+[color "diff-highlight"]
+    oldNormal = red bold
+    oldHighlight = red bold 52
+    newNormal = green bold
+    newHighlight = green bold 22
+[color "diff"]
+    meta = 11
+    frag = magenta bold
+    commit = yellow bold
+    old = red bold
+    new = green bold
+    whitespace = "#ffff00" reverse
+[pull]
+    ff = only
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 

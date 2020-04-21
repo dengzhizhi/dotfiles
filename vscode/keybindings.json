@@ -1,0 +1,8 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "ctrl+r",
+        "command": "redo",
+        "when": "neovim.mode != insert"
+    },
+]
