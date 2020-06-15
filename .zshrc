@@ -44,8 +44,6 @@ alias gcat='(gw clean assemble testClasses && say finished) || say error'
 alias gat='(gw assemble testClasses && say finished) || say error'
 alias ga='(gw assemble && say finished) || say error'
 alias gp="gw \$(gw projects | sed \"s/.*\'\(.*\)\'.*/\1:assemble/g\" | grep assemble | fzf)"
-alias supplier_schema='gw :services:business-services:supplier-service:supplier-schema:update'
-alias product_schema='gw :services:business-services:product-service:product-schema:update'
 
 # gradle
 alias gwca='gw clean assemble'
@@ -86,10 +84,6 @@ setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
-
-function start_sourcegraph() {
-	docker run --publish 7080:7080 --rm --volume ~/.sourcegraph/config:/etc/sourcegraph --volume ~/.sourcegraph/data:/var/opt/sourcegraph --volume /var/run/docker.sock:/var/run/docker.sock sourcegraph/server:2.13.2
-}
 
 realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
