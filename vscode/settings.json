@@ -1,0 +1,332 @@
+{
+  "window.zoomLevel": 2,
+  "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim",
+  "vscode-neovim.neovimInitVimPaths.darwin": "/Users/zdeng/.config/nvim/init_vscode.vim",
+  "editor.scrollBeyondLastLine": false,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  
+  "vim.easymotion": true,
+  "vim.incsearch": true,
+  "vim.useSystemClipboard": false,
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": [",", "y", "y"],
+      "after": ["\"", "+", "y"]
+    },
+    
+    {
+      "before": [",", "."],
+      "after": ["<esc>"]
+    },
+    
+    {
+      "before": [",", ","],
+      "after": [","]
+    },
+
+    {
+      "before": [",", "s"],
+      "commands": ["editor.action.showSnippets"]
+    },
+
+    {
+      "before": ["g", "="],
+      "commands": ["editor.action.formatSelection"]
+    },
+    
+    {
+      "before": ["="],
+      "commands": ["editor.action.reindentselectedlines"]
+    }
+  ],
+  "vim.insertModeKeyBindingsNonRecursive": [
+    // Comma leader
+    {
+      "before": [",", "."],
+      "after": ["<esc>"]
+    },
+    
+    {
+      "before": [",", "<esc>"],
+      "after": [",", "<esc>"]
+    },
+    
+    {
+      "before": [",", ","],
+      "after": [","]
+    },
+    
+    {
+      "before": [",", "u"],
+      "after": ["<esc>", "g", "U", "i", "w", "g", "i"]
+    },
+
+    {
+      "before": [",", "s"],
+      "commands": ["editor.action.showSnippets"]
+    },
+    
+    {
+      "before": ["j", "k"],
+      "after": ["<Esc>"]
+    },
+    {
+      "before": ["k", "j"],
+      "after": ["<Esc>"]
+    },
+    {
+      "before": ["<C-b>"],
+      "commands": ["cursorLeft"]
+    },
+    {
+      "before": ["<C-f>"],
+      "after": ["<right>"]
+    },
+    {
+      "before": ["<C-e>"],
+      "commands": ["cursorLineEnd"]
+    },
+    {
+      "before": ["<C-a>"],
+      "commands": ["cursorLineStart"]
+    },
+
+  ],
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["g", "s", "s"],
+      "after": ["<leader>", "<leader>", "s"]
+    },
+    {
+      "before": ["g", "s", "f"],
+      "after": ["<leader>", "<leader>", "f"]
+    },
+    {
+      "before": ["g", "s", "F"],
+      "after": ["<leader>", "<leader>", "F"]
+    },
+    {
+      "before": ["g", "s", "t"],
+      "after": ["<leader>", "<leader>", "t"]
+    },
+    {
+      "before": ["g", "s", "T"],
+      "after": ["<leader>", "<leader>", "T"]
+    },
+    {
+      "before": ["g", "s", "w"],
+      "after": ["<leader>", "<leader>", "w"]
+    },
+    {
+      "before": ["g", "s", "b"],
+      "after": ["<leader>", "<leader>", "b"]
+    },
+    {
+      "before": ["g", "s", "j"],
+      "after": ["<leader>", "<leader>", "j"]
+    },
+    {
+      "before": ["g", "s", "k"],
+      "after": ["<leader>", "<leader>", "k"]
+    },
+    {
+      "before": ["g", "s", "/"],
+      "after": ["<leader>", "<leader>", "/"]
+    },
+    
+    // Comma leader
+    {
+      "before": [",", ","],
+      "after": [","]
+    },
+    
+    {
+      "before": [",", "."],
+      "after": ["<esc>"]
+    },
+
+    {
+      "before": [",", "y", "p"],
+      "after": ["\"", "+", "p"]
+    },
+    
+    {
+      "before": [",", "y", "P"],
+      "after": ["\"", "+", "P"]
+    },
+    
+    {
+      "before": [",", "p", "p"],
+      "after": ["\"", "0", "p"]
+    },
+
+    {
+      "before": [",", "p", "P"],
+      "after": ["\"", "0", "P"]
+    },
+    
+    {
+      "before": [",", "u"],
+      "after": ["m", "c", "g", "U", "i", "w", "`", "c"]
+    },
+    
+    // Tab leader
+    {
+      "before": ["<tab>", "w"],
+      "after": ["<c-w>", "<c-w>"]
+    },
+    {
+      "before": ["<tab>", "o"],
+      "after": ["<c-w>", "o"]
+    },
+    {
+      "before": ["<tab>", "h"],
+      "after": ["<c-w>", "h"]
+    },
+    {
+      "before": ["<tab>", "j"],
+      "after": ["<c-w>", "j"]
+    },
+    {
+      "before": ["<tab>", "k"],
+      "after": ["<c-w>", "k"]
+    },
+    {
+      "before": ["<tab>", "l"],
+      "after": ["<c-w>", "l"]
+    },
+    {
+      "before": ["<tab>", "H"],
+      "commands": ["workbench.action.moveActiveEditorGroupLeft"]
+    },
+    {
+      "before": ["<tab>", "J"],
+      "commands": ["workbench.action.moveActiveEditorGroupDown"]
+    },
+    {
+      "before": ["<tab>", "K"],
+      "commands": ["workbench.action.moveActiveEditorGroupUp"]
+    },
+    {
+      "before": ["<tab>", "L"],
+      "commands": ["workbench.action.moveActiveEditorGroupUp"]
+    },
+    {
+      "before": ["<tab>", "s"],
+      "after": ["<c-w>", "s"]
+    },
+    {
+      "before": ["<tab>", "v"],
+      "after": ["<c-w>", "v"]
+    },
+    {
+      "before": ["<tab>", "m"],
+      "commands": ["workbench.action.maximizeEditor", "workbench.action.minimizeOtherEditors"]
+    },
+    
+    {
+      "before": ["<space>", "s", "i", "<space>"],
+      "commands": ["workbench.files.action.showActiveFileInExplorer"]
+    },
+    
+    // Flow
+    {
+      "before": ["<space>", "f", "s", "u", "<space>"],
+      "commands": ["flow.restartClient"]
+    },
+    {
+      "before": ["<space>", "f", "s", "i", "<space>"],
+      "commands": ["flow.showStatus"]
+    },
+    {
+      "before": ["<space>", "f", "s", "o", "<space>"],
+      "commands": ["flow.logClientDebugInfo"]
+    },
+    
+    {
+      "before": ["<space>", "f", "s", "j", "<space>"],
+      "commands": ["editor.action.marker.prev"]
+    },
+    
+    {
+      "before": ["<space>", "f", "s", "k", "<space>"],
+      "commands": ["editor.action.marker.next"]
+    },
+    
+    {
+      "before": ["<space>", "e", "f", "j", "<space>"],
+      "commands": ["workbench.action.findInFiles"]
+    },
+    
+    // Peeks
+    {
+      "before": ["<space>", "f", "d", "f", "j", "<space>"],
+      "commands": ["editor.action.peekDefinition"]
+    },
+    
+    {
+      "before": ["<space>", "f", "d", "f", "k", "<space>"],
+      "commands": ["editor.action.referenceSearch.trigger"]
+    },
+
+    {
+      "before": ["<space>", "f", "d", "f", "i", "<space>"],
+      "commands": ["references-view.findReferences"]
+    },
+    
+    {
+      "before": ["<space>", "f", "d", "j", "<space>"],
+      "commands": ["editor.action.peekTypeDefinition"]
+    },
+    
+    {
+      "before": ["<space>", "f", "d", "k", "<space>"],
+      "commands": ["editor.action.peekDeclaration"]
+    },
+    
+    // Doom-like
+    {
+      "before": ["<space>", "f", "r", "<space>"],
+      "commands": ["workbench.action.quickOpenRecent"]
+    },
+    
+    {
+      "before": ["<space>", "p", "p", "<space>"],
+      "commands": ["workbench.action.quickOpen"]
+    },
+    
+    {
+      "before": ["<space>", "g", "<space>"],
+      "commands": ["editor.action.showContextMenu"]
+    },
+    
+    // Open in Vim
+    {
+      "before": ["<space>", "v", "i", "m", "<space>"],
+      "commands": ["open-in-vim.open"]
+    },
+
+    // Fixes
+    {
+      "before": ["=", "="],
+      "commands": ["editor.action.reindentselectedlines"]
+    }
+  ],
+  "vim.leader": "\\",
+  "vim.handleKeys": {
+    "<C-a>": true,
+    "<C-f>": false,
+    "<C-p>": false,
+    "<C-n>": false,
+  },
+  "vim.highlightedyank.enable": true,
+  "vim.enableNeovim": true,
+  "vim.wrapscan": false,
+  
+  "open-in-vim.integrated-terminal.pathToShell": "/bin/zsh",
+  "open-in-vim.useNeovim": true,
+}
+
