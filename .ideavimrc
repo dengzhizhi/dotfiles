@@ -1,14 +1,37 @@
+" Selected Intellimacs modules
+" https://github.com/MarcoIeni/intellimacs/blob/main/docs/KEYBINDINGS.org
+source ~/.intellimacs/spacemacs.vim
+source ~/.intellimacs/extra.vim
+source ~/.intellimacs/major.vim
+source ~/.intellimacs/hybrid.vim
+
+set surround
+set NERDTree
+set argtextobj
+set highlightedyank
+set ideajoin
+set easymotion
+set exchange
+
 set ignorecase smartcase
 set so=5
 set expandtab
 set shiftwidth=4
-set surround
 set multiple-cursors
 set commentary
-set easymotion
-set clipboard+=ideaput
+set ideamarks
+set showcmd
+set timeoutlen=60000
+set undolevels=100
+
+set idearefactormode=visual
+
+" Must after spacemacs imports
+set clipboard=
 
 nnoremap ,u :action LocalHistory.ShowHistory<CR>
+
+" Uppercase last inputed word
 nnoremap ,U gUiwe
 inoremap ,U <ESC>gUiwgi
 
@@ -16,6 +39,10 @@ nnoremap ,c :e ~/.ideavimrc<CR>
 
 inoremap ,. <ESC>
 inoremap ,,. ,<ESC>
+inoremap ,<CR> ,<CR>
+inoremap ,<SPACE> ,<SPACE>
+inoremap ,<ESC> ,<ESC>
+
 vnoremap ,. <ESC>
 xnoremap ,. <ESC>
 lnoremap ,. <ESC>
@@ -24,17 +51,23 @@ nnoremap ,. <ESC>
 nnoremap ,k "
 vnoremap ,k "
 
-inoremap ,h <C-H>
+inoremap ,m <C-H>
 
+" Exchange two selections, delete one selection first and select the second region before running this key map
 vnoremap ,x <ESC>`.``gvp``P
 
 nnoremap ,c :e ~/.ideavimrc<CR>
+nnoremap ,C :source ~/.ideavimrc<CR>:echo ".ideavimrc reloaded"<CR>
 
+" system clipboard
 nnoremap ,y "+
 vnoremap ,y "+
 
-inoremap ,o <C-O>
-inoremap ,i <CR>
+" quick paste last yarn
+nnoremap ,p "0p
+vnoremap ,p "0p
+
+inoremap ,l <ESC>o
 
 inoremap jk <ESC>
 inoremap jl <Right>
@@ -43,6 +76,7 @@ inoremap jh <Left>
 nnoremap ,, ,
 vnoremap ,, ,
 
+" multicursor
 nmap ,cn <A-n>
 vmap ,cn <A-n>
 nmap ,cx <A-x>
@@ -54,12 +88,6 @@ vmap ,cg g<A-n>
 
 "Swap two texts. (Delete the first text block, then select the second block,
 "then press Control-Shift-X)
-
-"Control-Shift-U conver to uppercase
-nnoremap <C-S-U> mqgUiw`q
-inoremap <C-S-U> <ESC>gUiwgi
-
-nnoremap <C-=> =i
 
 "remap split window
 nnoremap <TAB>m :action HideAllWindows<CR>
@@ -97,10 +125,13 @@ vnoremap <Space>jj :action emacsIDEAs.AceJump<CR>
 nnoremap ZQ :action CloseEditor<CR>
 nnoremap ZW :action CloseAllEditorsButActive<CR>
 nnoremap <Space>a<Space> :action GotoAction<CR>
-nnoremap <Space>si<Space> :action SelectIn<CR>
+nnoremap <Space>si<Space> :NERDTreeFind<CR>
+nnoremap <Space>pw<Space> :NERDTreeFocus<CR>
 nnoremap <C-n> :action SelectNextOccurrence<CR>
 nnoremap <Space>vim<Space> :action Tool_External Tools_MacVim<CR>
 
+nnoremap <BS> :action Back<CR>
+nnoremap <C-BS> :action Forward<CR>
 nnoremap <Space>kj<Space> :action Back<CR>
 nnoremap <C-o> :action Back<CR>
 nnoremap <Space>kl<Space> :action Forward<CR>
@@ -128,6 +159,8 @@ nnoremap <Space>rsf<Space> :action EditorResetFontSize<CR>
 
 nnoremap <Space>ge<Space> :action GotoNextError<CR>
 nnoremap <Space>gpe<Space> :action GotoPreviousError<CR>
+nnoremap <Space>fsk<Space> :action GotoNextError<CR>
+nnoremap <Space>fsj<Space> :action GotoPreviousError<CR>
 
 nnoremap <Space>gc<Space> :action GotoClass<CR>
 nnoremap <Space>gf<Space> :action GotoFile<CR>
@@ -140,6 +173,7 @@ nnoremap <Space>newpi<Space> :action NewPackageInfo<CR>
 nnoremap <Space>news<Space> :action NewScratchFile<CR>
 
 nnoremap <Space>mvnr<Space> :action Maven.Reimport<CR>:action Gradle.RefreshDependencies<CR>
+nnoremap <Space>fsu<Space> :action FlowJS.Restart.All.Servers<CR>
 
 nnoremap <Space>rcs<Space> :action ChangeSignature<CR>
 nnoremap <Space>rem<Space> :action ExtractMehtod<CR>
@@ -169,6 +203,7 @@ vnoremap <Space>cprt<Space> :action CopyAsRichText<CR>:<C-U>echo "Copied as rich
 nnoremap <Space>cpe<Space> :action CopyElement<CR>
 nnoremap <Space>cpp<Space> :action CopyPaths<CR>:echo "Copied paths"<CR>
 nnoremap <Space>cpr<Space> :action CopyReference<CR>:echo "Copied reference"<CR>
+nnoremap <Space>cpa<Space> magg"+yG`a:echo "Copied the whole document"<CR>
 
 "Cursive edits
 "nnoremap <Space>cebb<Space> :action :cursive.actions.paredit/barf-backwards<CR>
@@ -213,91 +248,68 @@ nnoremap <Space>kjt<Space> :action ConvertIndentsToTabs<CR>
 vnoremap <Space>kjr<Space> :<C-U>action ConvertIndentsToSpaces<CR>
 vnoremap <Space>kjt<Space> :<C-U>action ConvertIndentsToTabs<CR>
 
-"Copy a line without line break
-nnoremap yuu _v$hy
+"Yank a line without line break
+nnoremap yuu mp_yg_`p
 
 "Copy a line without line break to clipboard
-nnoremap yuc _v$h:<C-U> action $Copy<CR>
+nnoremap yuc mp_"+yg_`p
 
 "Toggle Wrap
 nnoremap <Space>w<Space> :action EditorToggleUseSoftWraps<CR>
 
 "AceJump
-"nnoremap <Space>f :action emacsIDEAs.AceJump<CR>
-"nnoremap <Space><Space>f :action emacsIDEAs.AceJumpWord<CR>
-"nnoremap <Space><Space>cc :action emacsIDEAs.AceJumpCopy<CR>
-"nnoremap <Space><Space>cb :action emacsIDEAs.AceJumpCopy.Block<CR>
-"nnoremap <Space><Space>cg :action emacsIDEAs.AceJumpCopy.Group<CR>
-"nnoremap <Space><Space>cl :action emacsIDEAs.AceJumpCopy.Line<CR>
-"nnoremap <Space><Space>cp :action emacsIDEAs.AceJumpCopy.Paragraph<CR>
-"nnoremap <Space><Space>cq :action emacsIDEAs.AceJumpCopy.Quote<CR>
-"nnoremap <Space><Space>cs :action emacsIDEAs.AceJumpCopy.String<CR>
-"nnoremap <Space><Space>ctle :action emacsIDEAs.AceJumpCopy.ToLineEnd<CR>
-"nnoremap <Space><Space>ctls :action emacsIDEAs.AceJumpCopy.ToLineStart<CR>
-"nnoremap <Space><Space>ctpe :action emacsIDEAs.AceJumpCopy.ToParagraphEnd<CR>
-"nnoremap <Space><Space>ctps :action emacsIDEAs.AceJumpCopy.ToParagraphStart<CR>
-"nnoremap <Space><Space>cw :action emacsIDEAs.AceJumpCopy.Word<CR>
-"nnoremap <Space><Space>nb :action emacsIDEAs.AceJumpMove.Block<CR>
-"nnoremap <Space><Space>ng :action emacsIDEAs.AceJumpMove.Group<CR>
-"nnoremap <Space><Space>nl :action emacsIDEAs.AceJumpMove.Line<CR>
-"nnoremap <Space><Space>np :action emacsIDEAs.AceJumpMove.Paragraph<CR>
-"nnoremap <Space><Space>nq :action emacsIDEAs.AceJumpMove.Quote<CR>
-"nnoremap <Space><Space>ns :action emacsIDEAs.AceJumpMove.String<CR>
-"nnoremap <Space><Space>ntle :action emacsIDEAs.AceJumpMove.ToLineEnd<CR>
-"nnoremap <Space><Space>ntls :action emacsIDEAs.AceJumpMove.ToLineStart<CR>
-"nnoremap <Space><Space>ntpe :action emacsIDEAs.AceJumpMove.ToParagraphEnd<CR>
-"nnoremap <Space><Space>ntps :action emacsIDEAs.AceJumpMove.ToParagraphStart<CR>
-"nnoremap <Space><Space>nw :action emacsIDEAs.AceJumpMove.Word<CR>
-"let g:EasyMotion_override_acejump = 1
-nmap <Space>ff <Plug>(easymotion-f)
-vmap <Space>ff <Plug>(easymotion-f)
-omap <Space>ff <Plug>(easymotion-f)
-nmap <Space>fF <Plug>(easymotion-F)
-vmap <Space>fF <Plug>(easymotion-F)
-omap <Space>fF <Plug>(easymotion-F)
-nmap <Space>ft <Plug>(easymotion-t)
-vmap <Space>ft <Plug>(easymotion-t)
-omap <Space>ft <Plug>(easymotion-t)
-nmap <Space>fT <Plug>(easymotion-T)
-vmap <Space>fT <Plug>(easymotion-T)
-omap <Space>fT <Plug>(easymotion-T)
-nmap <Space>fw <Plug>(easymotion-w)
-vmap <Space>fw <Plug>(easymotion-w)
-omap <Space>fw <Plug>(easymotion-w)
-nmap <Space>fW <Plug>(easymotion-W)
-vmap <Space>fW <Plug>(easymotion-W)
-omap <Space>fW <Plug>(easymotion-W)
-nmap <Space>fe <Plug>(easymotion-e)
-vmap <Space>fe <Plug>(easymotion-e)
-omap <Space>fe <Plug>(easymotion-e)
-nmap <Space>fE <Plug>(easymotion-E)
-vmap <Space>fE <Plug>(easymotion-E)
-omap <Space>fE <Plug>(easymotion-E)
-nmap <Space>fj <Plug>(easymotion-j)
-vmap <Space>fj <Plug>(easymotion-j)
-omap <Space>fj <Plug>(easymotion-j)
-nmap <Space>fk <Plug>(easymotion-k)
-vmap <Space>fk <Plug>(easymotion-k)
-omap <Space>fk <Plug>(easymotion-k)
-nmap <Space>fn <Plug>(easymotion-n)
-vmap <Space>fn <Plug>(easymotion-n)
-omap <Space>fn <Plug>(easymotion-n)
-nmap <Space>fN <Plug>(easymotion-N)
-vmap <Space>fN <Plug>(easymotion-N)
-omap <Space>fN <Plug>(easymotion-N)
-nmap <Space>f/ <Plug>(easymotion-sn)
-vmap <Space>f/ <Plug>(easymotion-sn)
-omap <Space>f/ <Plug>(easymotion-sn)
-nmap <Space><Space>f <Plug>(easymotion-s)
-vmap <Space><Space>f <Plug>(easymotion-s)
-omap <Space><Space>f <Plug>(easymotion-s)
+nmap gsf <Plug>(easymotion-f)
+vmap gsf <Plug>(easymotion-f)
+omap gsf <Plug>(easymotion-f)
+nmap gsF <Plug>(easymotion-F)
+vmap gsF <Plug>(easymotion-F)
+omap gsF <Plug>(easymotion-F)
+nmap gst <Plug>(easymotion-t)
+vmap gst <Plug>(easymotion-t)
+omap gst <Plug>(easymotion-t)
+nmap gsT <Plug>(easymotion-T)
+vmap gsT <Plug>(easymotion-T)
+omap gsT <Plug>(easymotion-T)
+nmap gsw <Plug>(easymotion-w)
+vmap gsw <Plug>(easymotion-w)
+omap gsw <Plug>(easymotion-w)
+nmap gsW <Plug>(easymotion-W)
+vmap gsW <Plug>(easymotion-W)
+omap gsW <Plug>(easymotion-W)
+nmap gse <Plug>(easymotion-e)
+vmap gse <Plug>(easymotion-e)
+omap gse <Plug>(easymotion-e)
+nmap gsE <Plug>(easymotion-E)
+vmap gsE <Plug>(easymotion-E)
+omap gsE <Plug>(easymotion-E)
+nmap gsj <Plug>(easymotion-j)
+vmap gsj <Plug>(easymotion-j)
+omap gsj <Plug>(easymotion-j)
+nmap gsk <Plug>(easymotion-k)
+vmap gsk <Plug>(easymotion-k)
+omap gsk <Plug>(easymotion-k)
+nmap gsn <Plug>(easymotion-n)
+vmap gsn <Plug>(easymotion-n)
+omap gsn <Plug>(easymotion-n)
+nmap gsN <Plug>(easymotion-N)
+vmap gsN <Plug>(easymotion-N)
+omap gsN <Plug>(easymotion-N)
+nmap gs/ <Plug>(easymotion-sn)
+vmap gs/ <Plug>(easymotion-sn)
+omap gs/ <Plug>(easymotion-sn)
+nmap gss <Plug>(easymotion-s)
+vmap gss <Plug>(easymotion-s)
+omap gss <Plug>(easymotion-s)
+nmap gsS <Plug>(easymotion-s2)
+vmap gsS <Plug>(easymotion-s2)
+omap gsS <Plug>(easymotion-s2)
+nmap gsg V<Plug>(easymotion-bd-jk)
+vmap gsg V<Plug>(easymotion-bd-jk)
+omap gsg V<Plug>(easymotion-bd-jk)
 
-"Code
+"Code assistent
 nnoremap <Space>g<Space> :action Generate<CR>
 nnoremap <Space>i<Space> :action ShowIntentionActions<CR>
-
-set clipboard+=ideaput
-set ideajoin
 
 " Commands
 command! Scratch action NewScratchBuffer
@@ -307,8 +319,8 @@ command! NewD action NewDir
 command! ItT action ConvertIndentsToTabs
 command! ItS action ConvertIndentsToSpaces
 
-" Selected Intellimacs modules
-source ~/.intellimacs/spacemacs.vim
-source ~/.intellimacs/extra.vim
-source ~/.intellimacs/major.vim
-source ~/.intellimacs/hybrid.vim
+" Fighting Game Mapping
+nnoremap <Space>efj<Space> :action FindInPath<CR>
+nnoremap <Space>fej<Space> :action FindInPath<CR>
+nnoremap <Space>efk<Space> :action StructuralSearchActions<CR>
+nnoremap <Space>fek<Space> :action StructuralSearchActions<CR>
