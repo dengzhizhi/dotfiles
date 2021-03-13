@@ -3,57 +3,71 @@ set nocompatible
 filetype off                  " required
 set encoding=utf-8            " required by YCM
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+"   Plugins {{{
+call plug#begin('~/.vim/plugged')
 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+" Make sure you use single quotes
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-" Plugin 'tpope/vim-fugitive'
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-" Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Avoid a name conflict with L9
-" Plugin 'user/L9', {'name': 'newL9'}
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+Plug 'https://github.com/easymotion/vim-easymotion.git'
+Plug 'https://github.com/tpope/vim-surround.git'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'junegunn/vim-easy-align'
+Plug 'https://github.com/tpope/vim-repeat.git'
+Plug 'https://github.com/tpope/vim-fugitive.git' " Git integration
+Plug 'junegunn/gv.vim' " Git log
+Plug 'https://github.com/scrooloose/nerdtree.git'
+Plug 'https://github.com/Yggdroot/LeaderF.git'
+Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
+Plug 'https://github.com/mkarmona/colorsbox.git'
+Plug 'rafi/awesome-vim-colorschemes'
+Plug 'rhysd/vim-grammarous'  " Grammar check
+Plug 'https://github.com/skywind3000/asyncrun.vim.git'
+Plug 'https://github.com/ledger/vim-ledger.git'
+" Plug 'chrisbra/vim-diff-enhanced'
+Plug 'rbgrouleff/bclose.vim'  " Needed by ranger
+Plug 'francoiscabrol/ranger.vim'
+" Plug 'glacambre/firenvim', { 'do': function('firenvim#install') }
+Plug 'simnalamburt/vim-mundo'
+"Plug 'SirVer/ultisnips'
+"Plug 'honza/vim-snippets'
+Plug 'https://github.com/wellle/targets.vim.git'
+Plug 'gaving/vim-textobj-argument'
+"Plug 'lifepillar/vim-cheat40'
+Plug 'xavierchow/vim-swagger-preview'
+Plug 'sophacles/vim-processing'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'gyim/vim-boxdraw'
+Plug 'https://github.com/kana/vim-submode.git'
+Plug 'https://github.com/gcmt/taboo.vim.git'
 
-"Plugin 'https://github.com/vim-scripts/SyntaxRange.git'
-Plugin 'https://github.com/easymotion/vim-easymotion.git'
-Plugin 'https://github.com/tpope/vim-surround.git'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'https://github.com/kien/rainbow_parentheses.vim'
-Plugin 'https://github.com/tpope/vim-repeat.git'
-"Plugin 'https://github.com/tpope/vim-fugitive.git'
-"Plugin 'https://github.com/elixir-editors/vim-elixir'
-"Plugin 'https://github.com/scrooloose/nerdtree.git'
-"Plugin 'https://github.com/Yggdroot/LeaderF.git'
-"Plugin 'chrisbra/vim-diff-enhanced'
-Plugin 'simnalamburt/vim-mundo'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-Plugin 'https://github.com/wellle/targets.vim.git'
-Plugin 'gaving/vim-textobj-argument'
+Plug 'nathangrigg/vim-beancount'
 
-Plugin 'xavierchow/vim-swagger-preview'
+"Plug 'https://github.com/AndrewRadev/sideways.vim.git'
+"Plug 'https://github.com/airblade/vim-rooter.git'
 
+"Plug 'https://github.com/vim-scripts/SyntaxRange.git'
+"Plug 'https://github.com/chrisbra/csv.vim.git'
+"Plug 'benmills/vimux'
+"Plug 'jtdowney/vimux-cargo'
+"Plug 'uarun/vim-protobuf'
+"Plug 'vim-scripts/LargeFile'
+"Plug 'https://github.com/jceb/vim-orgmode.git'
+"Plug 'https://github.com/nathangrigg/vim-beancount.git'
+"Plug 'https://github.com/elixir-editors/vim-elixir'
+"Plug 'slashmili/alchemist.vim'
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'beeender/Comrade'  " Intellij integration
+"
+" COC
+"Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh', 'branch': 'release'}
+"
+"Colorschemes
+Plug 'https://github.com/mkarmona/colorsbox.git'
+Plug 'rafi/awesome-vim-colorschemes'
 
-"Plugin 'https://github.com/AndrewRadev/sideways.vim.git'
-"Plugin 'https://github.com/airblade/vim-rooter.git'
+call plug#end()
 
-"Plugin 'https://github.com/mhinz/vim-grepper.git'
-"Plugin 'https://github.com/osyo-manga/vim-over.git'
 "Plugin 'https://github.com/dag/vim-fish'
 "Plugin 'https://github.com/gcmt/taboo.vim.git'
 "Plugin 'https://github.com/Chun-Yang/vim-action-ag.git'
@@ -65,15 +79,11 @@ Plugin 'xavierchow/vim-swagger-preview'
 "Plugin 'https://github.com/neovimhaskell/haskell-vim.git'
 "Plugin 'kshenoy/vim-signature'
 " Plugin 'junegunn/fzf.vim'
-
-"Colorschemes
-Plugin 'https://github.com/mkarmona/colorsbox.git'
-Plugin 'rafi/awesome-vim-colorschemes'
+" }}}
 
 
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
+
 filetype plugin indent on    " required
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
@@ -90,7 +100,7 @@ filetype plugin indent on    " required
 
 "########## Developer Settings ##########"
 colo atom
-set guifont=Iosevka:h20
+" set guifont=Iosevka:h20
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -119,6 +129,9 @@ set vb t_vb=
 set novb
 set guioptions-=e
 
+set diffopt+=internal,algorithm:patience
+"set diffopt+=internal,algorithm:histogram
+
 syntax enable
 syntax on
 filetype plugin on
@@ -145,6 +158,7 @@ inoremap ,h <C-H>
 vnoremap ,x <ESC>`.``gvp``P
 
 nnoremap ,c :tabnew $MYVIMRC<CR>
+nnoremap ,C :source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
 
 nnoremap ,u :MundoShow<CR>
 
@@ -153,11 +167,11 @@ inoremap ,U <ESC>gUiwgi
 
 nnoremap ,y "+
 vnoremap ,y "+
+nnoremap ,p "0p
+vnoremap ,p "0p
 
 nnoremap ,, ,
 vnoremap ,, ,
-
-nnoremap ,d :vsp ~/vim_demo.md<C-W>L45<C-W><Bar>/Case 
 
 "########## Insert mode j Combinations ##########" {{{
 inoremap jk <ESC>
@@ -233,18 +247,14 @@ nnoremap <Leader>z/ :setlocal foldexpr=(getline(v:lnum)=~@/)?0:(getline(v:lnum-1
 "Fold except selection
 vnoremap <Leader>zv <Esc>:set foldmethod=manual<CR>zE`<kzfgg`>jzfG`<
 
-
-nmap <C-S-U> gUiwe
-imap <C-S-U> <ESC>gUiwgi
-
 noremap j gj
 noremap k gk
 noremap gj j
 noremap gk k
 noremap g0 _
 
-
 let mapleader=" "
+set timeoutlen=5000
 
 function! CopyToBottom()
     let l:a = input("Copy to bottom with Regex: ")
@@ -261,6 +271,26 @@ function! FunChangeFontSize()
 endfunction
 
 command! ChangeFontSize call FunChangeFontSize()
+
+" ######## Fighting Game Key Binding ######## {{{
+vnoremap <Space>dfj<Space> :norm @q<CR>
+nnoremap <Space>dfj<Space> :%norm @q<CR>
+vnoremap <Space>dfjk<Space> :norm 
+vnoremap <Space>dfkj<Space> :norm 
+nnoremap <Space>dfkj<Space> :%norm 
+nnoremap <Space>dfjk<Space> :%norm 
+
+nnoremap <Space>sf<Space> <C-I>
+nnoremap <Space>ss<Space> <C-O>
+
+let g:submode_timeout=0
+call submode#enter_with('jumplist', 'n', 's', '<Space>sss<Space>', '<C-O>')
+call submode#enter_with('jumplist', 'n', 's', '<Space>sff<Space>', '<C-I>')
+call submode#leave_with('jumplist', 'n', '', '<Esc>')
+call submode#map('jumplist', 'n', 's', 's', '<C-O>')
+call submode#map('jumplist', 'n', 's', 'f', '<C-I>')
+
+" }}}
 
 " ######## Enhanced Diff ######## {{{
 " autocmd VimEnter * EnhancedDiff histogram
@@ -280,41 +310,56 @@ command! ChangeFontSize call FunChangeFontSize()
 "map  <Leader>f <Plug>(easymotion-bd-f)
 " s{char}{char} to move to {char}{char}
 " Move to line
-"map <Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader>v V<Plug>(easymotion-bd-jk)
 
-nmap <Space>ff <Plug>(easymotion-f)
-vmap <Space>ff <Plug>(easymotion-f)
-nmap <Space>fF <Plug>(easymotion-F)
-vmap <Space>fF <Plug>(easymotion-F)
-nmap <Space>ft <Plug>(easymotion-t)
-vmap <Space>ft <Plug>(easymotion-t)
-nmap <Space>fT <Plug>(easymotion-T)
-vmap <Space>fT <Plug>(easymotion-T)
-nmap <Space>fw <Plug>(easymotion-w)
-vmap <Space>fw <Plug>(easymotion-w)
-nmap <Space>fW <Plug>(easymotion-W)
-vmap <Space>fW <Plug>(easymotion-W)
-nmap <Space>fe <Plug>(easymotion-e)
-vmap <Space>fe <Plug>(easymotion-e)
-nmap <Space>fE <Plug>(easymotion-E)
-vmap <Space>fE <Plug>(easymotion-E)
-nmap <Space>fj <Plug>(easymotion-j)
-vmap <Space>fj <Plug>(easymotion-j)
-nmap <Space>fk <Plug>(easymotion-k)
-vmap <Space>fk <Plug>(easymotion-k)
-nmap <Space>fn <Plug>(easymotion-n)
-vmap <Space>fn <Plug>(easymotion-n)
-nmap <Space>fN <Plug>(easymotion-N)
-vmap <Space>fN <Plug>(easymotion-N)
-nmap <Space>f/ <Plug>(easymotion-sn)
-vmap <Space>f/ <Plug>(easymotion-sn)
-nmap <Space><Space>f <Plug>(easymotion-s)
-vmap <Space><Space>f <Plug>(easymotion-s)
+nmap gsf <Plug>(easymotion-f)
+vmap gsf <Plug>(easymotion-f)
+omap gsf <Plug>(easymotion-f)
+nmap gsF <Plug>(easymotion-F)
+vmap gsF <Plug>(easymotion-F)
+omap gsF <Plug>(easymotion-F)
+nmap gst <Plug>(easymotion-t)
+vmap gst <Plug>(easymotion-t)
+omap gst <Plug>(easymotion-t)
+nmap gsT <Plug>(easymotion-T)
+vmap gsT <Plug>(easymotion-T)
+omap gsT <Plug>(easymotion-T)
+nmap gsw <Plug>(easymotion-w)
+vmap gsw <Plug>(easymotion-w)
+omap gsw <Plug>(easymotion-w)
+nmap gsW <Plug>(easymotion-W)
+vmap gsW <Plug>(easymotion-W)
+omap gsW <Plug>(easymotion-W)
+nmap gse <Plug>(easymotion-e)
+vmap gse <Plug>(easymotion-e)
+omap gse <Plug>(easymotion-e)
+nmap gsE <Plug>(easymotion-E)
+vmap gsE <Plug>(easymotion-E)
+omap gsE <Plug>(easymotion-E)
+nmap gsj <Plug>(easymotion-j)
+vmap gsj <Plug>(easymotion-j)
+omap gsj <Plug>(easymotion-j)
+nmap gsk <Plug>(easymotion-k)
+vmap gsk <Plug>(easymotion-k)
+omap gsk <Plug>(easymotion-k)
+nmap gsn <Plug>(easymotion-n)
+vmap gsn <Plug>(easymotion-n)
+omap gsn <Plug>(easymotion-n)
+nmap gsN <Plug>(easymotion-N)
+vmap gsN <Plug>(easymotion-N)
+omap gsN <Plug>(easymotion-N)
+nmap gs/ <Plug>(easymotion-sn)
+vmap gs/ <Plug>(easymotion-sn)
+omap gs/ <Plug>(easymotion-sn)
+nmap gss <Plug>(easymotion-s)
+vmap gss <Plug>(easymotion-s)
+omap gss <Plug>(easymotion-s)
+nmap gsS <Plug>(easymotion-s2)
+vmap gsS <Plug>(easymotion-s2)
+omap gsS <Plug>(easymotion-s2)
+nmap gsg V<Plug>(easymotion-bd-jk)
+vmap gsg V<Plug>(easymotion-bd-jk)
+omap gsg V<Plug>(easymotion-bd-jk)
 
-
-" Move to word
-"map  <Leader>w <Plug>(easymotion-bd-w)
 
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
@@ -370,8 +415,6 @@ set modelines=3
 " punctuation like `.`.
 set nojoinspaces
 
-"set clipboard=unnamed
-
 " Normally, Vim messes with iskeyword when you open a shell file. This can
 " leak out, polluting other file types even after a 'set ft=' change. This
 " variable prevents the iskeyword change so it can't hurt anyone.
@@ -406,39 +449,6 @@ let g:rbpt_colorpairs = [
 
 let g:rbpt_max = 16
 
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
-
-"   " This is the default extra key bindings
-"   let g:fzf_action = {
-"     \ 'ctrl-t': 'tab split',
-"     \ 'ctrl-x': 'split',
-"     \ 'ctrl-v': 'vsplit' }
-"   
-"   " Default fzf layout
-"   " - down / up / left / right
-"   let g:fzf_layout = { 'down': '~40%' }
-"   
-"   " In Neovim, you can set up fzf window using a Vim command
-"   let g:fzf_layout = { 'window': 'enew' }
-"   let g:fzf_layout = { 'window': '-tabnew' }
-"   
-"   " Customize fzf colors to match your color scheme
-"   let g:fzf_colors =
-"   \ { 'fg':      ['fg', 'Normal'],
-"     \ 'bg':      ['bg', 'Normal'],
-"     \ 'hl':      ['fg', 'Comment'],
-"     \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-"     \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-"     \ 'hl+':     ['fg', 'Statement'],
-"     \ 'info':    ['fg', 'PreProc'],
-"     \ 'prompt':  ['fg', 'Conditional'],
-"     \ 'pointer': ['fg', 'Exception'],
-"     \ 'marker':  ['fg', 'Keyword'],
-"     \ 'spinner': ['fg', 'Label'],
-"     \ 'header':  ['fg', 'Comment'] }
 
 " Enable per-command history.
 " CTRL-N and CTRL-P will be automatically bound to next-history and
@@ -484,8 +494,6 @@ let g:fzf_history_dir = '~/.local/share/fzf-history'
 "    set rtp+=/usr/local/opt/fzf
 set rtp+=/usr/local/opt/fzf
 
-nmap <Leader>y :!echo --==<C-R><C-w>==-- ;ici <C-R><C-W><CR>
-
 command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
 
 
@@ -519,6 +527,98 @@ nmap <leader><leader>e <Plug>GenerateDiagram
 command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
 
 nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+nnoremap <leader>mC :<c-u><c-r><c-r>='command! norm! '. string(getreg(v:register))<cr><c-f><esc>0Ea<space>
+
+"}}}
+
+"Predefined Macro {{{
+let @t = '@q@t'
+"}}}
+
+"sdvc {{{
+func! ScratchBuffer(key, direction)
+  if (bufexists(a:key))
+    let l:lrwin = bufwinnr(a:key)
+    if l:lrwin == -1
+      if a:direction ==? "v"
+        exec "rightbelow vert sb " . bufnr(a:key)
+      else
+        exec "rightbelow sb " . bufnr(a:key)
+      endif
+    else
+      exec l:lrwin . "wincmd w"
+    endif
+  else
+    if a:direction ==? "v"
+      exec "rightbelow vert new " . a:key
+    else
+      exec "rightbelow new " . a:key
+    endif
+    setlocal bt=nofile bh=wipe nobl noswf nospell nonu
+  endif
+endfunc
+
+let g:sdcv_data_dir = "~/dev/stardict"
+
+func! SdcvLookUp(word)
+  norm! ggdG
+  let l:sdcv_cmd = "sdcv -0 -n"
+  if g:sdcv_data_dir != ''
+    let l:sdcv_cmd = l:sdcv_cmd . " -2 " . g:sdcv_data_dir
+  endif
+  exec "norm! :0r !" . l:sdcv_cmd . " \"" . a:word . "\"\<cr>gg"
+endfunc
+
+func! SdcvDefinitionBufferInit(word)
+  setlocal bt=nofile bh=wipe nobl noswf nospell nonu
+  " Key Mappings
+  nnoremap <buffer> <silent> q :bwipeout<cr>
+
+  " Highlights
+  if !exists("b:current_syntax")
+    let b:current_syntax = "stardict"
+
+    syntax match stardictResult "\v^[A-Z].*"
+    syntax match stardictWord "\v^\@.*"
+    syntax match stardictWord2 "\v^--\>\zs.*"
+    syntax match stardictWordType "\v^\*.*"
+    syntax match stardictWordMeaning "\v^[0-9].*"
+    syntax match stardictWordExample "\v^(    \-\s.*\:|\!.*|    \-\s.*)"
+    syntax match stardictDictName "\v^\@[^/]*\:[^/]*"
+    syntax match stardictPronounce "\v^\/.{0,30}\/"
+    syntax match stardictBracket "\v\(.{0,10}\)"
+    syntax match stardictSquareBracket "\v\[.{0,10}\]"
+    syntax match stardictNumber "\v<\d{0,2}>"
+
+    highlight link stardictResult Special
+    highlight link stardictWord Todo
+    highlight link stardictWord2 Todo
+    highlight link stardictWordType Statement
+    highlight link stardictWordMeaning Identifier
+    highlight link stardictWordExample Type
+    highlight link stardictDictName Underlined
+    highlight link stardictPronounce Statement
+    highlight link stardictBracket Statement
+    highlight link stardictSquareBracket Statement
+    highlight link stardictNumber PreProc
+  endif
+
+  exec 'syntax match SdvcLookupWord /\c\V' . a:word . '/'
+  highlight default link SdvcLookupWord Underlined
+endfunc
+
+nnoremap ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap ,dD viw"ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dD "ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap ,dv viw"ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dv "ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap ,dV viw"ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dV "ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap ,dt viw"ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
 "}}}
 
 "TA Commands {{{
@@ -548,11 +648,25 @@ function FnTAMapstructQuickFix()
 endfunction 
 command! TAMapstructFix call FnTAMapstructQuickFix()
 
-""" Format Solr entity
+""" Format JSON String
 command! TAFmtJson norm! :%!jq -S:setl ft=json fdm=syntax:syn onggzMzo
 
 """ Format Solr entity
 command! TAFmtSolrEntity norm! :syn off:setl fdm=manualzE:v/^\s*"entity[^"]*":/d0dt{$T}D:s/\%(\\\)\@<!\\"/"/ge:s/\\\\\\"/\\"/ge:TAFmtJson
+
+""" Generate UUID in unnamed register
+command! TAuuid norm! ma:r !uuidgenyg_"_dd`a
+
+""" Convert ps -ef output to Kill -9
+command! -range Kill9 <line1>,<line2>:norm! 0vEckill -9ElD0
+
+""" Insert current date at the beginning of a line
+command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d')
+ 
+
+""" Capture CLI output in a scratch buffer
+command! -nargs=* -complete=shellcmd R :ScratchBuffer('shell.output', 's') | r !<args>
+command! -nargs=* -complete=shellcmd RV :ScratchBuffer('shell.output', 'v') | r !<args>
 
 "}}}
 

@@ -17,7 +17,7 @@ Plug 'https://github.com/tpope/vim-repeat.git'
 Plug 'https://github.com/tpope/vim-fugitive.git' " Git integration
 Plug 'junegunn/gv.vim' " Git log
 Plug 'https://github.com/scrooloose/nerdtree.git'
-Plug 'https://github.com/Yggdroot/LeaderF.git'
+"Plug 'https://github.com/Yggdroot/LeaderF.git'
 Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
 Plug 'https://github.com/mkarmona/colorsbox.git'
 Plug 'rafi/awesome-vim-colorschemes'
@@ -29,20 +29,24 @@ Plug 'rbgrouleff/bclose.vim'  " Needed by ranger
 Plug 'francoiscabrol/ranger.vim'
 Plug 'glacambre/firenvim', { 'do': function('firenvim#install') }
 Plug 'simnalamburt/vim-mundo'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+"Plug 'SirVer/ultisnips'
+"Plug 'honza/vim-snippets'
 Plug 'https://github.com/wellle/targets.vim.git'
 Plug 'gaving/vim-textobj-argument'
 "Plug 'lifepillar/vim-cheat40'
 Plug 'xavierchow/vim-swagger-preview'
 Plug 'sophacles/vim-processing'
+Plug 'gcmt/taboo.vim'
+
+Plug 'nathangrigg/vim-beancount'
+Plug 'phongvcao/vim-stardict'
 
 "Plug 'https://github.com/AndrewRadev/sideways.vim.git'
 "Plug 'https://github.com/airblade/vim-rooter.git'
 
 "Plug 'https://github.com/vim-scripts/SyntaxRange.git'
 "Plug 'https://github.com/chrisbra/csv.vim.git'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh', 'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh', 'branch': 'release'}
 "Plug 'benmills/vimux'
 "Plug 'jtdowney/vimux-cargo'
 "Plug 'uarun/vim-protobuf'
@@ -148,6 +152,8 @@ inoremap ,U <ESC>gUiwgi
 
 nnoremap ,y "+
 vnoremap ,y "+
+nnoremap ,p "0p
+vnoremap ,p "0p
 
 nnoremap ,, ,
 vnoremap ,, ,
@@ -159,6 +165,23 @@ inoremap jk <ESC>
 inoremap jl <Right>
 inoremap jh <Left>
 " }}}
+
+"########## Fighter Keybindings ##########" {{{
+nnoremap <Space>su<Space> :NERDTreeFocus<CR>
+nnoremap <Space>sui<Space> :NERDTreeClose<CR>
+nnoremap <Space>siu<Space> :NERDTreeClose<CR>
+nnoremap <Space>so<Space> :NERDTreeToggle<CR>
+nnoremap <Space>si<Space> :NERDTreeFind<CR>
+
+nnoremap <Space>sj<Space> :Grepper<CR>
+
+nnoremap <Space>sdfj<Space> :Gblame<CR>
+nnoremap <Space>sdfk<Space> :GlLog %<CR>
+nnoremap <Space>sdfl<Space> :GlLog<CR>
+nnoremap <Space>sdflk<Space> :GV<CR>
+nnoremap <Space>sdfkl<Space> :GV<CR>
+" }}}
+
 
 "########## Ranger ##########" {{{
 let g:ranger_map_keys = 0
@@ -339,19 +362,20 @@ autocmd VimEnter * EnhancedDiff histogram
 "map N <Plug>(easymotion-prev)
 map  <Leader>/ <Plug>(easymotion-sn)
 omap <Leader>/ <Plug>(easymotion-tn)
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
-map <Leader>s <Plug>(easymotion-s)
-map <Leader>S <Plug>(easymotion-s2)
-nmap <Leader>t <Plug>(easymotion-t)
+map <Space>fj<Space> <Plug>(easymotion-j)
+map <Space>fk<Space> <Plug>(easymotion-k)
+map  <Space>fl<Space> <Plug>(easymotion-bd-f)
+nmap <Space>fjk<Space> V<Plug>(easymotion-bd-jk)
+nmap <Space>fkj<Space> V<Plug>(easymotion-bd-jk)
 
-map  <Leader>f <Plug>(easymotion-bd-f)
+map  gs/ <Plug>(easymotion-sn)
+omap gs/ <Plug>(easymotion-tn)
+map gsj <Plug>(easymotion-j)
+map gsk <Plug>(easymotion-k)
+map gss <Plug>(easymotion-bd-f)
 " s{char}{char} to move to {char}{char}
 " Move to line
 "map <Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader>v V<Plug>(easymotion-bd-jk)
 
 " Move to word
 "map  <Leader>w <Plug>(easymotion-bd-w)
@@ -621,11 +645,101 @@ set undodir=~/.vim/undo
 "xmap ia <Plug>SidewaysArgumentTextobjI
 "}}}
 
+"sdvc {{{
+func! ScratchBuffer(key, direction)
+  if (bufexists(a:key))
+    let l:lrwin = bufwinnr(a:key)
+    if l:lrwin == -1
+      if a:direction ==? "v"
+        exec "rightbelow vert sb " . bufnr(a:key)
+      else
+        exec "rightbelow sb " . bufnr(a:key)
+      endif
+    else
+      exec l:lrwin . "wincmd w"
+    endif
+  else
+    if a:direction ==? "v"
+      exec "rightbelow vert new " . a:key
+    else
+      exec "rightbelow new " . a:key
+    endif
+    setlocal bt=nofile bh=wipe nobl noswf nospell nonu
+  endif
+endfunc
+
+let g:sdcv_data_dir = "~/dev/stardict"
+
+func! SdcvLookUp(word)
+  norm! ggdG
+  let l:sdcv_cmd = "sdcv -0 -n"
+  if g:sdcv_data_dir != ''
+    let l:sdcv_cmd = l:sdcv_cmd . " -2 " . g:sdcv_data_dir
+  endif
+  exec "norm! :0r !" . l:sdcv_cmd . " \"" . a:word . "\"\<cr>gg"
+endfunc
+
+func! SdcvDefinitionBufferInit(word)
+  setlocal bt=nofile bh=wipe nobl noswf nospell nonu
+  " Key Mappings
+  nnoremap <buffer> <silent> q :bwipeout<cr>
+
+  " Highlights
+  if !exists("b:current_syntax")
+    let b:current_syntax = "stardict"
+
+    syntax match stardictResult "\v^[A-Z].*"
+    syntax match stardictWord "\v^\@.*"
+    syntax match stardictWord2 "\v^--\>\zs.*"
+    syntax match stardictWordType "\v^\*.*"
+    syntax match stardictWordMeaning "\v^[0-9].*"
+    syntax match stardictWordExample "\v^(    \-\s.*\:|\!.*|    \-\s.*)"
+    syntax match stardictDictName "\v^\@[^/]*\:[^/]*"
+    syntax match stardictPronounce "\v^\/.{0,30}\/"
+    syntax match stardictBracket "\v\(.{0,10}\)"
+    syntax match stardictSquareBracket "\v\[.{0,10}\]"
+    syntax match stardictNumber "\v<\d{0,2}>"
+
+    highlight link stardictResult Special
+    highlight link stardictWord Todo
+    highlight link stardictWord2 Todo
+    highlight link stardictWordType Statement
+    highlight link stardictWordMeaning Identifier
+    highlight link stardictWordExample Type
+    highlight link stardictDictName Underlined
+    highlight link stardictPronounce Statement
+    highlight link stardictBracket Statement
+    highlight link stardictSquareBracket Statement
+    highlight link stardictNumber PreProc
+  endif
+
+  exec 'syntax match SdvcLookupWord /\c\V' . a:word . '/'
+  highlight default link SdvcLookupWord Underlined
+endfunc
+
+nnoremap ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap ,dD viw"ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dD "ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap ,dv viw"ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dv "ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap ,dV viw"ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dV "ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap ,dt viw"ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+"}}}
+
 "Others {{{
 command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
 
 nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 nnoremap <leader>mC :<c-u><c-r><c-r>='command! norm! '. string(getreg(v:register))<cr><c-f><esc>0Ea<space>
+
+""" Capture CLI output in a scratch buffer
+command! -nargs=* -complete=shellcmd R :ScratchBuffer('shell.output', 's') | r !<args>
+command! -nargs=* -complete=shellcmd RV :ScratchBuffer('shell.output', 'v') | r !<args>
 
 """ Reorganise google feed rejection log
 command! TARwGRejectLog norm! :1g/^"@/d:%s/^.*"\ze{""productCode//e:%s/"}\zs",java,.*$//e:%sort u:%norm! d6f"f"xxld5f"f"D:sort /^\i\+,/:sort r /\i\+/:norm! ggO"productCode","reason"
@@ -713,6 +827,19 @@ command! -nargs=* PDFBookNext :call PDFBookNextFn(<f-args>)
 command! -nargs=* PDFBookEnd :call PDFBookEndFn(<f-args>)
 command! -nargs=* PDFBookNextBook :call PDFBookNextBookFn(<f-args>)
 command! -nargs=* PDFBookFinal :call PDFBookFinalFn(<f-args>)
+
+""" Jira Front commands
+command! JFPrecommit norm! ggdG:0r !yarn precommit<CR>gg
+command! JFFlowStatus norm! ggdG:0r !yarn dev flow status<CR>gg
+
+""" Convert ps -ef output to Kill -9
+command! -range Kill9 <line1>,<line2>:norm! 0vEckill -9ElD0
+
+""" Insert current date at the beginning of a line
+command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d') 
+
+""" Capture CLI output in a scratch buffer
+command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
 
 "}}}
 
