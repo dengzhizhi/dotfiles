@@ -24,7 +24,8 @@ Plug 'rafi/awesome-vim-colorschemes'
 Plug 'rhysd/vim-grammarous'  " Grammar check
 Plug 'https://github.com/skywind3000/asyncrun.vim.git'
 Plug 'https://github.com/ledger/vim-ledger.git'
-Plug 'chrisbra/vim-diff-enhanced'
+"Plug 'chrisbra/vim-diff-enhanced'
+Plug 'whiteinge/diffconflicts'
 Plug 'rbgrouleff/bclose.vim'  " Needed by ranger
 Plug 'francoiscabrol/ranger.vim'
 Plug 'glacambre/firenvim', { 'do': function('firenvim#install') }
@@ -110,7 +111,7 @@ set novb
 set guioptions-=e
 set splitright
 set splitbelow
-set spell
+set nospell
 set thesaurus+=~/.config/dictionary/moby_thesaurus.txt
 set textwidth=0
 
@@ -144,6 +145,7 @@ vnoremap ,x <ESC>`.``gvp``P
 nnoremap ,x viw<ESC>`.``gvp``P
 
 nnoremap ,c :tabnew $MYVIMRC<CR>
+nnoremap ,C :source $MYVIMRC<cr>:echo "vimrc reloaded..."<cr>
 
 nnoremap ,u :MundoShow<CR>
 
@@ -354,7 +356,50 @@ command! ChangeFontSize call FunChangeFontSize()
 " }}}
 
 " ######## Enhanced Diff ######## {{{
-autocmd VimEnter * EnhancedDiff histogram
+" autocmd VimEnter * EnhancedDiff histogram
+" }}}
+
+""" Diff Option {{{
+set diffopt+=context:20
+let g:diff_algorithms = [
+      \ "myers",
+      \ "minimal",
+      \ "patience",
+      \ "histogram",
+      \ ]
+let g:diff_algorithm = "patience"
+
+func! SwitchDiffAlgorithm()
+  let l:total_diff_algos = len(g:diff_algorithms)
+  let l:i = 0
+  while l:i < l:total_diff_algos && g:diff_algorithms[l:i] !=# g:diff_algorithm
+    let l:i += 1
+  endwhile
+  if l:i < l:total_diff_algos
+    let g:diff_algorithm = g:diff_algorithms[(l:i + 1) % l:total_diff_algos]
+  else
+    let g:diff_algorithm = "patience"
+  endif
+  for l:algo in g:diff_algorithms
+    exec "set diffopt-=algorithm:" . l:algo
+  endfor
+  exec "set diffopt+=algorithm:" . g:diff_algorithm
+  echo "Diff algorithm switched to " . g:diff_algorithm
+  windo diffupdate
+endfunc
+
+func! UpdateDiffContext(contextLines)
+  let l:opt = substitute(&diffopt, '\v(^\|,)context:\d+', '', 'g') . ",context:" . a:contextLines
+  exec "set diffopt=" . l:opt
+  windo diffupdate
+endfunc
+
+command! SwitchDiffAlgorithm call SwitchDiffAlgorithm()
+command! -nargs=1 DiffContext call UpdateDiffContext(<f-args>)
+
+set diffopt+=internal,algorithm:patience
+"set diffopt+=internal,algorithm:histogram
+
 " }}}
 
 " ######## EasyMotion ######## {{{
@@ -668,7 +713,7 @@ func! ScratchBuffer(key, direction)
   endif
 endfunc
 
-let g:sdcv_data_dir = "~/dev/stardict"
+let g:sdcv_data_dir = "~/dev/zhizhi/stardict"
 
 func! SdcvLookUp(word)
   norm! ggdG
@@ -717,18 +762,26 @@ func! SdcvDefinitionBufferInit(word)
   highlight default link SdvcLookupWord Underlined
 endfunc
 
-nnoremap ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-nnoremap ,dD viw"ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dD "ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+func! Say(word) abort
+  let s:say_job = system("say \"". a:word . "\"")
+endfunc
 
-nnoremap ,dv viw"ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dv "ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-nnoremap ,dV viw"ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dV "ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
 
-nnoremap ,dt viw"ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dD viw"ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dD "ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap <silent> ,dv viw"ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dv "ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dV viw"ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dV "ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap <silent> ,dt viw"ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap <silent> ,dr mpviw"ay:call Say("a")`p
+vnoremap <silent> ,dr mp"ay:call Say("a")`p
 "}}}
 
 "Others {{{

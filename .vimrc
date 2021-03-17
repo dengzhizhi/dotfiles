@@ -37,6 +37,7 @@ Plug 'gaving/vim-textobj-argument'
 Plug 'xavierchow/vim-swagger-preview'
 Plug 'sophacles/vim-processing'
 Plug 'dhruvasagar/vim-table-mode'
+Plug 'https://github.com/dengzhizhi/vim-spl.git'
 Plug 'gyim/vim-boxdraw'
 Plug 'https://github.com/kana/vim-submode.git'
 Plug 'https://github.com/gcmt/taboo.vim.git'
@@ -129,8 +130,6 @@ set vb t_vb=
 set novb
 set guioptions-=e
 
-set diffopt+=internal,algorithm:patience
-"set diffopt+=internal,algorithm:histogram
 
 syntax enable
 syntax on
@@ -139,7 +138,7 @@ filetype plugin indent on
 
 set laststatus=2
 set cmdheight=2
-set spell
+set nospell
 set thesaurus+=~/.config/dictionary/moby_thesaurus.txt
 
 "########## Insert Mode Shortcuts ##########"
@@ -271,6 +270,41 @@ function! FunChangeFontSize()
 endfunction
 
 command! ChangeFontSize call FunChangeFontSize()
+
+""" Diff Option {{{
+set diffopt+=context:20
+let g:diff_algorithms = [
+      \ "myers",
+      \ "minimal",
+      \ "patience",
+      \ "histogram",
+      \ ]
+let g:diff_algorithm = "patience"
+
+func! SwitchDiffAlgorithm()
+  let l:total_diff_algos = len(g:diff_algorithms)
+  let l:i = 0
+  while l:i < l:total_diff_algos && g:diff_algorithms[l:i] !=# g:diff_algorithm
+    let l:i += 1
+  endwhile
+  if l:i < l:total_diff_algos
+    let g:diff_algorithm = g:diff_algorithms[(l:i + 1) % l:total_diff_algos]
+  else
+    let g:diff_algorithm = "patience"
+  endif
+  for l:algo in g:diff_algorithms
+    exec "set diffopt-=algorithm:" . l:algo
+  endfor
+  exec "set diffopt+=algorithm:" . g:diff_algorithm
+  echo "Diff algorithm switched to " . g:diff_algorithm
+endfunc
+
+command! SwitchDiffAlgorithm call SwitchDiffAlgorithm()
+
+set diffopt+=internal,algorithm:patience
+"set diffopt+=internal,algorithm:histogram
+
+" }}}
 
 " ######## Fighting Game Key Binding ######## {{{
 vnoremap <Space>dfj<Space> :norm @q<CR>
@@ -558,7 +592,15 @@ func! ScratchBuffer(key, direction)
   endif
 endfunc
 
-let g:sdcv_data_dir = "~/dev/stardict"
+let g:sdcv_data_dir = "~/dev/zhizhi/stardict"
+
+func! SdcvFoldOpen()
+  foldopen
+  if !(getline(".") =~ '^-->')
+    call search('^-->', 'b')
+    -1
+  endif
+endfunc
 
 func! SdcvLookUp(word)
   norm! ggdG
@@ -567,9 +609,78 @@ func! SdcvLookUp(word)
     let l:sdcv_cmd = l:sdcv_cmd . " -2 " . g:sdcv_data_dir
   endif
   exec "norm! :0r !" . l:sdcv_cmd . " \"" . a:word . "\"\<cr>gg"
+
+  " Remove wav file names
+  silent! %s/\S\+\.wav//g
+
+  " Reformat 牛津现代英汉双解词典
+  silent! %s/ \* /\r    * /g
+  silent! %s/  \d\d\? /\r\0/g
+
+  call SdcvFoldDefinition()
+  nnoremap zo :call SdcvFoldOpen()<cr>
+
+  norm! gg
+  call search("^-->")
+  call SdcvFoldOpen()
+endfunc
+
+func! SdcvFoldDefinition()
+  if !exists("b:is_sdcv_definition")
+    return
+  endif
+  norm! zEgg
+  let l:title = search("^-->")
+  while l:title > 0
+    call search("^-->")
+    let l:next_title = search("^-->")
+    if l:next_title > 0
+      exec l:title . "," . (l:next_title - 1) . "fold"
+      let l:title = l:next_title
+      call cursor(l:title, 1)
+    else
+      exec l:title . ",$" . "fold"
+      let l:title = 0
+    endif
+  endwhile
+  call cursor(1, 1)
+endfunc
+
+func! SdcvNextBook()
+  if getline('.') =~ '^-->'
+    exec line('.') + 1
+  endif
+  if getline('.') =~ '^-->'
+    exec line('.') + 1
+  endif
+  let l:next_title = search('^-->', 'n')
+  if l:next_title > 0
+    norm! zm
+    exec l:next_title
+    call SdcvFoldOpen()
+  endif
+endfunc
+
+func! SdcvPrevBook()
+  if !(getline('.') =~ '^-->')
+    call search('^-->', 'b')
+  endif
+  if getline('.') =~ '^-->'
+    exec line('.') - 1
+  endif
+  if getline('.') =~ '^-->'
+    exec line('.') - 1
+  endif
+  let l:next_title = search('^-->', 'b')
+  if l:next_title > 1
+    norm! zm
+    exec max([l:next_title - 1, 1])
+    call SdcvFoldOpen()
+  endif
 endfunc
 
 func! SdcvDefinitionBufferInit(word)
+  let b:is_sdcv_definition = 1
   setlocal bt=nofile bh=wipe nobl noswf nospell nonu
   " Key Mappings
   nnoremap <buffer> <silent> q :bwipeout<cr>
@@ -578,6 +689,7 @@ func! SdcvDefinitionBufferInit(word)
   if !exists("b:current_syntax")
     let b:current_syntax = "stardict"
 
+    syntax match stardictKeyword "\v\c<%(UK|US|countable|uncountable|BrE|NAmE|AmE|nouns?|verbs?|adverbs?|adjectives?|%(in)?transitive|adv|n|alt|vb|prep|%(in)?formal|plural|see also)>"
     syntax match stardictResult "\v^[A-Z].*"
     syntax match stardictWord "\v^\@.*"
     syntax match stardictWord2 "\v^--\>\zs.*"
@@ -601,24 +713,38 @@ func! SdcvDefinitionBufferInit(word)
     highlight link stardictBracket Statement
     highlight link stardictSquareBracket Statement
     highlight link stardictNumber PreProc
+    highlight link stardictKeyword Identifier
   endif
 
-  exec 'syntax match SdvcLookupWord /\c\V' . a:word . '/'
+  exec 'syntax match SdvcLookupWord /\c\V\<' . a:word . '/'
   highlight default link SdvcLookupWord Underlined
 endfunc
 
-nnoremap ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-nnoremap ,dD viw"ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dD "ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+func! Say(word) abort
+  let s:say_job = job_start("say \"". a:word . "\"")
+endfunc
 
-nnoremap ,dv viw"ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dv "ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-nnoremap ,dV viw"ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dV "ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dD viw"ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dD "ay:rightbelow new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
 
-nnoremap ,dt viw"ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
-vnoremap ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dv viw"ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dv "ay:call ScratchBuffer('word.definition', 'v'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+nnoremap <silent> ,dV viw"ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dV "ay:rightbelow vert new:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap <silent> ,dt viw"ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+vnoremap <silent> ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
+
+nnoremap <silent> ,dr mpviw"ay:call Say("a")`p
+vnoremap <silent> ,dr mp"ay:call Say("a")`p
+
+nnoremap <silent> ,df :call SdcvFoldDefinition()<CR>
+nnoremap <silent> ,dn :call SdcvNextBook()<CR>
+nnoremap <silent> ,dp :call SdcvPrevBook()<CR>
+
+command! Recite tabnew ~/dev/zhizhi/vim-recite/
 "}}}
 
 "TA Commands {{{
@@ -667,6 +793,16 @@ command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d')
 """ Capture CLI output in a scratch buffer
 command! -nargs=* -complete=shellcmd R :ScratchBuffer('shell.output', 's') | r !<args>
 command! -nargs=* -complete=shellcmd RV :ScratchBuffer('shell.output', 'v') | r !<args>
+
+""" Lookup with sdcv
+"command! -range Dict norm! gv"ay:below new:setlocal ft=stardict bt=nofile bh=delete nospell:nnoremap <buffer> q ZQ"apo50i=o:r !sdcv -n -2 ~/dev/zhizhi/stardict "a"gg
+"command! -range Vdict norm! gv"ay:rightb vnew:setlocal ft=stardict bt=nofile bh=delete nospell:nnoremap <buffer> q ZQ"apo50i=o:r !sdcv -n -2 ~/dev/zhizhi/stardict "a"gg
+"command! -range Tdict norm! gv"ay:tabnew:setlocal ft=stardict bt=nofile bh=delete nospell:nnoremap <buffer> q ZQ"apo50i=o:r !sdcv -n -2 ~/dev/zhizhi/stardict "a"gg
+"nnoremap ,dd viw:Dict<CR>
+"nnoremap ,dv viw:Vdict<CR>
+"nnoremap ,dt viw:Tdict<CR>
+"vnoremap ,dd :Dict<CR>
+"vnoremap ,dt :Tdict<CR>
 
 "}}}
 
@@ -916,6 +1052,6 @@ nohl
 "}}}
 
 " MODELLINE {{{
-" vim: set ts=2 sts=-1 sw=0 et tw=70 ft=vim fdm=marker:
+" vim: set ts=2 sts=-1 sw=0 et tw=240 ft=vim fdm=marker:
 " }}}
 

@@ -2,25 +2,36 @@
 	excludesfile = /Users/zdeng/.gitignore_global
     pager = diff-so-fancy | less --tabs=4 -RFX
 [diff]
-    tool = nvimdiff
-[difftool "nvimdiff"]
-    cmd = vim -f -d \"$LOCAL\" \"$REMOTE\"
+	tool = nvimdiff
 
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
+[difftool "nvimdiff"]
+    cmd = nvim -c 'colorscheme colorsbox-steighties' -c 'set so=100' -c 'norm! M' -f -d \"$LOCAL\" \"$REMOTE\"
+
+[difftool "icdiff"]
+    cmd = icdiff --line-numbers \"$LOCAL\" \"$REMOTE\"
+
 [merge]
-    tool = nvimdiff
+	tool = nvimdiff
+
 [mergetool "nvimdiff"]
-    cmd = vim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+    cmd = nvim -c 'colorscheme colorsbox-steighties' -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+	trustExitCode = true
+    keepBackup = false
+
 [mergetool "sourcetree"]
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+
 [mergetool "emacsdiff"]
     cmd = emacs -nw --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
+
+[mergetool "diffconflicts"]
+    cmd = nvim -c 'colorscheme colorsbox-steighties' -c DiffConflictsWithHistory '$MERGED' '$BASE' '$LOCAL' '$REMOTE'
+	trustExitCode = true
+    keepBackup = false
 [user]
 	name = Zhizhi Deng
-	email = zdeng@example.com
+	email = zdeng@atlassian.com
 # [color]
 #     ui = false
 #     branch = false
@@ -46,6 +57,9 @@
     ds = diff --stat=160,120
     dh1 = diff HEAD~1
     dh = diff --name-only HEAD~1
+    # list changed files of a given commit
+    # git dfc <hash>
+    dfc = diff-tree --no-commit-id --name-only -r 
     dm = diff master@{u}...HEAD
     dmc = diff --cached master...HEAD
 
@@ -77,7 +91,8 @@
     la = !git l --all
     b = "!. ~/.githelpers && pretty_git_branch"
     bs = "!. ~/.githelpers && pretty_git_branch_sorted"
-    sync = "! git checkout --quiet HEAD && git fetch origin develop:develop && git checkout --quiet -"
+    sync = "! git checkout --quiet HEAD && git fetch origin master:master && git checkout --quiet -"
+    fom = "! git fetch origin master:master"
 
     # fzf enabled shortcuts
     cob = "! git checkout $(git branch | fzf)"
@@ -85,10 +100,14 @@
     cor = "! git checkout $(git branch -r | fzf | awk '{ st = index($0, \"/\");print substr($0, st+1)}')"
     af = "! git add $(git ls-files -m | fzf)"
     df = "! git diff $(git ls-files -m | fzf)"
-    dft = "! git difftool -y $(git ls-files -m | fzf)"
+    dft = "! git difftool -t nvimdiff -y $(git ls-files -m | fzf)"
     rmf = "! rm $(git ls-files --others --exclude-standard | fzf)"
     usf = "! git checkout -- $(git ls-files -m | fzf)"
-    diffdev="! git difftool -t vimdiff -y develop..HEAD $(git diff --name-only develop..HEAD | fzf)"
+    diffdev="! git difftool -t nvimdiff -y master...HEAD $(git diff --name-only master...HEAD | fzf)"
+    diffmaster="! git difftool -t nvimdiff -y master...HEAD -- $(git diff --name-only master...HEAD | fzf)"
+    diffallmaster="! git difftool -t nvimdiff -y master...HEAD"
+    nvimdiff = difftool -t nvimdiff
+    mergeconflicts = mergetool -t diffconflicts
 
 [init]
 	templatedir = /Users/zdeng/.config/git/templates
