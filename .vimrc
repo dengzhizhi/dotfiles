@@ -615,7 +615,7 @@ func! SdcvLookUp(word)
 
   " Reformat 牛津现代英汉双解词典
   silent! %s/ \* /\r    * /g
-  silent! %s/  \d\d\? /\r\0/g
+  silent! %s/  \d\d\? /\r\r\0/g
 
   call SdcvFoldDefinition()
   nnoremap zo :call SdcvFoldOpen()<cr>
@@ -629,7 +629,7 @@ func! SdcvFoldDefinition()
   if !exists("b:is_sdcv_definition")
     return
   endif
-  norm! zEgg
+  silent! norm! zEgg
   let l:title = search("^-->")
   while l:title > 0
     call search("^-->")
@@ -739,6 +739,8 @@ vnoremap <silent> ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call Sdcv
 
 nnoremap <silent> ,dr mpviw"ay:call Say("a")`p
 vnoremap <silent> ,dr mp"ay:call Say("a")`p
+
+nnoremap <silent> ,dR  :e ~/dev/zhizhi/vim-recite/wordmemo_daniel_daily.vim<CR>:call search("^\"=== End Words ===")<CR>zz
 
 nnoremap <silent> ,df :call SdcvFoldDefinition()<CR>
 nnoremap <silent> ,dn :call SdcvNextBook()<CR>

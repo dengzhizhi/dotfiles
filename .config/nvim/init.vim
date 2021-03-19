@@ -78,8 +78,9 @@ call plug#end()
 colo atom
 
 "########## Developer Settings ########## {{{
+let g:guifontname = 'DejaVu\ Sans\ Mono\ Nerd\ Font\ Complete'
 set termguicolors
-set guifont=Iosevka:h12
+exec "set guifont=" . g:guifontname . ":h25"
 set encoding=utf-8
 set expandtab
 set tabstop=4
@@ -349,7 +350,7 @@ command! DeleteBlankLine g/^\s*$/d
 " ######### Chagne Font Size ########## {{{
 function! FunChangeFontSize()
     let l:s = input("FontSize: ")
-    execute "set guifont=Iosevka:h".l:s
+    execute "set guifont=" . g:guifontname . ":h" . l:s
 endfunction
 
 command! ChangeFontSize call FunChangeFontSize()
@@ -715,6 +716,14 @@ endfunc
 
 let g:sdcv_data_dir = "~/dev/zhizhi/stardict"
 
+func! SdcvFoldOpen()
+  foldopen
+  if !(getline(".") =~ '^-->')
+    call search('^-->', 'b')
+    -1
+  endif
+endfunc
+
 func! SdcvLookUp(word)
   norm! ggdG
   let l:sdcv_cmd = "sdcv -0 -n"
@@ -722,9 +731,78 @@ func! SdcvLookUp(word)
     let l:sdcv_cmd = l:sdcv_cmd . " -2 " . g:sdcv_data_dir
   endif
   exec "norm! :0r !" . l:sdcv_cmd . " \"" . a:word . "\"\<cr>gg"
+
+  " Remove wav file names
+  silent! %s/\S\+\.wav//g
+
+  " Reformat 牛津现代英汉双解词典
+  silent! %s/ \* /\r    * /g
+  silent! %s/  \d\d\? /\r\r\0/g
+
+  call SdcvFoldDefinition()
+  nnoremap zo :call SdcvFoldOpen()<cr>
+
+  norm! gg
+  call search("^-->")
+  call SdcvFoldOpen()
+endfunc
+
+func! SdcvFoldDefinition()
+  if !exists("b:is_sdcv_definition")
+    return
+  endif
+  silent! norm! zEgg
+  let l:title = search("^-->")
+  while l:title > 0
+    call search("^-->")
+    let l:next_title = search("^-->")
+    if l:next_title > 0
+      exec l:title . "," . (l:next_title - 1) . "fold"
+      let l:title = l:next_title
+      call cursor(l:title, 1)
+    else
+      exec l:title . ",$" . "fold"
+      let l:title = 0
+    endif
+  endwhile
+  call cursor(1, 1)
+endfunc
+
+func! SdcvNextBook()
+  if getline('.') =~ '^-->'
+    exec line('.') + 1
+  endif
+  if getline('.') =~ '^-->'
+    exec line('.') + 1
+  endif
+  let l:next_title = search('^-->', 'n')
+  if l:next_title > 0
+    norm! zm
+    exec l:next_title
+    call SdcvFoldOpen()
+  endif
+endfunc
+
+func! SdcvPrevBook()
+  if !(getline('.') =~ '^-->')
+    call search('^-->', 'b')
+  endif
+  if getline('.') =~ '^-->'
+    exec line('.') - 1
+  endif
+  if getline('.') =~ '^-->'
+    exec line('.') - 1
+  endif
+  let l:next_title = search('^-->', 'b')
+  if l:next_title > 1
+    norm! zm
+    exec max([l:next_title - 1, 1])
+    call SdcvFoldOpen()
+  endif
 endfunc
 
 func! SdcvDefinitionBufferInit(word)
+  let b:is_sdcv_definition = 1
   setlocal bt=nofile bh=wipe nobl noswf nospell nonu
   " Key Mappings
   nnoremap <buffer> <silent> q :bwipeout<cr>
@@ -733,6 +811,7 @@ func! SdcvDefinitionBufferInit(word)
   if !exists("b:current_syntax")
     let b:current_syntax = "stardict"
 
+    syntax match stardictKeyword "\v\c<%(UK|US|countable|uncountable|BrE|NAmE|AmE|nouns?|verbs?|adverbs?|adjectives?|%(in)?transitive|adv|n|alt|vb|prep|%(in)?formal|plural|see also)>"
     syntax match stardictResult "\v^[A-Z].*"
     syntax match stardictWord "\v^\@.*"
     syntax match stardictWord2 "\v^--\>\zs.*"
@@ -756,16 +835,16 @@ func! SdcvDefinitionBufferInit(word)
     highlight link stardictBracket Statement
     highlight link stardictSquareBracket Statement
     highlight link stardictNumber PreProc
+    highlight link stardictKeyword Identifier
   endif
 
-  exec 'syntax match SdvcLookupWord /\c\V' . a:word . '/'
+  exec 'syntax match SdvcLookupWord /\c\V\<' . a:word . '/'
   highlight default link SdvcLookupWord Underlined
 endfunc
 
 func! Say(word) abort
-  let s:say_job = system("say \"". a:word . "\"")
+  let s:say_job = job_start("say \"". a:word . "\"")
 endfunc
-
 
 nnoremap <silent> ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
 vnoremap <silent> ,dd "ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
@@ -782,6 +861,14 @@ vnoremap <silent> ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call Sdcv
 
 nnoremap <silent> ,dr mpviw"ay:call Say("a")`p
 vnoremap <silent> ,dr mp"ay:call Say("a")`p
+
+nnoremap <silent> ,dR  :e ~/dev/zhizhi/vim-recite/wordmemo_daniel_daily.vim<CR>:call search("^\"=== End Words ===")<CR>zz
+
+nnoremap <silent> ,df :call SdcvFoldDefinition()<CR>
+nnoremap <silent> ,dn :call SdcvNextBook()<CR>
+nnoremap <silent> ,dp :call SdcvPrevBook()<CR>
+
+command! Recite tabnew ~/dev/zhizhi/vim-recite/
 "}}}
 
 "Others {{{
@@ -895,6 +982,12 @@ command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d')
 command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
 
 "}}}
+
+" Neovide {{{
+  "let g:neovide_cursor_vfx_mode = "pixiedust"
+  let g:neovide_cursor_vfx_mode = "sonicboom"
+  let g:neovide_cursor_trail_length=0.5
+"" }}}
 
 nohl
 
