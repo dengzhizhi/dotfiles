@@ -15,34 +15,28 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'junegunn/vim-easy-align'
 Plug 'https://github.com/tpope/vim-repeat.git'
 Plug 'https://github.com/tpope/vim-fugitive.git' " Git integration
-Plug 'junegunn/gv.vim' " Git log
 Plug 'https://github.com/scrooloose/nerdtree.git'
 Plug 'https://github.com/Yggdroot/LeaderF.git'
-Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
 Plug 'https://github.com/mkarmona/colorsbox.git'
 Plug 'rafi/awesome-vim-colorschemes'
-Plug 'rhysd/vim-grammarous'  " Grammar check
 Plug 'https://github.com/skywind3000/asyncrun.vim.git'
 Plug 'https://github.com/ledger/vim-ledger.git'
-" Plug 'chrisbra/vim-diff-enhanced'
-Plug 'rbgrouleff/bclose.vim'  " Needed by ranger
-Plug 'francoiscabrol/ranger.vim'
-" Plug 'glacambre/firenvim', { 'do': function('firenvim#install') }
+"Plug 'rbgrouleff/bclose.vim'  " Needed by ranger
+"Plug 'francoiscabrol/ranger.vim'
 Plug 'simnalamburt/vim-mundo'
-"Plug 'SirVer/ultisnips'
-"Plug 'honza/vim-snippets'
 Plug 'https://github.com/wellle/targets.vim.git'
 Plug 'gaving/vim-textobj-argument'
-"Plug 'lifepillar/vim-cheat40'
-Plug 'xavierchow/vim-swagger-preview'
 Plug 'sophacles/vim-processing'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'https://github.com/dengzhizhi/vim-spl.git'
 Plug 'gyim/vim-boxdraw'
-Plug 'https://github.com/kana/vim-submode.git'
-Plug 'https://github.com/gcmt/taboo.vim.git'
-
 Plug 'nathangrigg/vim-beancount'
+Plug 'pangloss/vim-javascript'  "Just better syntax heighlighting
+Plug 'nathangrigg/vim-beancount'
+Plug 'yegappan/mru'
+Plug 'machakann/vim-highlightedyank'
+Plug 'mhinz/vim-startify'
+Plug 'axvr/org.vim'
 
 "Plug 'https://github.com/AndrewRadev/sideways.vim.git'
 "Plug 'https://github.com/airblade/vim-rooter.git'
@@ -59,6 +53,17 @@ Plug 'nathangrigg/vim-beancount'
 "Plug 'slashmili/alchemist.vim'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "Plug 'beeender/Comrade'  " Intellij integration
+"Plug 'https://github.com/kana/vim-submode.git'
+"Plug 'https://github.com/gcmt/taboo.vim.git'
+"Plug 'lifepillar/vim-cheat40'
+"Plug 'xavierchow/vim-swagger-preview'
+"Plug 'SirVer/ultisnips'
+"Plug 'honza/vim-snippets'
+"Plug 'glacambre/firenvim', { 'do': function('firenvim#install') }
+"Plug 'chrisbra/vim-diff-enhanced'
+"Plug 'junegunn/gv.vim' " Git log
+"Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
+"Plug 'rhysd/vim-grammarous'  " Grammar check
 "
 " COC
 "Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh', 'branch': 'release'}
@@ -82,9 +87,6 @@ call plug#end()
 " Plugin 'junegunn/fzf.vim'
 " }}}
 
-
-
-
 filetype plugin indent on    " required
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
@@ -98,10 +100,13 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+"Colorschemes {{{
+colo colorsbox-steighties
+"colo github
+"colo materialbox
+" }}}
 
 "########## Developer Settings ##########"
-colo atom
-" set guifont=Iosevka:h20
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -130,7 +135,6 @@ set vb t_vb=
 set novb
 set guioptions-=e
 
-
 syntax enable
 syntax on
 filetype plugin on
@@ -141,11 +145,13 @@ set cmdheight=2
 set nospell
 set thesaurus+=~/.config/dictionary/moby_thesaurus.txt
 
-"########## Insert Mode Shortcuts ##########"
+"########## Insert Mode Shortcuts ##########{{{
 inoremap ,. <ESC>
 inoremap ,,. ,<ESC>
 vnoremap ,. <ESC>
 xnoremap ,. <ESC>
+lnoremap ,. <ESC>
+nnoremap ,. <ESC>
 cnoremap ,. <ESC>
 
 nnoremap ,k "
@@ -155,9 +161,10 @@ inoremap ,l <C-O>
 inoremap ,h <C-H>
 
 vnoremap ,x <ESC>`.``gvp``P
+nnoremap ,x viw<ESC>`.``gvp``P
 
 nnoremap ,c :tabnew $MYVIMRC<CR>
-nnoremap ,C :source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
+nnoremap ,C :source $MYVIMRC<cr>:echo "vimrc reloaded..."<cr>
 
 nnoremap ,u :MundoShow<CR>
 
@@ -171,18 +178,45 @@ vnoremap ,p "0p
 
 nnoremap ,, ,
 vnoremap ,, ,
+"}}}
 
+" pangloss/vim-javascript {{{
+let g:javascript_plugin_jsdoc = 1
+let g:javascript_plugin_flow = 1
+
+set conceallevel=0
+let g:javascript_conceal_function                  = "⨎"
+"let g:javascript_conceal_null                      = "⦰"
+let g:javascript_conceal_this                      = "🙋"
+let g:javascript_conceal_return                    = "👈"
+let g:javascript_conceal_undefined                 = "💥"
+map <space>dsj<space> :exec &conceallevel ? "set conceallevel=0" : "set conceallevel=1"<CR>
+" }}}
 "########## Insert mode j Combinations ##########" {{{
 inoremap jk <ESC>
 inoremap jl <Right>
 inoremap jh <Left>
 " }}}
 
-"########## Insert Mode Shortcuts ##########"
-inoremap <M-h> <ESC>i
-inoremap <M-l> <ESC>la
-"Swap
-vnoremap <C-S-X> <ESC>`.``gvp``P
+"########## Fighter Keybindings ##########" {{{
+nnoremap <Space>su<Space> :NERDTreeFocus<CR>
+nnoremap <Space>sui<Space> :NERDTreeClose<CR>
+nnoremap <Space>siu<Space> :NERDTreeClose<CR>
+nnoremap <Space>so<Space> :NERDTreeToggle<CR>
+nnoremap <Space>si<Space> :NERDTreeFind<CR>
+
+nnoremap <Space>sdfj<Space> :Gblame<CR>
+nnoremap <Space>sdfk<Space> :GlLog %<CR>
+nnoremap <Space>sdfl<Space> :GlLog<CR>
+
+nnoremap <Space>sf<Space> <C-I>
+nnoremap <Space>ss<Space> <C-O>
+" }}}
+"########## Ranger ##########" {{{
+"let g:ranger_map_keys = 0
+"let g:NERDTreeHijackNetrw = 0 " add this line if you use NERDTree
+"let g:ranger_replace_netrw = 1 " open ranger when vim open a directory
+" }}}
 
 "######### Remap CTRL_W to W ######## {{{
 noremap <TAB>m <c-w>\|<c-w>_
@@ -237,39 +271,42 @@ noremap <TAB><Down> <C-W><Down>
 noremap <TAB><Up> <C-W><Up>
 noremap <TAB><Left> <C-W><Left>
 noremap <TAB><Right> <C-W><Right>
+
+nnoremap <TAB>i <C-I>
+
+nnoremap <TAB>, 10<C-W><
+nnoremap <TAB>. 10<C-W>>
 " }}}
-
-
+"########## Folds ##########{{{
 "Fold by keyword
 nnoremap <Leader>z/ :setlocal foldexpr=(getline(v:lnum)=~@/)?0:(getline(v:lnum-1)=~@/)\\|\\|(getline(v:lnum+1)=~@/)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
+vnoremap <Leader>z* "sy:setlocal foldexpr=(getline(v:lnum)=~@s)?0:(getline(v:lnum-1)=~@s)\\|\\|(getline(v:lnum+1)=~@s)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
+nnoremap <Leader>z* "syiw:setlocal foldexpr=(getline(v:lnum)=~@s)?0:(getline(v:lnum-1)=~@s)\\|\\|(getline(v:lnum+1)=~@s)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
 
 "Fold except selection
 vnoremap <Leader>zv <Esc>:set foldmethod=manual<CR>zE`<kzfgg`>jzfG`<
-
-noremap j gj
-noremap k gk
-noremap gj j
-noremap gk k
-noremap g0 _
-
-let mapleader=" "
+"}}}
+"Adjust up/down {{{
+noremap <silent> j gj
+noremap <silent> k gk
+noremap <silent> gj j
+noremap <silent> gk k
+" }}}
+"#################### Tab Enhancement ####################{{{
+au TabLeave * let g:lasttab = tabpagenr()
+nnoremap <silent> <space>t<space> :exec "tabn " . g:lasttab<cr>
+"}}}
+" ########## Hybrid Key Mapping ##########{{{
+inoremap <c-b> <esc>i
+inoremap <c-f> <c-o>a
+inoremap <D-f> <esc>ea
+inoremap <D-b> <esc>bi
+inoremap <D-f> <esc>ea
+inoremap <c-e> <esc>A
+inoremap <c-a> <esc>I
+" }}}
+let mapleader="\"
 set timeoutlen=5000
-
-function! CopyToBottom()
-    let l:a = input("Copy to bottom with Regex: ")
-    execute "g/".l:a."/t$"
-endfunction
-
-noremap <Leader>zg :call CopyToBottom()<CR>
-
-command! DeleteBlankLine g/^\s*$/d
- 
-function! FunChangeFontSize()
-    let l:s = input("FontSize: ")
-    execute "set guifont=Iosevka:h".l:s
-endfunction
-
-command! ChangeFontSize call FunChangeFontSize()
 
 """ Diff Option {{{
 set diffopt+=context:20
@@ -305,113 +342,66 @@ set diffopt+=internal,algorithm:patience
 "set diffopt+=internal,algorithm:histogram
 
 " }}}
+" ########## Convenient yanks ##########{{{
+"
+"Yank a line without line break
+nnoremap yuu mp_yg_`p
+"Copy a line without line break to clipboard
+nnoremap yuc mp_"+yg_`p
+"Copy file path
+nnoremap <silent> <space>cpp<space> :let @*='<c-r>=expand("%:p")<cr>'<cr>:echo '-= File path copied=-'<cr>
+"Copy file name
+nnoremap <silent> <space>cpf<space> :let @*='<c-r>=expand("%:t")<cr>'<cr>:echo '-= File name copied=-'<cr>
+"Copy bookmark position reference
+nnoremap <silent> <space>cpb<space> :let @*='<c-r>=expand("%:p")<cr>:<c-r>=line(".")<cr>:<c-r>=col(".")<cr>'<cr>:echo '-= Cursor bookmark copied=-'<cr>
 
-" ######## Fighting Game Key Binding ######## {{{
-vnoremap <Space>dfj<Space> :norm @q<CR>
-nnoremap <Space>dfj<Space> :%norm @q<CR>
-vnoremap <Space>dfjk<Space> :norm 
-vnoremap <Space>dfkj<Space> :norm 
-nnoremap <Space>dfkj<Space> :%norm 
-nnoremap <Space>dfjk<Space> :%norm 
-
-nnoremap <Space>sf<Space> <C-I>
-nnoremap <Space>ss<Space> <C-O>
-
-let g:submode_timeout=0
-call submode#enter_with('jumplist', 'n', 's', '<Space>sss<Space>', '<C-O>')
-call submode#enter_with('jumplist', 'n', 's', '<Space>sff<Space>', '<C-I>')
-call submode#leave_with('jumplist', 'n', '', '<Esc>')
-call submode#map('jumplist', 'n', 's', 's', '<C-O>')
-call submode#map('jumplist', 'n', 's', 'f', '<C-I>')
-
-" }}}
-
-" ######## Enhanced Diff ######## {{{
-" autocmd VimEnter * EnhancedDiff histogram
-" }}}
-
-"map n <Plug>(easymotion-next)
-"map N <Plug>(easymotion-prev)
-"map  <Leader>/ <Plug>(easymotion-sn)
-"omap <Leader>/ <Plug>(easymotion-tn)
-"map <Leader>l <Plug>(easymotion-lineforward)
-"map <Leader>j <Plug>(easymotion-j)
-"map <Leader>k <Plug>(easymotion-k)
-"map <Leader>h <Plug>(easymotion-linebackward)
-"map <Leader>s <Plug>(easymotion-s)
-"map <Leader>S <Plug>(easymotion-s2)
-"nmap <Leader>t <Plug>(easymotion-t)
-"map  <Leader>f <Plug>(easymotion-bd-f)
+nnoremap <silent> <D-v> "*p
+inoremap <silent> <D-v> <c-r>*
+"}}}
+" ######## EasyMotion ######## {{{
+map  <Space>fj<Space> <Plug>(easymotion-j)
+map  <Space>fk<Space> <Plug>(easymotion-k)
+map  <Space>fl<Space> <Plug>(easymotion-bd-f)
+nmap <Space>fjk<Space> V<Plug>(easymotion-bd-jk)
+nmap <Space>fkj<Space> V<Plug>(easymotion-bd-jk)
+map  gs/ <Plug>(easymotion-sn)
+omap gs/ <Plug>(easymotion-tn)
+map gsj <Plug>(easymotion-j)
+map gsk <Plug>(easymotion-k)
+map gss <Plug>(easymotion-bd-f)
 " s{char}{char} to move to {char}{char}
 " Move to line
+"map <Leader>L <Plug>(easymotion-bd-jk)
 
-nmap gsf <Plug>(easymotion-f)
-vmap gsf <Plug>(easymotion-f)
-omap gsf <Plug>(easymotion-f)
-nmap gsF <Plug>(easymotion-F)
-vmap gsF <Plug>(easymotion-F)
-omap gsF <Plug>(easymotion-F)
-nmap gst <Plug>(easymotion-t)
-vmap gst <Plug>(easymotion-t)
-omap gst <Plug>(easymotion-t)
-nmap gsT <Plug>(easymotion-T)
-vmap gsT <Plug>(easymotion-T)
-omap gsT <Plug>(easymotion-T)
-nmap gsw <Plug>(easymotion-w)
-vmap gsw <Plug>(easymotion-w)
-omap gsw <Plug>(easymotion-w)
-nmap gsW <Plug>(easymotion-W)
-vmap gsW <Plug>(easymotion-W)
-omap gsW <Plug>(easymotion-W)
-nmap gse <Plug>(easymotion-e)
-vmap gse <Plug>(easymotion-e)
-omap gse <Plug>(easymotion-e)
-nmap gsE <Plug>(easymotion-E)
-vmap gsE <Plug>(easymotion-E)
-omap gsE <Plug>(easymotion-E)
-nmap gsj <Plug>(easymotion-j)
-vmap gsj <Plug>(easymotion-j)
-omap gsj <Plug>(easymotion-j)
-nmap gsk <Plug>(easymotion-k)
-vmap gsk <Plug>(easymotion-k)
-omap gsk <Plug>(easymotion-k)
-nmap gsn <Plug>(easymotion-n)
-vmap gsn <Plug>(easymotion-n)
-omap gsn <Plug>(easymotion-n)
-nmap gsN <Plug>(easymotion-N)
-vmap gsN <Plug>(easymotion-N)
-omap gsN <Plug>(easymotion-N)
-nmap gs/ <Plug>(easymotion-sn)
-vmap gs/ <Plug>(easymotion-sn)
-omap gs/ <Plug>(easymotion-sn)
-nmap gss <Plug>(easymotion-s)
-vmap gss <Plug>(easymotion-s)
-omap gss <Plug>(easymotion-s)
-nmap gsS <Plug>(easymotion-s2)
-vmap gsS <Plug>(easymotion-s2)
-omap gsS <Plug>(easymotion-s2)
-nmap gsg V<Plug>(easymotion-bd-jk)
-vmap gsg V<Plug>(easymotion-bd-jk)
-omap gsg V<Plug>(easymotion-bd-jk)
-
+" Move to word
+"map  <Leader>w <Plug>(easymotion-bd-w)
 
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
-
-nmap <Leader>mc :MultipleCursorsFind<Space>
-vmap <Leader>mc :MultipleCursorsFind<Space>
-let g:multi_cursor_exit_from_insert_mode = 0
-let g:multi_cursor_exit_from_visual_mode = 0
-
+" }}}
+" EasyAlign {{{
 vmap <CR> <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
-
-
+" }}}
 " LeaderF {{{
 nnoremap <Leader>pp :LeaderfFile<CR>
-nnoremap <Leader>p* <Plug>(LeaderfRgCwordLiteralBoundary)
-vnoremap <Leader>p* <Plug>(LeaderfRgVisualLiteralNoBoundary)
-nnoremap <Leader>L :Leaderf line<CR>
+nnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg -F -e %s", expand("<cword>"))<cr><cr>
+xnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg -F -e %s", leaderf#Rg#visual())<cr><cr>
+
+nnoremap <space>efk<space> :Leaderf rg -F --stayOpen -e<space>
+
+nnoremap <space>efjk<space> :<c-u>Leaderf! rg --recall<cr>
+nmap <space>efkj<space> <space>efjk<space>
+
+nnoremap <space>efl<space> :<c-u>LeaderfBuffer<cr>
+nnoremap <space>efu<space> :<c-u><c-r>=printf("Leaderf line --stayOpen --input %s", expand("<cword>"))<cr><cr>
+xnoremap <space>efu<space> :<c-u><c-r>=printf("Leaderf line --stayOpen --input %s", leaderf#Rg#visual())<cr><cr>
+nnoremap <space>efi<space> :<c-u>Leaderf line<cr>
+
+nnoremap <space>efui<space> :<c-u>Leaderf! line --recall<cr>
+nmap <space>efiu<space> <space>efui<space>
+
+nnoremap <space>rof<space> :<c-u>LeaderfMru<cr>
 "}}}
 
 " OverCommandLine
@@ -431,9 +421,6 @@ set backspace=indent,eol,start
 
 " display incomplete commands
 set showcmd
-
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
 
 " select the pasted block
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
@@ -496,36 +483,6 @@ let g:fzf_history_dir = '~/.local/share/fzf-history'
 "  let g:fzf_files_options =
 "  \ '--preview "(highlight -O ansi {} || cat {}) 2> /dev/null | head -'.&lines.'"'
 
-" [Buffers] Jump to the existing window if possible
-"  let g:fzf_buffers_jump = 1
-
-" [[B]Commits] Customize the options used by 'git log':
-"  let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
-
-" [Tags] Command to generate tags file
-"  let g:fzf_tags_command = 'ctags -R'
-
-" [Commands] --expect expression for directly executing the command
-"  let g:fzf_commands_expect = 'alt-enter,ctrl-x'
-
-"    " Mapping selecting mappings
-"    nmap <leader><tab> <Plug>(fzf-maps-n)
-"    xmap <leader><tab> <Plug>(fzf-maps-x)
-"    omap <leader><tab> <Plug>(fzf-maps-o)
-"    
-"    " Insert mode completion
-"    imap <c-x><c-k> <Plug>(fzf-complete-word)
-"    imap <c-x><c-f> <Plug>(fzf-complete-path)
-"    imap <c-x><c-j> <Plug>(fzf-complete-file-ag)
-"    imap <c-x><c-l> <Plug>(fzf-complete-line)
-"    
-"    " Advanced customization using autoload functions
-"    inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
-"    
-"    " Replace the default dictionary completion with fzf-based fuzzy completion
-"    inoremap <expr> <c-x><c-k> fzf#complete('cat /usr/share/dict/words')
-"    
-"    set rtp+=/usr/local/opt/fzf
 set rtp+=/usr/local/opt/fzf
 
 command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
@@ -535,14 +492,12 @@ command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
 set undofile
 set undodir=~/.vim/undo
 "}}}
-
 "Sideway {{{
 "omap aa <Plug>SidewaysArgumentTextobjA
 "xmap aa <Plug>SidewaysArgumentTextobjA
 "omap ia <Plug>SidewaysArgumentTextobjI
 "xmap ia <Plug>SidewaysArgumentTextobjI
 "}}}
-
 "UltiSnip {{{
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -552,45 +507,55 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 "}}}
+"########## Popup Buffers ##########{{{
+func! ScratchBuffer(...)
+  let l:key = a:0 > 0 ? a:1 : 'scratch'
+  let l:direction = a:0 > 1 ? a:2 : 's'
+  let l:link_to_file = a:0 > 2 ? a:3 : 0
 
-"Swagger preview {{{
-nmap <leader><leader>e <Plug>GenerateDiagram 
-"}}}
-
-"Others {{{
-command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
-
-nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
-nnoremap <leader>mC :<c-u><c-r><c-r>='command! norm! '. string(getreg(v:register))<cr><c-f><esc>0Ea<space>
-
-"}}}
-
-"Predefined Macro {{{
-let @t = '@q@t'
-"}}}
-
-"sdvc {{{
-func! ScratchBuffer(key, direction)
-  if (bufexists(a:key))
-    let l:lrwin = bufwinnr(a:key)
+  if (bufexists(l:key))
+    let l:lrwin = bufwinnr(l:key)
     if l:lrwin == -1
       if a:direction ==? "v"
-        exec "rightbelow vert sb " . bufnr(a:key)
+        exec "rightbelow vert sb " . bufnr(l:key)
       else
-        exec "rightbelow sb " . bufnr(a:key)
+        exec "rightbelow sb " . bufnr(l:key)
       endif
     else
       exec l:lrwin . "wincmd w"
     endif
   else
-    if a:direction ==? "v"
-      exec "rightbelow vert new " . a:key
+    if l:direction ==? "v"
+      exec "rightbelow vert new " . l:key
     else
-      exec "rightbelow new " . a:key
+      exec "rightbelow new " . l:key
     endif
-    setlocal bt=nofile bh=wipe nobl noswf nospell nonu
+    if !l:link_to_file
+      setlocal bt=nofile
+    endif
+    setlocal bh=wipe nobl noswf nospell nonu
   endif
 endfunc
+"}}}
+"Others {{{
+command! Capitalize :s/\C\<[a-z]\+/\L\u\0/g|:nohl
+
+" cd project root
+command! CDR cd %:h | cd `git rev-parse --show-toplevel`
+" cd module root
+command! CDM cd %:h | exec 'cd' fnameescape(fnamemodify(findfile("pom.xml", escape(expand('%:p:h'), ' ') . ";"), ':h'))
+" cd current folder
+command! CDF cd %:h
+
+nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+nnoremap <leader>mC :<c-u><c-r><c-r>='command! norm! '. string(getreg(v:register))<cr><c-f><esc>0Ea<space>
+
+"}}}
+"Predefined Macro {{{
+let @t = '@q@t'
+"}}}
+
+"sdvc {{{
 
 let g:sdcv_data_dir = "~/dev/zhizhi/stardict"
 
@@ -791,23 +756,88 @@ command! -range Kill9 <line1>,<line2>:norm! 0vEckill -9ElD0
 """ Insert current date at the beginning of a line
 command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d')
  
-
-""" Capture CLI output in a scratch buffer
-command! -nargs=* -complete=shellcmd R :ScratchBuffer('shell.output', 's') | r !<args>
-command! -nargs=* -complete=shellcmd RV :ScratchBuffer('shell.output', 'v') | r !<args>
-
-""" Lookup with sdcv
-"command! -range Dict norm! gv"ay:below new:setlocal ft=stardict bt=nofile bh=delete nospell:nnoremap <buffer> q ZQ"apo50i=o:r !sdcv -n -2 ~/dev/zhizhi/stardict "a"gg
-"command! -range Vdict norm! gv"ay:rightb vnew:setlocal ft=stardict bt=nofile bh=delete nospell:nnoremap <buffer> q ZQ"apo50i=o:r !sdcv -n -2 ~/dev/zhizhi/stardict "a"gg
-"command! -range Tdict norm! gv"ay:tabnew:setlocal ft=stardict bt=nofile bh=delete nospell:nnoremap <buffer> q ZQ"apo50i=o:r !sdcv -n -2 ~/dev/zhizhi/stardict "a"gg
-"nnoremap ,dd viw:Dict<CR>
-"nnoremap ,dv viw:Vdict<CR>
-"nnoremap ,dt viw:Tdict<CR>
-"vnoremap ,dd :Dict<CR>
-"vnoremap ,dt :Tdict<CR>
+""" MRU
+nnoremap <space>fr<space> :MRU<CR>
+nnoremap <space>fR<space> :tabnew ~/.vim_mru_files<CR>
 
 "}}}
+"Font {{{
+let g:guifontname = 'Cascadia\ Code,Sarasa\ Mono\ SC\ Nerd'
+let s:default_guifontheight = 22
+let g:guifontheight = s:default_guifontheight
+exec "set guifont=" . g:guifontname . ":h" . string(g:guifontheight)
 
+function! FunChangeFontSize(...)
+  if a:0 == 0
+    let l:h = s:default_guifontheight
+  elseif type(a:1) == 1
+    let l:h = str2nr(a:1)
+  elseif a:1 > 8
+    let l:h = a:1
+  else
+    let l:h = max([9, g:guifontheight + a:1])
+  endif
+  let g:guifontheight = l:h
+  execute "set guifont=" . g:guifontname . ":h" . l:h
+endfunction
+command! -nargs=* ChangeFontSize call FunChangeFontSize(<f-args>)
+command! IncreaseFontSize call FunChangeFontSize(1)
+command! DecreaseFontSize call FunChangeFontSize(-1)
+nnoremap <C-=> :call FunChangeFontSize(1)<CR>
+nnoremap <C--> :call FunChangeFontSize(-1)<CR>
+nnoremap <A-0> :call FunChangeFontSize()<CR>
+"}}}
+"########## Current JIRA Ticket Notes ##########{{{
+let g:ticket="JDAG-515"
+let g:project_temp_folder='~/dev/vim_jira_project_temp'
+func! s:SetCurrentTicket(...)
+  if a:0 == 0
+    let g:ticket = input("Ticket #:")
+  else
+    let g:ticket = a:1
+    echo "Current Project ticket set to " . g:ticket
+  endif
+endfunc
+func! s:TicketNotesListFolder()
+  let l:temp_folder = g:project_temp_folder. '/' . g:ticket
+  if empty(glob(l:temp_folder))
+    call system('mkdir -p ' . l:temp_folder)
+  endif
+  exec 'edit ' . l:temp_folder
+endfunc
+func! s:TicketNoteEdit(...)
+  let l:temp_folder = g:project_temp_folder. '/' . g:ticket
+  if a:0 == 0
+    let l:note_name = input("Note name:")
+  else
+    let l:note_name = a:1
+  endif
+  exec 'edit ' . l:temp_folder . '/' . l:note_name
+endfunc
+func! s:SaveTicketNote(...)
+  let l:temp_folder = g:project_temp_folder. '/' . g:ticket
+  if a:0 == 0
+    let l:note_name = input("Note name:")
+  else
+    let l:note_name = a:1
+  endif
+  exec 'saveas ' . l:temp_folder . '/' . l:note_name
+endfunc
+
+command! -nargs=* SetCurrentTicket call s:SetCurrentTicket(<f-args>)
+command! TicketNotesListFolder call s:TicketNotesListFolder()
+command! -nargs=* TicketNoteEdit call s:TicketNoteEdit(<f-args>)
+command! -nargs=* TicketNoteSave call s:TicketNoteSave(<f-args>)
+command! Todo exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"TODO \" . g:ticket)\<CR>\<CR>"
+command! Portal call ScratchBuffer(g:ticket . '_portal', 's', 1) | call s:TicketNoteEdit('portal.org')
+nnoremap <silent> <space>tp<space> :TicketNoteEdit portal.org<cr>
+"}}}
+"########## Capture CLI output in a scratch buffer ##########{{{
+command! -nargs=* -complete=shellcmd R :ScratchBuffer('shell.output', 's') | r !<args>
+command! -nargs=* -complete=shellcmd RV :ScratchBuffer('shell.output', 'v') | r !<args>
+au FileType vim vnoremap <buffer> <space>r<space> "jy:<c-u>@j<cr>:<c-u>echo "Selected command executed"<cr>
+au FileType vim vnoremap <buffer> <c-cr> "jy:<c-u>@j<cr>:<c-u>echo "Selected command executed"<cr>
+"}}}
 nohl
 
 "colors {{{
