@@ -35,8 +35,6 @@ nnoremap ,u :action LocalHistory.ShowHistory<CR>
 nnoremap ,U gUiwe
 inoremap ,U <ESC>gUiwgi
 
-nnoremap ,c :e ~/.ideavimrc<CR>
-
 inoremap ,. <ESC>
 inoremap ,,. ,<ESC>
 inoremap ,<CR> ,<CR>
@@ -85,9 +83,6 @@ nmap ,cp <A-p>
 vmap ,cp <A-p>
 nmap ,cg g<A-n>
 vmap ,cg g<A-n>
-
-"Swap two texts. (Delete the first text block, then select the second block,
-"then press Control-Shift-X)
 
 "remap split window
 nnoremap <TAB>m :action HideAllWindows<CR>
