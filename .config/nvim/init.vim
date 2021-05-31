@@ -18,15 +18,12 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive' " Git integration
 Plug 'scrooloose/nerdtree'
-Plug 'skywind3000/vim-auto-popmenu'
 Plug 'SirVer/ultisnips'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'skywind3000/asynctasks.vim'
 Plug 'skywind3000/vim-terminal-help'
-Plug 'skywind3000/vim-dict'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'skywind3000/LeaderF-snippet'
-Plug 'honza/vim-snippets'
 Plug 'rbgrouleff/bclose.vim'  " Needed by ranger
 Plug 'francoiscabrol/ranger.vim'
 Plug 'simnalamburt/vim-mundo'
@@ -39,13 +36,15 @@ Plug 'mhinz/vim-startify'
 Plug 'axvr/org.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'blahgeek/neovim-colorcoder', { 'do' : ':UpdateRemotePlugins' }
-Plug '907th/vim-auto-save'
 Plug 'itchyny/lightline.vim'
 Plug 'inkarkat/vim-mark'
 Plug 'tpope/vim-commentary'
 Plug 'duganchen/vim-soy'
 Plug 'kcsongor/vim-tabbar'
 Plug 'AndrewRadev/inline_edit.vim'
+Plug 't9md/vim-choosewin'
+Plug 'sirdavidoff/vim-nearest-complete'
+Plug 'liuchengxu/graphviz.vim'
 
 "========== Themes =========={{{
 Plug 'rakr/vim-one'
@@ -62,6 +61,10 @@ Plug 'sonph/onehalf'
 "Plug 'rafi/awesome-vim-colorschemes'
 "}}}
 
+"Plug '907th/vim-auto-save'
+"Plug 'skywind3000/vim-auto-popmenu'
+"Plug 'skywind3000/vim-dict'
+"Plug 'skywind3000/LeaderF-snippet'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "Plug 'rhysd/vim-grammarous'  " Grammar check
 "Plug 'Yilin-Yang/vim-markbar'
@@ -140,7 +143,7 @@ map <space>dsj<space> :exec &conceallevel ? "set conceallevel=0" : "set conceall
 "########## Colorschemes ##########{{{
 "colo colorsbox-steighties
 "colo github
-set background=light
+set background=dark
 colorscheme moria
 " }}}
 "########## Developer Settings ########## {{{
@@ -271,6 +274,8 @@ nnoremap <Space>si<Space> :NERDTreeFind<CR>
 let g:ranger_map_keys = 0
 let g:NERDTreeHijackNetrw = 0 " add this line if you use NERDTree
 let g:ranger_replace_netrw = 1 " open ranger when vim open a directory
+let g:ranger_command_override = 'ranger --cmd "set draw_borders=0" --cmd "set preview_directories=0" --cmd "set colorscheme=default"'
+
 " }}}
 "########## Vimux ########## " {{{
 
@@ -388,7 +393,7 @@ let g:diff_algorithms = [
       \ ]
 let g:diff_algorithm = "patience"
 
-func! SwitchDiffAlgorithm()
+func! DiffSwitchAlgorithm()
   let l:total_diff_algos = len(g:diff_algorithms)
   let l:i = 0
   while l:i < l:total_diff_algos && g:diff_algorithms[l:i] !=# g:diff_algorithm
@@ -407,14 +412,26 @@ func! SwitchDiffAlgorithm()
   windo diffupdate
 endfunc
 
-func! UpdateDiffContext(contextLines)
+func! DiffUpdateContext(contextLines)
   let l:opt = substitute(&diffopt, '\v(^\|,)context:\d+', '', 'g') . ",context:" . a:contextLines
   exec "set diffopt=" . l:opt
   windo diffupdate
 endfunc
 
-command! SwitchDiffAlgorithm call SwitchDiffAlgorithm()
-command! -nargs=1 DiffContext call UpdateDiffContext(<f-args>)
+func! ToggleDiffWhiteSpace()
+  if stridx(&diffopt, "iwhite") >= 0
+    set diffopt-=iwhite
+    echo "Whitespaces NOT ignored in diff"
+  else
+    set diffopt+=iwhite
+    echo "Whitespaces ignored in diff"
+  endif
+  windo diffupdate
+endfunc
+
+command! DiffSwitchAlgorithm call DiffSwitchAlgorithm()
+command! DiffToggleWhiteSpace call DiffToggleWhiteSpace()
+command! -nargs=1 DiffContext call DiffUpdateContext(<f-args>)
 
 set diffopt+=internal,algorithm:patience
 "set diffopt+=internal,algorithm:histogram
@@ -630,7 +647,7 @@ endfunc
 "}}}
 "########## sdvc ##########{{{
 
-let g:sdcv_data_dir = "~/dev/zhizhi/stardict"
+let g:sdcv_data_dir = "~/dev/stardict"
 
 func! SdcvFoldOpen()
   foldopen
@@ -778,14 +795,14 @@ vnoremap <silent> ,dt "ay:tabnew:call SdcvDefinitionBufferInit("a"):call Sdcv
 nnoremap <silent> ,dr mpviw"ay:call Say("a")`p
 vnoremap <silent> ,dr mp"ay:call Say("a")`p
 
-nnoremap <silent> ,dR  :e ~/dev/zhizhi/vim-recite/wordmemo_daniel_daily.vim<CR>:call search("^\"=== End Words ===")<CR>zz
-nnoremap <silent> ,dG  :e ~/dev/zhizhi/vim-recite/wordmemo_daniel_game.vim<CR>:call search("^\"=== End Words ===")<CR>zz
+nnoremap <silent> ,dR  :e ~/dev/vim-recite/wordmemo_daniel_daily.vim<CR>:call search("^\"=== End Words ===")<CR>zz
+nnoremap <silent> ,dG  :e ~/dev/vim-recite/wordmemo_daniel_game.vim<CR>:call search("^\"=== End Words ===")<CR>zz
 
 nnoremap <silent> ,df :call SdcvFoldDefinition()<CR>
 nnoremap <silent> ,dn :call SdcvNextBook()<CR>
 nnoremap <silent> ,dp :call SdcvPrevBook()<CR>
 
-command! Recite tabnew ~/dev/zhizhi/vim-recite/
+command! Recite tabnew ~/dev/vim-recite/
 "}}}
 "########## Macro Related ##########{{{
 nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
@@ -805,37 +822,17 @@ command! CDM cd %:h | exec 'cd' fnameescape(fnamemodify(findfile("pom.xml", esca
 " cd current folder
 command! CDF cd %:h
 
-""" Reorganise google feed rejection log
-command! TARwGRejectLog norm! :1g/^"@/d:%s/^.*"\ze{""productCode//e:%s/"}\zs",java,.*$//e:%sort u:%norm! d6f"f"xxld5f"f"D:sort /^\i\+,/:sort r /\i\+/:norm! ggO"productCode","reason"
-command! TARwGRejectLogMerge let @a=':%s/^\([^,]\+\),\i\+\zs\n\1,\(\i\+\)/ \2/@a' | norm! @a
-
-
-""" Extract Immutable property copy code. Put source variable in register y. Run in Builder class
-command! TACopyImmutable norm! Go:g/public final \i\+ with\L/t$vip:norm! d3Er.f(ldi(lDvip:norm! f(asource.get()vip:norm! 5lyt(f(;Pvip:sort uvip"+y
-
 """ Auto commit message when executing `git commit`
 command! TACommitMessage norm! :5t.df/oggddf-;lgUl:s/-/ /gElr-0:nohlI[Ea]ll
 
 """ Auto insert TODO comment with branch ticket number
 command! TATodo exec "norm! a TODO :r !git name-rev --name-only HEADkJdf/2f-Da " | startinsert!
 
-""" Wrap the selected comment with `=`, use in visual mode with <CTRL-U>
-command! TACommentBox norm! `<`>``yyP_Wv$r=$5a=yy``p
-
-""" Covert comma separated keywords to strings in multiple lines
-function FnTAMapstructQuickFix()
-  norm :g/Unmapped source propert\%(ies\|y\):/norm d/Unmapped source propert\%(ies\|y\):/e+2f"DO@BeanMapping(ignoreUnmappedSourceProperties = {0i 0dwj:s/\i\+/"\0"/g:s/,\s*/,\r/go})j:s/^\s*\%(public abstract \)\?/public abstract jcckkkvi{>
-  norm :g/Unmapped target propert\%(ies\|y\).*Mapping from/norm! d/Unmapped target propert\%(ies\|y\):/e+2f"s0kkOj:s/\(\i\+\)\%(,\s*\)\?/@Mapping(target = "\1", ignore = true)\r/g2dddf""0dEd2f"ipublic abstract ElC map(0 value);jddcc:nohl
-  norm :g/Unmapped target propert\%(ies\|y\): "[^"]\+"\.$/norm! d/Unmapped target propert\%(ies\|y\):/e+2f"s0kkOj:s/\(\i\+\)\%(,\s*\)\?/@Mapping(target = "\1", ignore = true)\r/g3dd0dw:s/^\s*\%(public abstract \)\?/public abstract jcc:nohl
-  norm :g/Consider to declare\/implement a mapping method:/norm! d/Consider to declare\/implement a mapping method:/e+1lyi"VpIpublic abstract A;O // Add following mapping method:0dwjj2ddO
-endfunction 
-command! TAMapstructFix call FnTAMapstructQuickFix()
-
-""" Format Solr entity
+""" Format JSON String
 command! TAFmtJson norm! :%!jq -S:setl ft=json fdm=syntax:syn onggzMzo
 
-""" Format Solr entity
-command! TAFmtSolrEntity norm! :syn off:setl fdm=manualzE:v/^\s*"entity":/d0dt{$T}D:s/\%(\\\)\@<!\\"/"/ge:s/\\\\\\"/\\"/ge:TAFmtJson
+""" Wrap the selected comment with `=`, use in visual mode with <CTRL-U>
+command! TACommentBox norm! `<`>``yyP_Wv$r=$5a=yy``p
 
 """ PDF book
 function! PDFBookStartFn(paperPerPart, startPage)
@@ -892,7 +889,7 @@ command! -nargs=* PDFBookEnd :call PDFBookEndFn(<f-args>)
 command! -nargs=* PDFBookNextBook :call PDFBookNextBookFn(<f-args>)
 command! -nargs=* PDFBookFinal :call PDFBookFinalFn(<f-args>)
 
-""" Jira Front commands
+""" Front commands
 command! JFPrecommit norm! ggdG:0r !yarn precommit<CR>gg
 command! JFFlowStatus norm! ggdG:0r !yarn dev flow status<CR>gg
 
@@ -903,6 +900,8 @@ command! -range Kill9 <line1>,<line2>:norm! 0vEckill -9ElD0
 command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d') 
 
 """ MRU
+let MRU_Max_Entries=9999
+let MRU_Exclude_Files = '^/tmp/.*\|^/var/tmp/.*\|_LOCAL_\d\+\.\|_REMOTE_\d\+\.\|_BASE_\d\+\.'
 nnoremap <space>fr<space> :MRU<CR>
 nnoremap <space>fR<space> :tabnew ~/.vim_mru_files<CR>
 
@@ -1020,9 +1019,8 @@ nnoremap <space>dsk<space> 0"ayiw:bw<cr>:rightbelow Gvdiff <c-r>a<cr>
 "}}}
 "########## Project Bookmarks #########{{{
 let g:project_bookmark = {
-      \'jira': '~/dev/jira',
-      \'jf': '~/dev/jira-frontend/',
-      \'closure': '~/dev/zhizhi/github/closure-templates/',
+      \'java': '~/dev/java',
+      \'jf': '~/dev/jfrontend/',
       \'dict': '~/.local/share/nvim/plugged/vim-dict/dict/',
       \}
 func! s:go_bookmark(bookmark)
@@ -1036,9 +1034,9 @@ endfunc
 command! -nargs=* Go call s:go_bookmark(<f-args>)
 command! -nargs=* Got call s:go_bookmark(<f-args>) | tabnew | e .
 "}}}
-"########## Current JIRA Ticket Notes ##########{{{
-let g:ticket="JDAG-515"
-let g:project_temp_folder='~/dev/vim_jira_project_temp'
+"########## Current Ticket Notes ##########{{{
+let g:ticket="TK-817"
+let g:project_temp_folder='~/dev/vim_project_temp'
 func! s:ensureTicketNotesFolder()
   let l:temp_folder = g:project_temp_folder. '/' . g:ticket
   if empty(glob(l:temp_folder))
@@ -1082,6 +1080,7 @@ command! TicketNotesListFolder call s:TicketNotesListFolder()
 command! -nargs=* TicketNoteEdit call s:TicketNoteEdit(<f-args>)
 command! -nargs=* TicketNoteSave call s:TicketNoteSave(<f-args>)
 nnoremap <silent> <space>tn<space> :TicketNoteEdit notes.org<cr>
+nnoremap <silent> <space>tf<space> :TicketNotesListFolder<cr>
 
 command! Todo exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"TODO \" . g:ticket)\<CR>\<CR>"
 command! TBookmark exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"BOOKMARK \" . g:ticket)\<CR>\<CR>"
@@ -1120,7 +1119,7 @@ func! s:OpenFileLinkInIdea(text, pos, ide)
         exec "AsyncRun -silent " . l:command
       endif
     else
-      let l:command = a.ide . " " . l:location[0]
+      let l:command = a:ide . " " . l:location[0]
       echo l:command
       exec "AsyncRun -silent " . l:command
     endif
@@ -1195,24 +1194,21 @@ set completeopt=menu,menuone,noselect
 " Prevent trivial information at the bottom
 set shortmess+=c
 "}}}
-"########## LeaderF-snippet ##########{{{
+"########## Snippet ##########{{{
 "UltiSnippet
 let g:UltiSnipsEditSplit="context"
 
-" maps
-inoremap ,l <c-\><c-o>:call UltiSnips#ExpandSnippet()<cr>
-inoremap ,m <c-\><c-o>:Leaderf snippet --popup<cr>
+let g:UltiSnipsExpandTrigger=",l"
+let g:UltiSnipsJumpForwardTrigger="<c-f>"
+let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 
-" optional: preview
-"let g:Lf_PreviewResult = get(g:, 'Lf_PreviewResult', {})
-"let g:Lf_PreviewResult.snippet = 1
-"let g:Lf_PythonVersion = 3
+
+" maps
+"inoremap ,l <c-\><c-o>:call UltiSnips#ExpandSnippet()<cr>
+
 "}}}
 "########## nvim colorcoder ##########{{{
 let g:colorcoder_enable_filetypes = ['java', 'xml', 'yaml', 'js', 'soy', 'org']
-"}}}
-"########## Autosave ##########{{{
-let g:auto_save = 0
 "}}}
 "########## Lightline ##########{{{
 " Let kcsongor/vim-tabbar deal with tabline
@@ -1226,6 +1222,12 @@ let g:lightline = {
 "########## Tabbar ##########{{{
 set tabline=%!tabbar#tabline()
 command! -nargs=* RenameTab call tabbar#rename_current_tab(<f-args>)
+"}}}
+"########## Choose Win ##########{{{
+nmap - <Plug>(choosewin)
+nmap <TAB>, <Plug>(choosewin)
+" Use overlay feature
+let g:choosewin_overlay_enable = 0
 "}}}
 
 let mapleader='\'
