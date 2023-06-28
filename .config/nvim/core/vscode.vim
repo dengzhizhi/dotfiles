@@ -15,6 +15,7 @@ if exists('g:vscode')
 
   nnoremap ,tk <cmd>call VSCodeNotify('workbench.action.openGlobalKeybindings')<cr>
   nnoremap ,tp <cmd>call VSCodeNotify('workbench.view.extensions')<cr>
+  nnoremap gf <cmd>call VSCodeNotify('seito-openfile.openFileFromText')<cr>
 
   nnoremap ;q <cmd>call VSCodeNotify('workbench.action.closeActiveEditor')<cr>
   nnoremap ;s <cmd>call VSCodeNotify('workbench.action.previousEditor')<cr>
@@ -34,6 +35,8 @@ if exists('g:vscode')
   xnoremap <space>efk<space> <cmd>call VSCodeNotifyVisual('workbench.action.findInFiles', 1)<cr>
   xnoremap <space>efjk<space> <cmd>call VSCodeNotify('workbench.view.search')<cr>
   xnoremap <space>efkj<space> <cmd>call VSCodeNotify('workbench.view.search')<cr>
+  nnoremap <space>efo<space> <cmd>call VSCodeNotify('workbench.action.openRecent')<cr>
+  nnoremap <space>efl<space> <cmd>call VSCodeNotify('workbench.action.showAllEditors')<cr>
 
   " Search reference
   nnoremap <space>fdfj<space> <cmd>call VSCodeNotify('editor.action.peekDefinition')<cr>
@@ -55,7 +58,6 @@ if exists('g:vscode')
 
   nnoremap ,c <cmd>call VSCodeNotify('workbench.action.openSettingsJson')<cr>
 
-  nnoremap <space>efl<space> <cmd>call VSCodeNotify('workbench.action.showAllEditors')<cr>
 
   nnoremap <space>jp<space> <cmd>call VSCodeNotify('copy-json-path.copy')<cr>
 
@@ -63,8 +65,11 @@ if exists('g:vscode')
 
   nnoremap <leader>m <cmd>call VSCodeNotify('editor.action.toggleMinimap')<cr>
 
+  nnoremap <space>vin<space> <cmd>call VSCodeNotify('command-runner.run', {'command': 'open_in_kitty_nvim'})<cr>
+  nnoremap <space>subl<space> <cmd>call VSCodeNotify('command-runner.run', {'command': 'open_in_sublime'})<cr>
+
   nnoremap ,tt :<c-r>=printf("!code '%s'", '/Users/zdeng/.config/nvim/ticket.vim')<cr><cr>
   nnoremap ,tk :<c-r>=printf("!code '%s'", '/Users/zdeng/.config/nvim/core/vscode.vim')<cr><cr>
   nnoremap ,tp :<c-r>=printf("!code '%s'", '/Users/zdeng/.config/nvim/lua/plugins.lua')<cr><cr>
-
+  nnoremap ,tm <cmd>call VSCodeNotify('workbench.action.openDefaultKeybindingsFile')<cr>
 endif

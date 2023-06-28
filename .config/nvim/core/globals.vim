@@ -44,6 +44,9 @@ let g:vimsyn_embed = 'l'
 
 " Use English as main language
 language en_US.utf-8
+
+" Enable folding in markdown
+let g:markdown_folding = 1
 "}}
 
 "{{ Disable loading certain plugins

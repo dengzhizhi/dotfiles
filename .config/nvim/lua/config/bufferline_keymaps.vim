@@ -20,8 +20,3 @@ nnoremap <silent> ;w0 <CMD>BufferLineGoToBuffer -1<CR>
 
 nnoremap ;n <cmd>BufferLinePick<cr>
 xnoremap ;n <cmd>BufferLinePick<cr>
-
-
-" Previous buffer
-nnoremap <silent> <tab>f <C-6>
-

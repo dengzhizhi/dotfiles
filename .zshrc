@@ -12,7 +12,10 @@ fi
 
 # Customize to your needs...
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.2+9/Contents/Home
+# Initialize completion
+# setopt PROMPT_SUBST
+# autoload -U compinit
+# compinit -D
 promptinit
 prompt kylewest
 # Stop wget from creating ~/.wget-hsts file. I don't care about HSTS (HTTP
@@ -20,29 +23,60 @@ prompt kylewest
 # with it.
 alias wget='wget --no-hsts'
 
+# Prevent ctrl-d killing the shell
+set -o ignoreeof
 
 export LEDGER_FILE=~/Dropbox/ledger/default_en.ledger
 #export GO111MODULE=on
-export GOPATH=~/dev/go
+#export GOPATH=~/dev/go
 
 alias ledger_default="export LEDGER_FILE=~/Dropbox/ledger/default_en.ledger"
- 
-export PATH="/Users/zdeng/.local/bin:/Users/zdeng/bin/nvim/0.8.2/bin:/Users/zdeng/bin:$JAVA_HOME/bin:/Applications/MacVim.app/Contents/bin:$PATH"
 
-alias vim1="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=1'"
-alias vim2="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=2'"
-alias vim3="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=3'"
-alias vim4="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=4'"
-alias vim5="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=5'"
+export PATH="/Users/zdeng/.local/bin:/Users/zdeng/bin/nvim/0.9.0/bin:/Users/zdeng/bin:$JAVA_HOME/bin:/Applications/MacVim.app/Contents/bin:$PATH"
 
-export EDITOR="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=3' --cmd 'let g:autocomplete_level=2'"
-export VISUAL="/Users/zdeng/bin/nvim/0.8.2/bin/nvim --cmd 'let g:ide_level=3' --cmd 'let g:autocomplete_level=2'"
+alias nvimc="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:enable_coc=1'"
+alias nvim0="/Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+alias nvim1="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=1'"
+alias nvim2="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=2'"
+alias nvim3="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=3'"
+alias nvim4="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=4'"
+alias nvim5="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
+alias nvim6="nvim-mini"
+
+alias nvim91="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=1'"
+alias nvim92="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=2'"
+alias nvim93="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=3'"
+alias nvim94="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=4'"
+alias nvim95="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
+
+
+alias nvim-astro="NVIM_APPNAME=AstroNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+alias nvim-lazy="NVIM_APPNAME=LazyNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+alias nvim-nvchad="NVIM_APPNAME=NvChad /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+alias nvim-kickstart="NVIM_APPNAME=KickstartNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+alias nvim-jdhao="NVIM_APPNAME=JdhaoNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+function nvim-mini() {
+    NVIM_APPNAME=MiniNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim $@
+}
+
+function nvims() {
+    items=("default" "AstroNvim" "LazyNvim" "NvChad" "KickstartNvim" "JdhaoNvim" "MiniNvim")
+    config=$(printf "%s\n" "${items[@]}" | fzf --prompt="Neovim Config " --height=~50% --layout=reverse --border --exit-0)
+    if [[ -z $config ]]; then
+        echo "Nothing selected"
+        return 0
+    elif [[ $config == "default" ]]; then
+        config=""
+    fi
+    NVIM_APPNAME=$config /Users/zdeng/bin/nvim/0.9.0/bin/nvim $@
+}
+
+
+export EDITOR="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
+export VISUAL="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
 # GNU Screen sets -o vi if EDITOR=vi, so we have to force it back.
 set -o emacs
 
-
-export EDITOR=nvim
-export VISUAL=nvim
 export PAGER="less -RF"
 export BAT_PAGER="less -RF"
 #export PAGER='nvim -R -u ~/.config/nvim/init.pg.vim -'
@@ -154,6 +188,7 @@ bindkey "^S" "insert-selecta-path-in-command-line"
 
 
 alias g="jump"
+alias gg="jump"
 alias s="bookmark"
 alias d="deletemark"
 alias p="showmarks"
@@ -163,24 +198,9 @@ alias dc="docker-compose"
 
 alias glog="git log | bat"
 
-alias gradle=gw
-alias gcat='(gw clean assemble testClasses && say finished) || say error'
-alias gat='(gw assemble testClasses && say finished) || say error'
-alias ga='(gw assemble && say finished) || say error'
-alias gp="gw \$(gw projects | sed \"s/.*\'\(.*\)\'.*/\1:assemble/g\" | grep assemble | fzf)"
-
-# gradle
-alias gwca='gw clean assemble'
-# frontend_build just takes too much time
-alias gwjava='gw assemble --exclude-task frontend_build'
-# check both main and test compiles and checkstyle is ok, almost like gw build but without running tests
-alias gwcheck='gw assemble testClasses checkstyleMain checkstyleTest'
-# same but don't run frontend_build
-alias gwjcheck='gwjava testClasses checkstyleMain checkstyleTest'
-
 # enhancements
 alias ping='prettyping'
-alias vim=nvim
+alias vim=/Users/zdeng/bin/nvim/0.9.0/bin/nvim
 alias vi=/usr/local/bin/vim
 alias du="ncdu --color dark -rr -x --exclude .git --exclude node_modules"
 
@@ -195,10 +215,10 @@ alias lg="lazygit"
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 export HISTSIZE=100000
-export HISTFILESIZE=100000
+export HISTFILESIZE=100000000000
 export HISTFILE=~/.zhistory
 export HISTCONTROL=ignoreboth:erasedups
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
@@ -256,10 +276,15 @@ function switchjava() {
 }
 switchjava 11
 
+# antlr4
+# export CLASSPATH=".:/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH"
+# alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+# alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
+
 #lesspipe
 
 # sets LESSOPEN and LESSCLOSE variables
-eval "$(SHELL=/bin/sh lesspipe.sh)"
+# eval "$(SHELL=/bin/sh lesspipe.sh)"
 
 export LESSOPEN="|$(brew --prefix)/bin/lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
 
@@ -304,15 +329,27 @@ eval "$(fnm env --use-on-cd)"
 
 # Put the default buffer in vim into scratch mode, good for piping outputs
 alias svim="vim -c \"setl bt=nofile bh=wipe nobl noswf nomodifiable\""
+
+# lunarvim
+export LUNARVIM_RUNTIME_DIR="/Users/zdeng/.local/share/lunarvim"
+
+eval "$(lua /Users/zdeng/bin/z.lua/z.lua --init zsh enhanced once echo fzf)"
+
+export PATH="$PATH:$HOME/.luarocks/bin"
+
 source /Users/zdeng/.config/broot/launcher/bash/br
 alias zh='z -I -t .' # go to history stack
 alias zz='z -c'      # restrict matches to subdirs of $PWD
 alias zi='z -i'      # cd with interactive selection
 alias zf='z -I'      # use fzf to select in multiple matches
 alias zb='z -b'      # quickly cd to the parent directory
+
 # cq alias
 alias cqq="cq -o json --no-pretty "
 
-
 # Sublime Text CLI
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

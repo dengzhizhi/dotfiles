@@ -3,15 +3,6 @@ scriptencoding utf-8
 " Plugin specification and lua stuff
 lua require('lua-init')
 
-" Use short names for common plugin manager commands to simplify typing.
-" To use these shortcuts: first activate command line with `:`, then input the
-" short alias, e.g., `pi`, then press <space>, the alias will be expanded to
-" the full command automatically.
-call utils#Cabbrev('pi', 'PackerInstall')
-call utils#Cabbrev('pud', 'PackerUpdate')
-call utils#Cabbrev('pc', 'PackerClean')
-call utils#Cabbrev('ps', 'PackerSync')
-
 """""""""""""""""""""""""UltiSnips settings"""""""""""""""""""
 " Trigger configuration. Do not use <tab> if you use YouCompleteMe
 let g:UltiSnipsExpandTrigger=',l'
@@ -41,6 +32,17 @@ command! -nargs=0 StartVlime call jobstart(printf("sbcl --load %s/vlime/lisp/sta
 " Cache file for faster file search, use <F5> to refresh
 let g:Lf_UseCache = 1
 
+" Gtags
+" let $GTAGSLABEL = 'pygments'
+" set tags=./.tags;,.tags,./tags;,tags
+
+" let g:Lf_GtagsAutoGenerate = 0
+" let g:Lf_GtagsGutentags = 1
+" let g:Lf_CacheDirectory = expand('~')
+" let g:Lf_GtagsSkipUnreadable = 1
+" let g:Lf_Gtagslabel='pygments'
+" call utils#Cabbrev('lfgtag', 'Leaderf gtags --update')
+
 " Refresh each time we call leaderf
 let g:Lf_UseMemoryCache = 0
 
@@ -59,6 +61,7 @@ let g:Lf_WildIgnore = {
 
 " Default Rg config
 let g:Lf_RgConfig = [
+      \"--max-columns=500",
       \"--glob=!tags",
       \"--glob=!tags.*",
       \"--glob=!*.min.js"
@@ -69,7 +72,7 @@ let g:Lf_RgStorePattern = "r"
 
 " No default limit for search result to allow all files are show in
 " LeaderfFile
-let g:Lf_MaxCount=0
+let g:Lf_MaxCount=200000
 
 " Do not show fancy icons for Linux server.
 if g:is_linux
@@ -79,6 +82,7 @@ endif
 " Only fuzzy-search files names
 let g:Lf_DefaultMode = 'Regex'
 
+let g:Lf_MruFileExclude = ['*.so']
 let g:Lf_MruMaxFiles = 9999
 
 " Do not use version control tool to list files under a directory since
@@ -107,23 +111,27 @@ let g:Lf_CommandMap = {'<C-J>': ['<C-N>'], '<C-K>': ['<C-P>']}
 
 let g:Lf_PreviewCode = 1
 
-" let g:Lf_NormalMap = {
-"       \ "_": [["P", "<CMD>let g:Lf_PreviewCode = 1 - g:Lf_PreviewCode<CR>"]]
-"       \}
+let g:Lf_NormalMap = {
+      \ "_": [
+      \   ["P", "<CMD>let g:Lf_PreviewCode = 1 - g:Lf_PreviewCode<CR>"],
+      \   ["v", ":norm! v"],
+      \ ]
+      \}
 
 let g:Lf_FolderAcceptSelectionCmd = 'Dirbuf'
 
 " Space key combinations
 nnoremap <space>pf<space> :LeaderfFile<CR>
+xnoremap <space>pf<space> :<c-u><c-r>=printf("Leaderf file --regexMode --input %s", leaderf#Rg#visual())<cr><cr>
 nnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s", expand("<cword>"))<cr><cr>
 xnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s", leaderf#Rg#visual())<cr><cr>
 nnoremap <space>efjj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s -g \"!*test*\"", expand("<cword>"))<cr><cr>
 xnoremap <space>efjj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s -g \"!*test*\"", leaderf#Rg#visual())<cr><cr>
-nnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -e \"%s\"", escape(expand("<cword>"), "\""))<cr><left><c-f>0f"l
-xnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
+nnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --stayOpen -e \"%s\"", escape(expand("<cword>"), "\""))<cr><left><c-f>0f"l
+xnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --stayOpen -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
 
 nnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf rg --regexMode --stayOpen -e \"\"")<cr><left>
-xnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
+xnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --stayOpen -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
 
 nnoremap <space>efjk<space> :<c-u>Leaderf! rg --recall<cr>
 nmap <space>efkj<space> <space>efjk<space>
@@ -143,6 +151,19 @@ nmap <space>efiu<space> <space>efui<space>
 
 nnoremap <space>efo<space> :<c-u>Leaderf! mru<cr>:setl nowrap<cr>
 nnoremap <space>fr<space>  :<c-u>Leaderf! mru<cr>:setl nowrap<cr>
+
+nnoremap <space>fdfj<space>  :<c-u>LeaderfFunction!<cr>
+nnoremap <space>fdfk<space>  :<c-u>LeaderfFunctionCword!<cr>
+xnoremap <space>fdfk<space>  :<c-u><c-r>=printf("LeaderfFunction! %s", leaderf#Rg#visual())<cr><cr>
+
+" nmap <space>efN<space> <Plug>LeaderfGtagsGrep
+" xmap <space>efN<space> <Plug>LeaderfGtagsGrep
+" nmap <space>efn<space> <Plug>LeaderfGtagsReference
+" xmap <space>efn<space> <Plug>LeaderfGtagsReference
+" nmap <space>efm<space> <Plug>LeaderfGtagsDefinition
+" xmap <space>efm<space> <Plug>LeaderfGtagsDefinition
+" nmap <space>efM<space> <Plug>LeaderfGtagsSymbol
+" xmap <space>efM<space> <Plug>LeaderfGtagsSymbol
 "}}
 
 """"""""""""""""""""""""""""open-browser.vim settings"""""""""""""""""""
@@ -371,6 +392,10 @@ xnoremap <space>dskl<space> :Gclog -n 20<cr>
 nmap <space>dslk<space> <space>dskl<space>
 xmap <space>dslk<space> <space>dskl<space>
 nnoremap <space>dsk<space> 0"ayiw:hide<cr>:rightbelow Gvdiff <c-r>a<cr>
+nnoremap <space>dskk<space> 0"ayiw:hide<cr>:2TermExec cmd="clear && git difftool -t difft -y <c-r>a -- <c-r>=expand('%:p')<cr> <bar> delta" go_back=0 direction=float size=95<cr>
+nnoremap <space>dskkk<space> 0"ayiw:hide<cr>:2TermExec cmd="clear && git difftool -t unifydifft -y <c-r>a..HEAD -- <c-r>=expand('%:p')<cr> <bar> delta" go_back=0 direction=float size=95<cr>
 
 nnoremap <space>dsu<space> :Git blame<cr>
+nnoremap <space>dsi<space> :<c-u><c-r>=printf("Git log --follow -p -S %s -- %s <bar> setl fdm=syntax", string(expand('<cWORD>')), expand('%:p'))<cr><c-f>0f'l
+xnoremap <space>dsi<space> "py:<c-u><c-r>=printf("Git log --follow -p -S %s -- %s <bar> setl fdm=syntax", string(@p), expand('%:p'))<cr><c-f>0f'l
 "}}}

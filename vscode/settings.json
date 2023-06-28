@@ -1,6 +1,6 @@
 {
   "editor.cursorSurroundingLines": 10,
-  "vscode-neovim.neovimExecutablePaths.darwin": "/Users/zdeng/bin/nvim/0.8.2/bin/nvim",
+  "vscode-neovim.neovimExecutablePaths.darwin": "/Users/zdeng/bin/nvim/0.9.0/bin/nvim",
   "editor.scrollBeyondLastLine": false,
   "editor.suggestSelection": "first",
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -72,8 +72,8 @@
   ],
   "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
   "workbench.iconTheme": "file-icons",
-  "editor.cursorSmoothCaretAnimation": true,
-  "editor.smoothScrolling": true,
+  "editor.cursorSmoothCaretAnimation": "off",
+  "editor.smoothScrolling": false,
   "workbench.colorTheme": "Solarized Dark",
   "editor.accessibilitySupport": "off",
   "security.workspace.trust.untrustedFiles": "open",
@@ -90,7 +90,8 @@
   "python.venvPath": "~/.virtualenvs",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true
   },
   "black-formatter.path": [
     "/usr/local/bin/black"
@@ -102,10 +103,16 @@
   "vscode-neovim.neovimInitVimPaths.darwin": "/Users/zdeng/.config/nvim/init.vim",
   "vscode-neovim.neovimInitVimPaths.linux": "/Users/zdeng/.config/nvim/init.vim",
   "extensions.experimental.affinity": {
+    "vscodevim.vim": 1,
     "asvetliakov.vscode-neovim": 1
   },
-  "window.zoomLevel": 2,
+  "workbench.nvimColorNormal": "#ffc600",
+  "workbench.nvimColorInsert": "#D32F2F",
+  "workbench.nvimColorVisual": "#673AB7",
+  "workbench.nvimColorReplace": "#000",
   "editor.minimap.enabled": false,
   "editor.fontFamily": "DroidSansMono Nerd Font Mono",
   "editor.fontLigatures": false,
+  "window.zoomLevel": 1,
+  "git.openRepositoryInParentFolders": "never",
 }

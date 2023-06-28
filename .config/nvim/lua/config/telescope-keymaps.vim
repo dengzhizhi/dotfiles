@@ -2,19 +2,19 @@ nnoremap <silent> <space>fefj<space> <cmd>lua require('telescope.builtin').find_
 nnoremap <silent> <space>fefk<space> <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <silent> <space>fefkk<space> <cmd>lua require('telescope.builtin').live_grep({grep_open_files=true})<cr>
 nnoremap <silent> <space>fefu<space> <cmd>lua require('telescope.builtin').file_browser()<cr>
-nnoremap <silent> <space>fefl<space> <cmd>Telescope buffers<cr>
-nnoremap <silent> <space>fefh<space> <cmd>Telescope help_tags<cr>
-nnoremap <silent> <space>fefp<space> <cmd>Telescope lsp_document_symbols<cr>
-nnoremap <silent> <space>fefi<space> <cmd>Telescope diagnostics bufnr=0<cr>
-nnoremap <silent> <space>fefm<space> <cmd>Telescope marks<cr>
+nnoremap <silent> <space>fefl<space> <cmd>Telescope buffers theme=ivy<cr>
+nnoremap <silent> <space>fefh<space> <cmd>Telescope help_tags theme=ivy<cr>
+nnoremap <silent> <space>fefp<space> <cmd>Telescope lsp_document_symbols theme=ivy<cr>
+nnoremap <silent> <space>fefi<space> <cmd>Telescope diagnostics bufnr=0 theme=ivy<cr>
+nnoremap <silent> <space>fefm<space> <cmd>Telescope marks theme=ivy<cr>
 
 nnoremap <silent> <space>jijs<space> <cmd>Telescope git_status<cr>
-nnoremap <silent> <space>jijf<space> <cmd>Telescope jumplist<cr>
-nnoremap <silent> <space>jijc<space> <cmd>Telescope command_history<cr>
-nnoremap <silent> <space>jijv<space> <cmd>Telescope search_history<cr>
-nnoremap <silent> <space>jijz<space> <cmd>Telescope spell_suggest<cr>
-nnoremap <silent> <space>jijt<space> <cmd>Telescope treesitter<cr>
-nnoremap <silent> <space>jijb<space> <cmd>Telescope bookmarks<cr>
+nnoremap <silent> <space>jijf<space> <cmd>Telescope jumplist theme=ivy<cr>
+nnoremap <silent> <space>jijc<space> <cmd>Telescope command_history theme=ivy<cr>
+nnoremap <silent> <space>jijv<space> <cmd>Telescope search_history theme=ivy<cr>
+nnoremap <silent> <space>jijz<space> <cmd>Telescope spell_suggest theme=ivy<cr>
+nnoremap <silent> <space>jijt<space> <cmd>Telescope treesitter theme=ivy<cr>
+nnoremap <silent> <space>jijb<space> <cmd>Telescope bookmarks theme=ivy<cr>
 
 nnoremap <silent> <space>jijr<space> <cmd>Telescope resume<cr>
 

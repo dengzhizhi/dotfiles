@@ -16,10 +16,11 @@ require("bufferline").setup({
     modified_icon = "●",
     close_icon = "",
     name_formatter = function(buf)  -- buf contains:
-      -- name                | str        | the basename of the active file
-      -- path                | str        | the full path of the active file
-      -- bufnr (buffer only) | int        | the number of the active buffer
+      -- Prefix buffer title with status icons for better overview
       local buf_name = buf.name
+      if vim.b[buf.bufnr].tab_title then
+        buf_name = vim.b[buf.bufnr].tab_title
+      end
       if buf.bufnr then
         local bt = vim.bo[buf.bufnr].bt
         if bt == 'nofile' or bt == 'nowrite' then
@@ -40,6 +41,10 @@ require("bufferline").setup({
         end
       end
 
+      if not vim.bo[buf.bufnr].modifiable then
+        buf_name = '🔒' .. buf_name
+      end
+
       return buf_name
     end,
     offsets = {
@@ -50,13 +55,6 @@ require("bufferline").setup({
         separator = true -- use a "true" to enable the default, or set your own character
       }
     },
-
-    left_trunc_marker = "",
-    right_trunc_marker = "",
-    max_name_length = 13,
-    max_prefix_length = 10,
-    tab_size = 10,
-    diagnostics = false,
     custom_filter = function(bufnr)
       -- if the result is false, this buffer will be shown, otherwise, this
       -- buffer will be hidden.
@@ -64,19 +62,23 @@ require("bufferline").setup({
       -- filter out filetypes you don't want to see
       local exclude_ft = { "qf", "fugitive", "git", "dirvish" }
       local cur_ft = vim.bo[bufnr].filetype
-      local should_hide = vim.tbl_contains(exclude_ft, cur_ft)
+      local should_show = not vim.tbl_contains(exclude_ft, cur_ft)
 
       if vim.t.bufferline_tab_filter_enabled and not vim.tbl_contains(vim.fn.tabpagebuflist(), bufnr) then
-        should_hide = should_hide or
-          not (vim.t.bufferline_show_buffers and vim.t.bufferline_show_buffers[tostring(bufnr)])
+        should_show = should_show
+          and vim.t.bufferline_show_buffers
+          and vim.t.bufferline_show_buffers[tostring(bufnr)]
       end
 
-      if should_hide then
-        return false
-      end
-
-      return true
+      return should_show
     end,
+
+    left_trunc_marker = "",
+    right_trunc_marker = "",
+    max_name_length = 13,
+    max_prefix_length = 10,
+    tab_size = 10,
+    diagnostics = false,
     show_buffer_icons = false,
     show_buffer_close_icons = false,
     show_close_icon = false,
@@ -86,44 +88,6 @@ require("bufferline").setup({
     enforce_regular_tabs = false,
     always_show_bufferline = true,
     sort_by = "id",
-    -- groups = {
-    --   options = {
-    --     toggle_hidden_on_enter = true -- when you re-enter a hidden group this options re-opens that group so the buffer is visible
-    --   },
-    --   items = {
-    --     {
-    --       name = "Note", -- Mandatory
-    --       icon = "📝", -- Optional
-    --       matcher = function(buf) -- Mandatory
-    --         return buf.filename:match('notes.md') or buf.path == '/Users/zdeng/.config/nvim/ticket.vim'
-    --       end,
-    --     },
-    --     {
-    --       name = "avp", -- Mandatory
-    --       icon = "📊", -- Optional
-    --       matcher = function(buf) -- Mandatory
-    --         return buf.path:match('chartio.castle')
-    --       end,
-    --       separator = { -- Optional
-    --         style = require('bufferline.groups').separator.tab
-    --       },
-    --     },
-    --     {
-    --       name = "NN", -- Mandatory
-    --       icon = "✨", -- Optional
-    --       matcher = function(buf) -- Mandatory
-    --         return buf.filename == '[No Name]'
-    --       end,
-    --     },
-    --     {
-    --       name = "vim", -- Mandatory
-    --       icon = "⚙️", -- Optional
-    --       matcher = function(buf) -- Mandatory
-    --         return buf.path:match('.config/nvim')
-    --       end,
-    --     },
-    --   }
-    -- }
   },
 })
 
@@ -138,7 +102,7 @@ vim.cmd('source ' .. vim.g.nvimrc .. '/lua/config/bufferline_keymaps.vim')
 vim.keymap.set('n', ';wf', function()
   vim.t.bufferline_tab_filter_enabled = not vim.t.bufferline_tab_filter_enabled
   vim.cmd [[redraw!]]
-end, {silent=true, desc='Enable tab buffer filtering'})
+end, {silent=true, desc='Enable manual tab buffer filtering'})
 
 vim.keymap.set('n', ';wa', function()
   if vim.t.bufferline_show_buffers == nil then
@@ -148,7 +112,7 @@ vim.keymap.set('n', ';wa', function()
   new_value[tostring(vim.fn.bufnr())] = true
   vim.t.bufferline_show_buffers = new_value
   vim.cmd [[redraw!]]
-end, {silent=true, desc='Show current buffer in current tab'})
+end, {silent=true, desc='Show current buffer in current tab when manual buffer filtering is ON'})
 
 vim.keymap.set('n', ';wd', function()
   if vim.t.bufferline_show_buffers ~= nil then
@@ -161,5 +125,5 @@ vim.keymap.set('n', ';wd', function()
     end
     vim.cmd [[redraw!]]
   end
-end, {silent=true, desc='Hide current buffer in current tab'})
+end, {silent=true, desc='Hide current buffer in current tab when manual buffer filtering is ON'})
 

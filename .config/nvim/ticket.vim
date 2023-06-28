@@ -5,21 +5,11 @@
 " The last line takes effect as default ticket
 "
 
-" Oncall tasks {{{
-let g:ticket="Oncall-01"     "Investigate add-gadget error rate increase
-let g:ticket="Oncall-02"     "Investigate view dashboard (shell) error rate increase
-let g:ticket="Oncall-03"     "Investigate search dashboard by name error rate increase
-let g:ticket="Oncall-04"     "Investigate Metal event not matching BM3 events
-"}}}
 " Library Researches {{{
 let g:ticket="React-01"      "React source research
 "}}}
 " Temporary tasks (Disturbed, etc) {{{
 let g:ticket="Daily-01"       "Investigate dashboard 10k-20k performance regression
-let g:ticket="Disturbed-001"  "Investigate Connect gadget metrics regression (JDAG-1143)
-let g:ticket="Disturbed-002"  "Compiled style QA demo
-let g:ticket="Disturbed-003"  "Confluence Statics gadget timeout issue
-let g:ticket="Disturbed-004"  "Investigate gadget API regression 21 Feb 2022
 let g:ticket="TT-001"         "Dashboard Dev Extension
 let g:ticket="TT-002"         "Investigate negative gadgetStartRender
 let g:ticket="TT-003"         "20% Time - Investigate Slow TTI user group

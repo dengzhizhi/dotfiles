@@ -24,7 +24,7 @@
     tool = nvimdiff
 
 [difftool "nvimdiff"]
-    cmd = nvim -c 'set so=100' -c 'norm! M' -f -d \"$LOCAL\" \"$REMOTE\"
+    cmd = nvim --cmd 'let g:ide_level=3' -c 'set so=100' -c 'norm! M' -f -d \"$LOCAL\" \"$REMOTE\"
 
 [difftool "difft"]
     cmd = difft --color always --display side-by-side-show-both \"$LOCAL\" \"$REMOTE\"
@@ -38,7 +38,7 @@
 
     # vim with `set splitbelow splitright` option
     # cmd = nvim -d $MERGED $REMOTE $BASE $LOCAL -c '$wincmd w' -c 'wincmd J'
-    cmd = nvim -d $MERGED $REMOTE $BASE $LOCAL -c 'wincmd J'
+    cmd = nvim --cmd 'let g:ide_level=3' -d $MERGED $REMOTE $BASE $LOCAL -c 'wincmd J'
 
     trustExitCode = true
     keepBackup = false
@@ -87,6 +87,10 @@
     dm = diff master@{u}...HEAD
     # alias: dmm - diff current branch to main
     dmm = diff main@{u}...HEAD
+    # alias: dfm - diff current branch to a given branch, shows files only
+    dfm = "!f() { git diff --name-status $1@{u}...HEAD; }; f"
+    # alias prdift - Structual diff current branch to a given branch for local PR
+    prdift = "! git diff --name-only $1@{u}...HEAD | xargs git difftool -t difft -y -d $1 -- {} | delta"
 
     # alias: dmft - structual diff current branch to master using difft
     dmft = "! git difftool -t difft -y master@{u}...HEAD | delta"
@@ -124,6 +128,10 @@
     l30 = "! git pl -n 30"
     # alias: l <n> - last n logs in detail
     l = "! git pl -n $1 | delta"
+    # alias: lt1 - last commit in detail with structual diff
+    lt1 = "! GIT_EXTERNAL_DIFF=difft git log -p -n 1 --ext-diff"
+    # alias: lt3 - last 3 commits in detail with structual diff
+    lt3 = "! GIT_EXTERNAL_DIFF=difft git log -p -n 3 --ext-diff"
 
     # alias: div - Divergence (commits we added and commits remote added)
     div = divergence
@@ -219,6 +227,9 @@
     gh="! git rev-list --all -- . | xargs git grep $1 -- ."
     # alias: ghl - grep in history commits of given directory
     ghl="! git rev-list --all -- $2 | xargs git grep $1 -- $2"
+    # alias: ghs - search in history in current directory
+    ghs="! git log -p -S $1 -- ."
+
 
     # alias: precommit - yarn precommit
     precommit = "! yarn precommit"

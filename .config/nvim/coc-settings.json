@@ -39,5 +39,6 @@
       "offsetColumnEnd": 1,
       "formatLines": 1
     }
-  }
+  },
+  "java.import.gradle.java.home": "/Users/zdeng/Library/Java/JavaVirtualMachines/jdk-11.0.15+10/Contents/Home"
 }

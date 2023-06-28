@@ -248,15 +248,19 @@ vnoremap ,k "
 vnoremap ,x <ESC>`.``gvp``P
 nnoremap ,x viw<ESC>`.``gvp``P
 
-nnoremap ,tt :e ~/.config/nvim/ticket.vim<CR><C-L>
-nnoremap ,tr :e ~/.config/nvim/saved_macros.vim<CR><C-L>
-nnoremap ,tc :e ~/.config/nvim/core/commands.vim<CR><C-L>
-nnoremap ,tk :e ~/.config/nvim/core/mappings.vim<CR><C-L>
-nnoremap ,tp :e ~/.config/nvim/lua/plugins.lua<CR><C-L>
+nnoremap ,tt :e <C-R>=printf("%s/ticket.vim", stdpath("config"))<CR><CR><C-L>:setl noma bh=delete<cr>
+nnoremap ,tq :e <C-R>=printf("%s/saved_macros.vim", stdpath("config"))<CR><CR><C-L>:setl noma<cr>
+nnoremap ,tc :e <C-R>=printf("%s/core/commands.vim", stdpath("config"))<CR><CR><C-L>
+nnoremap ,tk :e <C-R>=printf("%s/core/mappings.vim", stdpath("config"))<CR><CR><C-L>
+nnoremap ,tp :e <C-R>=printf("%s/lua/plugins.lua", stdpath("config"))<CR><CR><C-L>
 
-nnoremap ,ts :e ~/dev/zhizhi/workjournal/obsidian/Pages/Vim/Vim Plugin Shortcuts.md<CR><C-L>
-nnoremap ,tf :sp ~/.config/nvim/preset-commands.vim<CR><C-L>:setl bh=delete noswf<cr>
-nnoremap ,tb :sp ~/.config/nvim/bookmarks.md<CR><C-L>:setl bh=delete noswf<cr>
+nnoremap ,tff :sp <C-R>=printf("%s/preset-commands.vim", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf noma<cr>
+nnoremap ,tfs :e <C-R>=printf("%s/script_scratch.vim", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf<cr>
+nnoremap ,tfl :e <C-R>=printf("%s/script_scratch.lua", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf<cr>
+nnoremap ,tb :sp <C-R>=printf("%s/bookmarks.md", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf noma<cr>
+nnoremap ,tn :sp <C-R>=printf("%s/quicknotes.md", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf noma<cr>
+
+nnoremap ,ts :e ~/dev/zhizhi/workjournal/obsidian/Pages/Vim/Vim Plugin Shortcuts.md<CR><C-L>:setl bh=delete noswf noma<cr>
 
 "Open the current vim help file in a proper help buffer
 nnoremap ,th :help <c-r>=expand('%:t')<cr> \| <c-r>=line('.')<cr><cr><c-w>o
@@ -321,7 +325,7 @@ nnoremap ;j <cmd>HopWord<cr>
 xnoremap ;j <cmd>HopWord<cr>
 onoremap ;j <cmd>HopWord<cr>
 
-nnoremap ;k <cmd>lua require('hop').hint_patterns({multi_windows = true}, '.....')<cr>
+nnoremap ;k <cmd>lua require('hop').hint_patterns({}, '.....')<cr>
 xnoremap ;k <cmd>lua require('hop').hint_patterns({}, '.....')<cr>
 onoremap ;k <cmd>lua require('hop').hint_patterns({}, '.....')<cr>
 
@@ -346,6 +350,7 @@ function! ZdSmartQuit(force)
   let cmd = "bdelete"
   let listed_buf_count = len(getbufinfo({'buflisted': 1}))
   let listed_win_count = len(filter(range(1, winnr('$')), 'buflisted(winbufnr(v:val))'))
+  let filtered_tab = exists('t:bufferline_tab_filter_enabled') && t:bufferline_tab_filter_enabled
   " if &filetype == 'toggleterm' || !buflisted(bufnr())
   if !buflisted(bufnr())
     if winnr('$') > 1 || tabpagenr('$') > 1
@@ -356,8 +361,8 @@ function! ZdSmartQuit(force)
       " The last window can't be hide, just move to a listed buffer
       let cmd = 'bprev'
     endif
-  elseif listed_win_count > 1 || tabpagenr('$') > 1
-    " For split window or tabpage, we just close the close the window
+  elseif listed_win_count > 1 || (tabpagenr('$') > 1 && filtered_tab)
+    " For split window or tabpage, we just close the window
     " and keep the buffer because it maybe duplicated in split window
     " or tabpage intentionally
     let cmd = "close"
@@ -365,11 +370,19 @@ function! ZdSmartQuit(force)
   if a:force && cmd == "bdelete"
     let cmd = cmd . '!'
   endif
-  echo "Closing buffer or window with: " . cmd
-  if buflisted(bufnr()) && cmd[0:6] ==# "bdelete" && listed_buf_count > 1
-    bprev
-    exec cmd . " #"
-    bnext
+  echo "Closing buffer or window with: [" . cmd . "]"
+  if buflisted(bufnr())
+    if cmd[0:6] ==# "bdelete" && listed_buf_count > 1
+      bprev
+      exec cmd . " #"
+      bnext
+    elseif filtered_tab && listed_win_count == 1
+      " Bufferline keymap to exclude current buffer and move to a
+      " previous buffer
+      norm ;wd;s
+    else
+      exec cmd
+    endif
   else
     exec cmd
   endif
@@ -378,6 +391,7 @@ endfunction
 " Can't use `hide` in command window
 nnoremap <silent> ;q :call ZdSmartQuit(0)<cr>
 xnoremap <silent> ;q :<c-u>call ZdSmartQuit(0)<cr>
+tnoremap <silent> ;q <C-\><C-N>:<c-u>call ZdSmartQuit(0)<cr>
 nnoremap <silent> ;Q :call ZdSmartQuit(1)<cr>
 xnoremap <silent> ;Q :<c-u>call ZdSmartQuit(1)<cr>
 
@@ -427,7 +441,7 @@ nnoremap <silent> <space>e<space> :tab sp<cr>
 nnoremap <expr> <space>ttn<space> winnr('$') == 1 ?  '<CMD>new<cr><C-W>o' : '<CMD>tabnew<CR>'
 nnoremap <space>tts<space> :tab sp<cr>
 nnoremap ZT :tabo<cr>
-nnoremap <silent> ZW :BufCurOnly<cr>
+nnoremap <silent> ZW :BufCurOnly<cr><C-L>
 
 "Open scratch buffers
 nnoremap <silent> <space>ttst<space> :tabnew<cr>:setl bt=nofile bh=wipe nobl noswf<cr>
@@ -480,13 +494,13 @@ cnoremap <expr> <C-Y> pumvisible() ? "\<C-Y>" : "\<C-R>-"
 " }}}
 
 "########## Remap CTRL_W to TAB ######### {{{
-nnoremap <TAB>m <cmd>WindowsMaximize<cr>
-nnoremap <c-w>m <cmd>WindowsMaximize<cr>
+nnoremap <expr> <TAB>m exists(':WindowsMaximize') ? '<cmd>WindowsMaximize<cr>' : '<c-w>\|<c-w>_'
+nnoremap <expr> <c-w>m exists(':WindowsMaximize') ? '<cmd>WindowsMaximize<cr>' : '<c-w>\|<c-w>_'
 
 nnoremap <TAB>+ <C-W>+
 nnoremap <TAB>- <C-W>-
 nnoremap <TAB>< <C-W><
-nnoremap <TAB>= <cmd>WindowsEqualize<cr>
+nnoremap <expr> <TAB>= exists(':WindowsEqualize') ? '<cmd>WindowsEqualize<cr>' : '<C-W>='
 nnoremap <TAB>> <C-W>>
 nnoremap <TAB>H <C-W>H
 nnoremap <TAB>J <C-W>J
@@ -499,12 +513,10 @@ nnoremap <TAB>T <C-W>T
 nnoremap <TAB>W <C-W>W
 nnoremap <TAB>] <C-W>]
 nnoremap <TAB>^ <C-W>^
-nnoremap <TAB>_ <cmd>WindowsMaximizeVertically<cr>
+nnoremap <expr> <TAB>_ exists(':WindowsMaximizeVertically') ? '<cmd>WindowsMaximizeVertically<cr>' : '<C-W>_'
 nnoremap <TAB>b <C-W>b
 nnoremap <TAB>c <C-W>c
 nnoremap <TAB>d <C-W>d
-"nnoremap <TAB>f <C-W>f
-"nnoremap <TAB>F <C-W>F
 nnoremap <TAB>g<C-]> <C-W>g<C-]>
 nnoremap <TAB>g<Bar> <C-W>g<Bar>
 nnoremap <TAB>g} <C-W>g}
@@ -526,7 +538,7 @@ nnoremap <TAB>w <C-W>w
 nnoremap <TAB><TAB> <C-W>w
 nnoremap <TAB>x <C-W>x
 nnoremap <TAB>z <C-W>z
-nnoremap <TAB><Bar> <cmd>WindowsMaximizeHorizontally<cr>
+nnoremap <expr> <TAB><Bar> exists(':WindowsMaximizeHorizontally') ? '<cmd>WindowsMaximizeHorizontally<cr>' : '<C-W><Bar>'
 nnoremap <TAB>} <C-W>}
 nnoremap <TAB><Down> <C-W><Down>
 nnoremap <TAB><Up> <C-W><Up>
@@ -537,6 +549,10 @@ nnoremap <TAB>a <cmd>WindowsToggleAutowidth<cr>
 nnoremap <TAB>i <C-I>
 nnoremap <c-w>i <C-I>
 
+" Previous buffer
+nnoremap <silent> <tab>f <C-6>
+inoremap <silent> <tab>f <ESC><C-6>
+
 " }}}
 
 " ########## Convenient yanks ##########{{{
@@ -544,9 +560,11 @@ nnoremap <c-w>i <C-I>
 "Yank a line without line break
 nnoremap <silent> yuu mp_yg_`p:delm p<cr>
 "Copy a line without line break to clipboard
-nnoremap <silent> yuc mp_"+yg_`p:delm p<cr>
+nnoremap <silent> yul mp_"+yg_`p:delm p<cr>
 "Copy a block without line break to clipboard
 nnoremap <silent> yub mp"+yip`p:delm p<cr>
+"Copy a code block in markdown file to clipboard
+nnoremap <silent> yuc mp?^\s*```<cr>1jV/^\s*```<cr>1k"+y`p:nohl<cr>:delm p<cr>
 "Copy buffer to clipboard
 nnoremap <silent> yua :%y+<cr>
 "Copy buffer to default register
@@ -582,11 +600,49 @@ nnoremap <silent> √ "+p
 xnoremap <silent> √ "+p
 inoremap <silent> √ <c-r>+
 cnoremap <silent> √ <c-r>+
+
+" Move previous selection to current position
+nnoremap <silent> <space>mv<space> mz:'<,'>t.<cr>:'<,'>d<cr>`z
+
+" Paste as relative path
+
+" Paste the absolute path in systemclipboard as relative path to the
+" current file
+function! InsertRelativePathFromClipboard()
+  " Get the absolute path from the clipboard
+  let clipboard_path = getreg('+')
+
+  " Get the absolute path of the current buffer's file
+  let current_buffer_path = expand('%:p')
+
+  " Split the paths into components
+  let clipboard_path_components = split(clipboard_path, '/')
+  let current_buffer_path_components = split(current_buffer_path, '/')
+
+  " Find the common prefix
+  let common_prefix_length = 0
+  while common_prefix_length < len(clipboard_path_components) &&
+        \ common_prefix_length < len(current_buffer_path_components) &&
+        \ clipboard_path_components[common_prefix_length] ==# current_buffer_path_components[common_prefix_length]
+    let common_prefix_length += 1
+  endwhile
+
+  " Calculate the relative path
+  let up_dirs = len(current_buffer_path_components) - common_prefix_length - 1
+  let down_dirs = clipboard_path_components[common_prefix_length:]
+  let relative_path = repeat('../', up_dirs) . join(down_dirs, '/')
+
+  " Insert the relative path at the cursor position
+  execute 'normal! i' . relative_path
+endfunction
+
+nnoremap <leader>rp :call InsertRelativePathFromClipboard()<cr>
+inoremap <leader>rp <C-o>:call InsertRelativePathFromClipboard()<cr>
 "}}}
 
 "########## Macro Related ##########{{{
 nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
-nnoremap <leader>mC :<c-u><c-r><c-r>='command! norm! '. string(getreg(v:register))<cr><c-f><esc>0Ea<space>
+nnoremap <leader>mC :<c-u><c-r><c-r>='command! let @n='. string(getreg(v:register))<cr> <bar> norm! @n<c-f><esc>0Ea<space>
 
 " execute macro in q register
 nnoremap QQ @q
@@ -650,6 +706,17 @@ vnoremap <silent> <space>decu<space> :!python3 -c "import sys, urllib.parse as u
 nnoremap <silent> <space>encu<space> :.!python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(input()))"<cr>
 vnoremap <silent> <space>encu<space> :!python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(input()))"<cr>
 
+function! Url_decode(str)
+  return substitute(substitute(a:str, '%\(\x\{2}\)', '\=nr2char("0x" . submatch(1))', 'g'), '+', ' ', 'g')
+endfunction
+
+function! Url_encode(str)
+  return substitute(substitute(a:str, ' ', '+', 'g'), '[^a-zA-Z0-9._+~-]', '\=printf("%%%02X", char2nr(submatch(0)))', 'g')
+endfunction
+
+command! DecodeUrl :let url_line = line('.')<Bar>execute "normal! o\<ESC>k0f?i\<CR>"<Bar>execute url_line . ',' . (url_line + 1) . 'g/&/s/&/\r&/g'<Bar>execute (url_line + 1) . ',''}s/[^?&]\+/\=Url_decode(submatch(0))/g'<Bar>execute 'norm! ' . (url_line) . 'G'<Bar>execute 'normal! }dd'
+command! -range EncodeUrl execute "normal! gv" | execute "'<,'>s/^[&?]\\zs.*/\\=Url_encode(submatch(0))/g" | '<,'>join! | normal! Vgvl
+
 "prettify json using jq
 vnoremap <silent> <space>jq<space> :!jq<cr>
 vnoremap <silent> <space>jqs<space> :!jq -S<cr>
@@ -692,6 +759,7 @@ xnoremap <silent> <space>fpy<space> :!black --quiet --line-length=100 --skip-str
 
 "get json path
 nnoremap <silent> <space>jp<space> :w !java -jar ~/dev/zhizhi/json-path/target/uberjar/json-path-0.1.0-standalone.jar -l <c-r>=line(".")<cr> -c <c-r>=col(".")<cr><cr>
+
 "}}}
 
 "########## Neotree ##########{{{
@@ -722,7 +790,7 @@ xmap <silent> <space>sh<space> y<space>ttss<space>P:%!zsh<cr>
 "}}}
 
 "########## VimCalc3 ##########{{{
-nnoremap <silent> \cc <cmd>Calc<CR>
+nnoremap <silent> \cal <cmd>Calc<CR>
 "}}}
 
 "########## Simple Slides ##########{{{

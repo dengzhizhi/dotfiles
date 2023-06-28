@@ -7,6 +7,15 @@ require('hop').setup({
   char2_fallback_key = '<CR>',
 })
 
+vim.keymap.set('', 'ff', function()
+  vim.cmd[[norm! m']]
+  require('hop').hint_patterns({ direction = require('hop.hint').HintDirection.AFTER_CURSOR, current_line_only = true }, '....')
+end, {remap=true})
+vim.keymap.set('', 'FF', function()
+  vim.cmd[[norm! m']]
+  require('hop').hint_patterns({ direction = require('hop.hint').HintDirection.BEFORE_CURSOR, current_line_only = true }, '....')
+end, {remap=true})
+
 _G.ChineseBuffer = function()
   local hop = require('hop')
   local directions = require('hop.hint').HintDirection

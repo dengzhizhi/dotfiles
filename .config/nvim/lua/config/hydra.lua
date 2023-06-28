@@ -306,3 +306,61 @@ Hydra({
       { '<cr>',  nil, {exit = true, nowait = true, desc = "quit"}},
    },
 })
+
+Hydra({
+   name = 'NoNeckPain',
+   mode = 'n',
+   body = '<space>np<space>',
+   config = {
+      color = 'amaranth',
+      invoke_on_body = true,
+      on_enter = function()
+         require('no-neck-pain').enable()
+         require('lualine').refresh()
+      end,
+      on_exit = function()
+         require('lualine').refresh()
+      end,
+   },
+   heads = {
+      { 'n', '<cmd>NoNeckPain<cr>',          {desc = "Toggle"}},
+      { 'j', '<cmd>NoNeckPainWidthDown<cr>', {desc = "Shrink"}},
+      { 'k', '<cmd>NoNeckPainWidthUp<cr>',   {desc = "Expend"}},
+      { '1', '<cmd>NoNeckPainResize 40<cr>'},
+      { '2', '<cmd>NoNeckPainResize 80<cr>'},
+      { '3', '<cmd>NoNeckPainResize 120<cr>'},
+      { '4', '<cmd>NoNeckPainResize 160<cr>'},
+      { '5', '<cmd>NoNeckPainResize 200<cr>'},
+      { '6', '<cmd>NoNeckPainResize 240<cr>'},
+      { '7', '<cmd>NoNeckPainResize 280<cr>', {desc = 'Preset width'}},
+      { '<esc>', nil, {exit = true, nowait = true}},
+      { '<cr>',  nil, {exit = true, nowait = true, desc = "quit"}},
+   },
+})
+
+Hydra({
+   name = 'Highlight',
+   mode = 'n',
+   body = '<space>fdh<space>',
+   config = {
+      color = 'pink',
+      invoke_on_body = true,
+      on_enter = function()
+         require('lualine').refresh()
+      end,
+      on_exit = function()
+         require('lualine').refresh()
+      end,
+   },
+   heads = {
+      { 'J', '<cmd>Hi><cr>' },
+      { 'K', '<cmd>Hi<<cr>', {desc = "< > Keyword"}},
+      { 'n', '<cmd>Hi}<cr>' },
+      { 'N', '<cmd>Hi{<cr>', {desc = "< > Highlight"}},
+      { '=', '<cmd>Hi==<cr>', {desc = "All windows"}},
+      { '-', '<cmd>Hi=<cr>', {desc = "Single windows"}},
+      { '<esc>', nil, {exit = true, nowait = true}},
+      { 'q', nil, {exit = true, nowait = true}},
+      { '<cr>',  nil, {exit = true, nowait = true, desc = "quit"}},
+   },
+})

@@ -51,6 +51,13 @@ command! -nargs=1 DiffContext call DiffUpdateContext(<f-args>)
 set diffopt+=internal,algorithm:patience
 "set diffopt+=internal,algorithm:histogram
 
+" difftatic
+command! Difft exec "2TermExec cmd='clear && difft --color always --display side-by-side-show-both " . @+ . " " . expand('%:p') . " | delta' go_back=0 direction=tab"
+call utils#Cabbrev('difft', 'Difft')
+
+command! DifftMain exec "2TermExec cmd='clear && git diff --name-only main@{u}...HEAD | xargs git difftool -t difft -y -d main -- {} | delta' go_back=0 direction=tab"
+command! DifftMaster exec "2TermExec cmd='clear && git diff --name-only master@{u}...HEAD | xargs git difftool -t difft -y -d master -- {} | delta' go_back=0 direction=tab"
+
 " }}}
 "########## hledger integration ##########{{{
 command! LedgerOpen :e $LEDGER_FILE
@@ -395,6 +402,27 @@ command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d')
 
 """ Break url parameter
 command! BreakUrlParam s/[?&]/\r\0/g | nohl
+
+""" Markdown preview
+command! Glow exec "3TermExec cmd='clear && glow " . expand("%:p") . " -w " . (&columns - 5) . " -s " . stdpath("config") . "/glow_dracula.json -p less' direction=tab"
+
+""" Call diagon on the current markdown code block to  generate ascii art underneath
+command! DiagonSeq let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Sequencevic:g/^$/d`z' | norm! @n
+command! DiagonTree let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Tree --style="unicode right top"vic:g/^$/d`z' | norm! @n
+command! DiagonTree2 let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Treevic:g/^$/d`z' | norm! @n
+command! DiagonTree3 let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Tree --style="unicode right center"vic:g/^$/d`z' | norm! @n
+command! DiagonDAG let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon GraphDAGvic:g/^$/d`z\ ' | norm! @n
+command! DiagonFlow let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Flowchartvic:g/^$/d`z' | norm! @n
+command! Plantuml let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!java -jar ~/bin/plantuml.jar -pipe -tutxtvic:g/^$/d`z' | norm! @n
+command! GraphEasy let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!graph-easy --as=boxartvic:g/^$/d`z' | norm! @n
+command! GraphEasy2 let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!graph-easy --as=asciivic:g/^$/d`z' | norm! @n
+command! GroffPic let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!groff -Tascii -pvic:g/^$/d`z' | norm! @n
+
+
+""" Change a yourube url to embed link, copy the url in system
+""" clipboard then run this command, you don't need to paste it into
+""" vim
+command! YoutubeEmbed let @n=' ttss ,yP0fmlvf=c/embed/yul;q' | norm! @n
 "}}}
 "########## Project Bookmarks #########{{{
 let g:project_bookmark = {
@@ -403,10 +431,9 @@ let g:project_bookmark = {
       \'react': '~/dev/zhizhi/github/react-interpretation/',
       \'perf': '~/dev/zhizhi/performance-bookmarklet',
       \'notes': '~/dev/zhizhi/workjournal/',
-      \'vimrc': '~/.config/nvim/',
-      \'oldvimrc': '~/.config/nvim_/',
+      \'vimrc': stdpath('config'),
       \'vimhelp': $VIMRUNTIME . '/doc/',
-      \'vimplug': stdpath('data') . '/site/pack/packer/',
+      \'vimplug': stdpath('data') . '/lazy/',
       \'kitty': '~/.config/kitty'
       \}
 func! s:go_bookmark(bookmark, tab_only)
@@ -439,14 +466,6 @@ func! s:ensureTicketNotesFolder()
     call system('mkdir -p ' . l:temp_folder)
   endif
   return l:temp_folder
-endfunc
-func! s:SetCurrentTicket(...)
-  if a:0 == 0
-    let g:ticket = input("Ticket #:")
-  else
-    let g:ticket = a:1
-    echo "Current Project ticket set to " . g:ticket
-  endif
 endfunc
 func! s:TicketNotesListFolder()
   let l:temp_folder = s:ensureTicketNotesFolder()
@@ -484,101 +503,25 @@ func! s:TicketNoteSave(...)
   exec 'saveas ' . l:temp_folder . '/' . l:note_name
 endfunc
 
-" Save and load bookmarks, need `MattesGroeger/vim-bookmarks` to work
-func! s:TicketBookmarkSave(...)
-  let l:temp_folder = g:project_temp_folder. '/' . g:ticket
-  if a:0 == 0
-    let l:note_name = input("Note name (default: bookmarks): ")
-  else
-    let l:note_name = a:1
-  endif
-  if (l:note_name == "")
-    let l:note_name = "bookmarks"
-  endif
-  exec 'BookmarkSave ' . l:temp_folder . '/' . l:note_name
-endfunc
-
-func! s:TicketBookmarkLoad(...)
-  let l:temp_folder = g:project_temp_folder. '/' . g:ticket
-  if a:0 == 0
-    let l:note_name = input("Note name (default: bookmarks): ")
-  else
-    let l:note_name = a:1
-  endif
-  if (l:note_name == "")
-    let l:note_name = "bookmarks"
-  endif
-  exec 'BookmarkLoad ' . l:temp_folder . '/' . l:note_name
-endfunc
-
-command! -nargs=* TicketSetCurrent call s:SetCurrentTicket(<f-args>)
 command! TicketNotesListFolder call s:TicketNotesListFolder()
 command! -nargs=* TicketNoteEdit call s:TicketNoteEdit(<f-args>)
 command! -nargs=* TicketNoteSave call s:TicketNoteSave(<f-args>)
-command! -nargs=* TicketBookmarkLoad call s:TicketBookmarkLoad(<f-args>)
-command! -nargs=* TicketBookmarkSave call s:TicketBookmarkSave(<f-args>)
 nnoremap <silent> <space>tn<space> :TicketNoteEdit notes.md notes.org<cr>
 nnoremap <silent> <space>tf<space> :TicketNotesListFolder<cr>
 
 command! Todo exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"TODO \" . g:ticket)\<CR>\<CR>"
 command! TBookmark exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"BOOKMARK \" . g:ticket)\<CR>\<CR>"
 command! NoteTitle s/let g:ticket="\([^"]\+\)"\s\+"/title:: \1 /
-command! ObsidianNote let @p = '0df"ExldwxyyPElDOki---tags:  - jiraticketObsidianLink: obsidian://open?vault=obsidian&file=JiraTicketNotes%2FJgJA%2Fnotes---jI# o## Links(Ticket) 🎫(Branch) 🔀(PR) 💪(FF) 🚩(FD) 🚚{jjjjjjI- ' | norm @p
+command! ObsidianNote let @n = '0df"ExldwxyyPElDOki---tags:  - jiraticketObsidianLink: obsidian://open?vault=obsidian&file=JiraTicketNotes%2FJgJA%2Fnotes---jI# o## Links(Ticket) 🎫(Branch) 🔀(PR) 💪(FF) 🚩(FD) 🚚{jjjjjjI- ' | norm @n
 
-nmap ,td aTODO <c-r>=g:ticket<cr><space>$<esc>gcc_f$s
-imap ,td  TODO <c-r>=g:ticket<cr><space>$<esc>gcc_f$s
-nmap ,tm aBOOKMARK <c-r>=g:ticket<cr><space>$<esc>gcc_f$s
-imap ,tm  BOOKMARK <c-r>=g:ticket<cr><space>$<esc>gcc_f$s
+nmap ,td aTODO <c-r>=g:ticket<cr><space>
+imap ,td  TODO <c-r>=g:ticket<cr><space>
+nmap ,tm aBOOKMARK <c-r>=g:ticket<cr><space>
+imap ,tm  BOOKMARK <c-r>=g:ticket<cr><space>
 nnoremap <space>gl<space> <c-w>gF
 
 "}}}
 "########## IDE integration ##########{{{
-
-"func! s:getBookmarkUnderCursor(text, pos)
-"  "Find the start location
-"  let p = a:pos
-"  while p >= 0 && a:text[p] =~ '\f'
-"    let p = p - 1
-"  endwhile
-"  let p = p + 1
-"  "Match file name and position
-"  let l:m = matchlist(a:text, '\v(\f+)%([#:](\d+))?%(:(\d+))?', p)
-"  if len(l:m) > 0
-"    return [l:m[1], l:m[2], l:m[3]]
-"  endif
-"  return []
-"endfunc
-"func! s:OpenFileLinkInIdea(text, pos, ide)
-"  let l:location = s:getBookmarkUnderCursor(a:text, a:pos)
-"  if l:location[0] != ''
-"    if l:location[1] != ''
-"      if l:location[2] != ''
-"        let l:command = a:ide . " --column " . str2nr(l:location[2]) . " " . l:location[0] . ":" . str2nr(l:location[1])
-"        echo l:command
-"        exec "AsyncRun -silent " . l:command
-"      else
-"        let l:command = a:ide . " " . l:location[0] . ":" . str2nr(l:location[1])
-"        echo l:command
-"        exec "AsyncRun -silent " . l:command
-"      endif
-"    else
-"      let l:command = a:ide . " " . l:location[0]
-"      echo l:command
-"      exec "AsyncRun -silent " . l:command
-"    endif
-"  else
-"    echo "Not a valid file path"
-"  endif
-"endfunc
-" command! OpenFileLinkInIdea call s:OpenFileLinkInIdea(getline("."), col("."), "idea")
-" command! OpenFileLinkInWebStorm call s:OpenFileLinkInIdea(getline("."), col("."), "webstorm")
-" command! OpenFileLinkInPycharm call s:OpenFileLinkInIdea(getline("."), col("."), "pycharm")
-" Open a file link under cursor in idea
-" nnoremap <space>idle<space> :OpenFileLinkInIdea<cr>
-" Open a file link under cursor in webstorm
-" nnoremap <space>idlw<space> :OpenFileLinkInWebStorm<cr>
-" Open a file link under cursor in webstorm
-" nnoremap <space>idlp<space> :OpenFileLinkInPycharm<cr>
 
 " Open a file link under cursor in vscode
 nnoremap <silent> <space>idcc<space> :.w !ed.clj -e vscode --stdin --cursor <c-r>=col(".")<cr><cr>
@@ -778,12 +721,15 @@ call utils#Cabbrev('shdo', 'Shdo')
 " call utils#Cabbrev('flog', 'Flog')
 
 call utils#Cabbrev('ts',  'Telescope')
-call utils#Cabbrev('tsk', 'Telescope keymaps')
-call utils#Cabbrev('tsj', 'Telescope jumplist')
-call utils#Cabbrev('tss', 'Telescope lsp_document_symbols')
-call utils#Cabbrev('tsc', 'Telescope command_palette')
-call utils#Cabbrev('tsf', 'Telescope smart_open')
-call utils#Cabbrev('tsm', 'Telescope marks')
+call utils#Cabbrev('tsk', 'Telescope keymaps theme=dropdown')
+call utils#Cabbrev('tsj', 'Telescope jumplist theme=dropdown')
+call utils#Cabbrev('tss', 'Telescope lsp_document_symbols theme=ivy')
+call utils#Cabbrev('tsc', 'Telescope command_palette theme=dropdown')
+call utils#Cabbrev('tsp', 'Telescope projects theme=ivy')
+call utils#Cabbrev('tsf', 'Telescope smart_open theme=ivy')
+call utils#Cabbrev('tsm', 'Telescope marks theme=ivy')
+call utils#Cabbrev('tb',  'Telescope buffers theme=ivy')
+call utils#Cabbrev('tsb', 'Telescope buffers theme=ivy')
 
 call utils#Cabbrev('rof', 'LeaderfMru')
 call utils#Cabbrev('pf',  'LeaderfFile')
@@ -818,6 +764,10 @@ call utils#Cabbrev('ls', 'Dirbuf %')
 
 " Fix issues when switching colortheme
 call utils#Cabbrev('dark', 'set background=dark')
+
+" Create folder for the current file
+call utils#Cabbrev('md', '!mkdir -p %:p:h')
+
 
 "}}}
 

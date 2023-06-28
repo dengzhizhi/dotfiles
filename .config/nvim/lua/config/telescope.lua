@@ -7,11 +7,15 @@ telescope.setup {
       n = {
         ["q"] = actions.close,
         [";q"] = actions.close,
+        ["<C-K>"] = actions.move_selection_previous,
+        ["<C-J>"] = actions.move_selection_next,
         ["<C-P>"] = actions.move_selection_previous,
         ["<C-N>"] = actions.move_selection_next,
       },
       i = {
         [";q"] = actions.close,
+        ["<C-K>"] = actions.move_selection_previous,
+        ["<C-J>"] = actions.move_selection_next,
         ["<C-P>"] = actions.move_selection_previous,
         ["<C-N>"] = actions.move_selection_next,
       },

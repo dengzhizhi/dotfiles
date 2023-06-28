@@ -1,1 +1,1 @@
-vim.api.nvim_set_keymap("n", "\\cc", "<cmd>Calc<CR>", { silent = true })
+vim.api.nvim_set_keymap("n", "\\cal", "<cmd>Calc<CR>", { silent = true })

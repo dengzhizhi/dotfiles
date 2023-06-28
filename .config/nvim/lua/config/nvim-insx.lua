@@ -3,7 +3,7 @@ local esc = insx.helper.regex.esc
 
 -- Endwise (experimental).
 local endwise = require('insx.recipe.endwise')
-insx.add('<CR>', endwise.recipe(endwise.builtin))
+insx.add('<CR>', endwise(endwise.builtin))
 
 -- Quotes
 for open, close in pairs({
