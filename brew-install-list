@@ -1,0 +1,211 @@
+brew cask install adoptopenjdk8
+brew cask install basictex
+brew cask install chromium
+brew cask install fiddler
+brew cask install font-sarasa-nerd
+brew cask install keycastr
+brew cask install mactex
+brew cask install mactex-no-gui
+brew cask install ngrok
+brew install --HEAD lgarron/lgarron/servecert
+brew install --HEAD luajit
+brew install --HEAD neovim
+brew install --HEAD tree-sitter luajit
+brew install --HEAD universal-ctags
+brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+brew install --HEAD wvanlint/twf/twf
+brew install --cask cljstyle
+brew install --cask font-cascadia-mono
+brew install --cask font-dejavu-sans-mono-nerd-font
+brew install --cask font-dejavu-sans-nerd
+brew install --cask font-hack-nerd-font\
+brew install --cask font-iosevka\
+brew install --cask font-sarasa
+brew install --cask font-sarasa-mono
+brew install --cask font-sarasa-nerd
+brew install --cask goneovim
+brew install --cask lagrange
+brew install --cask neovide
+brew install --cask rectangle
+brew install --cask temurin
+brew install --cask temurin11
+brew install --cask temurin8
+brew install -f gdu
+brew install Caskroom/cask/xquartz
+brew install ImageMagick
+brew install OpenSSL
+brew install Pandoc
+brew install aa2u
+brew install ag
+brew install alacritty
+brew install apenngrace/vulkan/vulkan-sdk
+brew install aspell
+brew install bat
+brew install borkdude/brew/babashka
+brew install bottom
+brew install candid82/brew/joker
+brew install caskformula/caskformula/inkscape
+brew install chez
+brew install chezscheme
+brew install chromedriver
+brew install chromium
+brew install clang
+brew install clang++
+brew install clangd
+brew install cling
+brew install clojure
+brew install clojure/tools/clojure
+brew install cloudflare/cloudflare/cloudflared
+brew install cmake
+brew install code-minimap\
+brew install coreutils
+brew install cowsay
+brew install cpanminus
+brew install cq
+brew install cscope
+brew install diagon
+brew install diff-so-fancy
+brew install difft
+brew install difftastic
+brew install ditaa
+brew install dot
+brew install efm-langserver
+brew install elinks
+brew install emacs
+brew install emacs-mac
+brew install eslint
+brew install exa
+brew install fd
+brew install fd-find
+brew install fff
+brew install ffmpeg
+brew install fmt
+brew install fortune
+brew install fzf
+brew install fzy
+brew install gawk
+brew install gh
+brew install ghq
+brew install gifsicle
+brew install git
+brew install git-delta\
+brew install git-gui
+brew install git-lfs
+brew install gitk
+brew install global
+brew install glogg
+brew install glow
+brew install gnu-sed
+brew install gnu-tar zstd
+brew install gpg
+brew install gradle
+brew install graph-easy
+brew install graphviz
+brew install groff
+brew install gtags
+brew install htop
+brew install http-server
+brew install httpie
+brew install icdiff
+brew install inkscape
+brew install jenv\
+brew install joker
+brew install joshuto
+brew install jq
+brew install languagetool
+brew install lazygit
+brew install lcat
+brew install lein
+brew install leinigen
+brew install leiningen
+brew install lf
+brew install libc++-dev
+brew install libpng ragel
+brew install librsvg
+brew install libtool gettext
+brew install llvm
+brew install lnav
+brew install lolcat
+brew install luajit
+brew install luarocks
+brew install macvim
+brew install macvim --with-override-system-vim
+brew install markus-wa/brew/cq
+brew install maven
+brew install mitmproxy
+brew install mkcert
+brew install mkvtoolnix
+brew install multitail
+brew install mvnvm
+brew install ncdu
+brew install neovim
+brew install neovim-qt
+brew install neovim-remote
+brew install ninja
+brew install ninja libtool automake cmake pkg-config gettext curl
+brew install nmake
+brew install nnn
+brew install nvm
+brew install ocaml-findlib
+brew install ocamlbuild
+brew install ocamlfind
+brew install opam
+brew install peco
+brew install pic
+brew install pikchr
+brew install pip
+brew install planck
+brew install plantuml
+brew install pngpaste
+brew install pollidev
+brew install postgresql
+brew install prettyping
+brew install pwgen
+brew install pyenv
+brew install python3
+brew install qpdfview
+brew install ripgrep
+brew install rlwrap
+brew install rsync
+brew install rust gtk+3 librsvg
+brew install rustup
+brew install rustup-init
+brew install sbcl
+brew install sdcv
+brew install sdl2 sdl2_gfx sdl2_image sdl2_mixer sdl2_net sdl2_ttf
+brew install sed
+brew install selecta
+brew install seq
+brew install shellcheck
+brew install splite
+brew install strxfrm
+brew install task
+brew install tclap
+brew install tealdeer
+brew install terminal-notifier
+brew install terraform
+brew install terraform-ls
+brew install texlive
+brew install texlive-latex-extra
+brew install tidy-html5
+brew install tig
+brew install tldr
+brew install toilet
+brew install tree
+brew install universal-ctags
+brew install unzip
+brew install util-linux
+brew install vifm
+brew install vim
+brew install vimr
+brew install w3m
+brew install watchman
+brew install webpack
+brew install whistle && w2 start --init
+brew install xapian
+brew install xml
+brew install xmlstarlet
+brew install xplr
+brew install yarn
+brew install yarn --ignore-dependencies
+brew install zip
