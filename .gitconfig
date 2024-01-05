@@ -29,6 +29,29 @@
 [difftool "difft"]
     cmd = difft --color always --display side-by-side-show-both \"$LOCAL\" \"$REMOTE\"
 
+[difftool "unifydifft"]
+    cmd = difft --color always --display inline \"$LOCAL\" \"$REMOTE\"
+
+[difftool "kdiff3"]
+    path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+    trustExitCode = true
+
+[difftool "meld"]
+    path = /opt/homebrew/bin/meld
+    trustExitCode = true
+
+[difftool "smerge"]
+    cmd = smerge mergetool "$LOCAL" "$REMOTE" "$LOCAL" -o "$REMOTE"
+    trustExitCode = true
+
+[difftool "intellij"]
+    cmd = idea diff $(cd $(dirname \"$LOCAL\") && pwd)/$(basename \"$LOCAL\") $(cd $(dirname \"$REMOTE\") && pwd)/$(basename \"$REMOTE\")
+    trustExitCode = true
+
+[difftool "webstorm"]
+    cmd = webstorm diff $(cd $(dirname \"$LOCAL\") && pwd)/$(basename \"$LOCAL\") $(cd $(dirname \"$REMOTE\") && pwd)/$(basename \"$REMOTE\")
+    trustExitCode = true
+
 [merge]
     tool = nvimdiff
 
@@ -43,12 +66,35 @@
     trustExitCode = true
     keepBackup = false
 
+[difftool "meld"]
+    path = /opt/homebrew/bin/meld
+    trustExitCode = true
 [mergetool "sourcetree"]
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 
+[mergetool "kdiff3"]
+    path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+    trustExitCode = true
+    keepBackup = false
+
+[mergetool "webstorm"]
+    cmd = webstorm merge $(cd $(dirname \"$LOCAL\") && pwd)/$(basename \"$LOCAL\") $(cd $(dirname \"$REMOTE\") && pwd)/$(basename \"$REMOTE\") $(cd $(dirname \"$BASE\") && pwd)/$(basename \"$BASE\") $(cd $(dirname \"$MERGED\") && pwd)/$(basename \"$MERGED\")
+    trustExitCode = true
+    keepBackup = false
+
+[mergetool "idea"]
+    cmd = idea merge $(cd $(dirname \"$LOCAL\") && pwd)/$(basename \"$LOCAL\") $(cd $(dirname \"$REMOTE\") && pwd)/$(basename \"$REMOTE\") $(cd $(dirname \"$BASE\") && pwd)/$(basename \"$BASE\") $(cd $(dirname \"$MERGED\") && pwd)/$(basename \"$MERGED\")
+    trustExitCode = true
+    keepBackup = false
+
+[mergetool "smerge"]
+    cmd = smerge mergetool "$BASE" "$LOCAL" "$REMOTE" -o "$MERGED"
+    trustExitCode = true
+    keepBackup = false
+
 [user]
-    name = Zhizhi Deng
+    name = Daniel Deng
     email = zdeng@example.com
 
 [alias]
@@ -80,7 +126,7 @@
     # alias: dht1 - Structual diff for head (latest commit)
     dht1 = difftool -t difft -y HEAD~1
     # alias: dh - git diff for head (latest commit), name only
-    dh = diff --name-only HEAD~1
+    dh = diff --name-status HEAD~1
     # alias: dfc <hash> - list changed files of a given commit
     dfc = diff-tree --no-commit-id --name-only -r
     # alias: dm - diff current branch to master
@@ -97,9 +143,24 @@
     # alias: dmmft - structual diff current branch to main using difft
     dmmft = "! git difftool -t difft -y main@{u}...HEAD | delta"
     # alias: dmf - list changed files between current branch and master
-    dmf = diff --name-only master@{u}...HEAD
+    dmf = diff --name-status master@{u}...HEAD
     # alias: dmfm - list changed files between current branch and main
-    dmfm = diff --name-only main@{u}...HEAD
+    dmfm = diff --name-status main@{u}...HEAD
+
+    # alias: dmgf - diff a merge commit between one of its parent branch, name only. Example: git dmgf HEAD 1
+    dmgf = "!f() { git diff --name-status $(git log --merges --pretty=format:\"%P\" -n 1 $1 | cut -d ' ' -f $2) $1; }; f"
+
+    # alias: dmg - diff a merge commit between one of its parent branch (1 or 2). Example: git dmg HEAD 1
+    dmg = "!f() { git diff $(git log --merges --pretty=format:\"%P\" -n 1 $1 | cut -d ' ' -f $2) $1 | delta --side-by-side; }; f"
+
+    # alias: dmgt - structrual diff a merge commit between one of its parent branch. Example: git dmgt HEAD
+    dmgt = "!f() { git difftool -t difft -y  $(git log --merges --pretty=format:\"%P\" -n 1 $1 | cut -d ' ' -f $2) $1; }; f"
+
+    # alias: dmgv - diff a merge commit between one of its parent branch, select a file and diff in vimdiff.
+    dmgv = "!f() { file=$(git dmgf $1 $2 | awk '{print $2}' | fzf --preview 'pygmentize -g {}') && git difftool -t nvimdiff -y $(git log --merges --pretty=\"format:%P\" -n 1 $1 | cut -d ' ' -f $2) $1 -- $file; }; f HEAD"
+
+    # alias: dmgv2 - diff a merge commit between its 2nd parent branch, select a file and diff in vimdiff.
+    # dmgv2 = "!f() { file=$(git dmgf2 $1 | awk '{print $2}' | fzf --preview 'pygmentize -g {}') && git difftool -t nvimdiff -y $(git log --merges --pretty=\"format:%P\" -n 1 $1 | awk '{print $2}') $1 -- $file; }; f HEAD"
 
     # alias: oldest-ancestor - find hash of the oldest common ancestor for two commits, default to master and HEAD
     oldest-ancestor = !zsh -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1' -
@@ -167,10 +228,8 @@
     bs = "!. ~/.githelpers && pretty_git_branch_sorted | nvim -R +AnsiEsc -"
 
     #fetching
-    # alias: fom - fetch master while staying in the currect branch (use before merge-in master)
-    fom = "! git fetch origin master:master"
-    # alias: fom - fetch main while staying in the currect branch (use before merge-in main)
-    fomm = "! git fetch origin main:main"
+    # alias: fom - fetch master or main while staying in the currect branch (use before merge-in master)
+    fom = "! MAIN=$(git branch -l 'ma*' | gsed -n 's/^\\s*\\(master\\|main\\)$/\\1/p') && echo git fetch origin $MAIN:$MAIN && git fetch origin $MAIN:$MAIN"
     # alias: fa - fetch --all
     fa = fetch --all
     # alias: fr - fetch origin (git fr <remote-branch>)
@@ -186,13 +245,13 @@
     # alias: corf - check out remote branch that already in local with fzy selection
     cor = "! git checkout $(git branch -r | fzy | awk '{ st = index($0, \"/\");print substr($0, st+1)}')"
     # alias: af - add a file with fzy selection
-    af = "! git add $(git ls-files -m | fzy)"
+    af = "! git add $(git ls-files -m | fzy --multi)"
     # alias: df - diff a file with fzy selection
     df = "! git diff $(git ls-files -m | fzy)"
     # alias: dft - diff a file in diff tool (neovim) with fzy selection
     dft = "! git difftool -t nvimdiff -y $(git ls-files -m | fzy)"
     # alias: rmf - remove a untracked file with fzy selection
-    rmf = "! rm $(git ls-files --others --exclude-standard | fzy)"
+    rmf = "! rm $(git ls-files --others --exclude-standard | fzf --multi)"
     # alias: usf - revert a modified file with fzy selection
     usf = "! git checkout -- $(git ls-files -m | fzy)"
     # alias: diffdev - diff a file to master with fzy selection
@@ -255,9 +314,48 @@
     # from https://help.github.com/articles/remove-sensitive-data
     remove-file = "!f() { git filter-branch -f --index-filter \"git rm --cached --ignore-unmatch $1\" --prune-empty --tag-name-filter cat -- --all; }; f"
 
+    # Mergetools
+    # alias: merge-vim - mergetool -t nvimdiff
+    merge-vim = mergetool -t nvimdiff
+    # alias: merge-kdiff - mergetool -t kdiff3
+    merge-kdiff = mergetool -t kdiff3
+    # alias: merge-meld - mergetool -t meld
+    merge-meld = mergetool -t meld
+    # alias: merge-idea - mergetool -t idea
+    merge-idea = mergetool -t idea
+    # alias: merge-webstorm - mergetool -t webstorm
+    merge-webstorm = mergetool -t webstorm
+    # alias: merge-smerge - mergetool -t smerge
+    merge-smerge = mergetool -t smerge
+
+    # alias: lsc - list files in conflict
+    lsc = diff --name-only --diff-filter=U --relative
+
+    # alias: rcf - resolve conflict for a file
+    rcf = "!f() { FILE=$(git lsc | fzf --preview 'pygmentize -g {}') && git mergetool -t nvimdiff -y $FILE; };f"
+
     #list all alias
     # alias: alias - list all alias document comments (the comments starts with `# alias:`)
-    alias = "! cat ~/.gitconfig | grep '^\\s*# alias:' | gsed 's/^\\s*# alias: //' | awk -F- '{ st = index($0,\" - \");printf(\"%-15s %s\\n\", $1, substr($0, st+1))}'"
+    # alias = "! cat ~/.gitconfig | grep '^\\s*# alias:' | gsed 's/^\\s*# alias: //' | awk -F- '{ st = index($0,\" - \");printf(\"%-15s %s\\n\", $1, substr($0, st+1))}'"
+    alias = "! cat ~/.gitconfig | cq -i lines -o lines -- '#| \
+	(let [p #\"^\\s*#\\s*alias:\"] \
+	    (->> . (filter #(re-find p %)) \
+		#map (str/replace . p \"\") \
+		#map (str/split . #\" - \" 2) \
+		#map (str (format \"%-20s\" (first .)) \" - \" (second .))))'"
+    # alias: aliascsv - list all alias document comments (the comments starts with `# alias:`) in csv format
+    aliascsv = "! cat ~/.gitconfig | cq -p -i lines -o csv -- '#| \
+	(let [p #\"^\\s*#\\s*alias:\"] \
+	    (->> . (filter #(re-find p %)) \
+		#map (str/replace . p \"\") \
+		#map (str/split . #\" - \" 2) \
+		(#(conj % [\"ALIAS\" \"DESC\"]))))'"
+    # alias: aliasjson - list all alias document comments (the comments starts with `# alias:`) in json format
+    aliasjson = "! cat ~/.gitconfig | cq -p -i lines -o json -- '#| \
+	(let [p #\"^\\s*#\\s*alias:\"] \
+	    (->> . (filter #(re-find p %)) \
+		#map (str/replace . p \"\") \
+		#map (str/split . #\" - \" 2)))'"
 
 
 # [init]

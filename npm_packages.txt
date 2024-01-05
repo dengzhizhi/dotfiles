@@ -1,0 +1,10 @@
+corepack@0.10.0
+eslint@8.45.0
+js-beautify@1.14.9
+jscodeshift@0.15.0
+nbb@1.2.175
+npm@8.5.5
+typescript-language-server@3.3.2
+typescript@5.1.6
+zx@7.2.3
+vim-language-server@2.3.1
