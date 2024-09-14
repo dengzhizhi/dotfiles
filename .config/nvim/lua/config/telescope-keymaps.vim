@@ -1,12 +1,13 @@
-nnoremap <silent> <space>fefj<space> <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <silent> <space>fefj<space> <cmd>Telescope find_files theme=ivy<cr>
 nnoremap <silent> <space>fefk<space> <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <silent> <space>fefkk<space> <cmd>lua require('telescope.builtin').live_grep({grep_open_files=true})<cr>
-nnoremap <silent> <space>fefu<space> <cmd>lua require('telescope.builtin').file_browser()<cr>
+nnoremap <silent> <space>fefb<space> <cmd>lua require('telescope.builtin').live_grep({grep_open_files=true})<cr>
+nnoremap <silent> <space>fefu<space> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <silent> <space>fefl<space> <cmd>Telescope buffers theme=ivy<cr>
 nnoremap <silent> <space>fefh<space> <cmd>Telescope help_tags theme=ivy<cr>
 nnoremap <silent> <space>fefp<space> <cmd>Telescope lsp_document_symbols theme=ivy<cr>
 nnoremap <silent> <space>fefi<space> <cmd>Telescope diagnostics bufnr=0 theme=ivy<cr>
 nnoremap <silent> <space>fefm<space> <cmd>Telescope marks theme=ivy<cr>
+nnoremap <silent> <space>feff<space> <cmd>Telescope frecency theme=ivy<cr>
 
 nnoremap <silent> <space>jijs<space> <cmd>Telescope git_status<cr>
 nnoremap <silent> <space>jijf<space> <cmd>Telescope jumplist theme=ivy<cr>

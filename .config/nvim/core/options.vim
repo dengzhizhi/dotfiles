@@ -209,7 +209,7 @@ set nospell
 set thesaurus+=~/.config/dictionary/moby_thesaurus.txt
 set textwidth=0
 " set defult suffixes so vim can detect common files used without suffix
-set suffixesadd+=.tsx,ts
+set suffixesadd+=.tsx,.ts
 
 " Don't set timeoutlen since it breaks which-key
 "set timeout timeoutlen=8000
@@ -239,3 +239,23 @@ set modelines=3
 " Insert only one space when joining lines that contain sentence-terminating
 " punctuation like `.`.
 set nojoinspaces
+
+" Add unsigned to nrformats so ctrl-a/x will ignore negative signs"
+set nrformats=bin,hex,unsigned
+
+" better gF
+function! s:MyIncludeExpr(fname)
+  " Capture the values of the necessary Vim variables
+  let l:target_file = a:fname
+  let l:current_file_fullpath = expand("%:p")
+  let l:current_pwd = getcwd()
+
+  " Declare the possible prefixes
+  let l:prefixes = [".ts", ".js", ".tsx", ".jsx", ".css"]
+
+  " Custom gf file name transformation logic goes here
+
+  " Return the original fname if no matching include found
+  return a:fname
+endfunction
+set includeexpr=s:MyIncludeExpr(v:fname)

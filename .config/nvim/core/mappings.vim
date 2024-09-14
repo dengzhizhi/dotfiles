@@ -26,14 +26,18 @@ nnoremap <silent> ]Q :<C-U>clast<CR>zv
 " nnoremap <Space><Space> a<Space><ESC>h
 
 " Move the cursor based on physical lines, not the actual lines.
-nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
-nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
+noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
+noremap <silent> gj j
+noremap <silent> gk k
+noremap <silent> gh _
+noremap <silent> gl g_
 
 " bulk move up and down
-noremap <c-j> 10j
-noremap <c-j> 10j
-noremap <c-k> 10k
-noremap <c-k> 10k
+noremap <silent> <c-j> 5j
+noremap <silent> <c-j> 5j
+noremap <silent> <c-k> 5k
+noremap <silent> <c-k> 5k
 
 " nnoremap ^ g^
 " nnoremap 0 g0
@@ -74,7 +78,7 @@ nnoremap <silent> ,C :<C-U>silent update $MYVIMRC <bar> source $MYVIMRC <bar>
       \ call v:lua.vim.notify("Nvim config successfully reloaded!", 'info', {'title': 'nvim-config'})<cr>
 
 " Reselect the text that has just been pasted, see also https://stackoverflow.com/a/4317090/6064933.
-nnoremap <expr> <leader>v printf('`[%s`]', getregtype()[0])
+nnoremap <silent> <expr> <leader>v printf('`[%s`]', getregtype()[0])
 
 " Search in selected region
 xnoremap g/ :<C-U>call feedkeys('/\%>'.(line("'<")-1).'l\%<'.(line("'>")+1)."l")<CR>
@@ -118,10 +122,6 @@ nnoremap <silent> <leader>cl :<C-U>call utils#ToggleCursorCol()<CR>
 " nnoremap <silent> <A-k> <Cmd>call utils#SwitchLine(line('.'), 'up')<CR>
 " nnoremap <silent> <A-j> <Cmd>call utils#SwitchLine(line('.'), 'down')<CR>
 
-" Move current visual-line selection up and down
-xnoremap <silent> <A-k> :<C-U>call utils#MoveSelection('up')<CR>
-xnoremap <silent> <A-j> :<C-U>call utils#MoveSelection('down')<CR>
-
 " Replace visual selection with text in register, but not contaminate the
 " register, see also https://stackoverflow.com/q/10723700/6064933.
 " xnoremap p "_c<ESC>p
@@ -143,7 +143,8 @@ xnoremap <silent> iB :<C-U>call text_obj#Buffer()<CR>
 onoremap <silent> iB :<C-U>call text_obj#Buffer()<CR>
 
 " Do not move my cursor when joining lines.
-nnoremap J mzJ`z
+nnoremap <silent> J mzJ`z
+nnoremap <silent> gJ mzgJ`z
 
 " Break inserted text into smaller undo units.
 for ch in ['.', '!', '?', ';', ':', '=']
@@ -151,8 +152,8 @@ for ch in ['.', '!', '?', ';', ':', '=']
 endfor
 
 " insert semicolon in the end
-inoremap <A-;> <ESC>mzA;<ESC>`zi
-inoremap <A-,> <ESC>mzA,<ESC>`zi
+inoremap <silent> <A-;> <ESC>mzA;<ESC>`zi
+inoremap <silent> <A-,> <ESC>mzA,<ESC>`zi
 
 " Keep cursor position after yanking
 " nnoremap y myy
@@ -170,6 +171,7 @@ inoremap <A-,> <ESC>mzA,<ESC>`zi
 
 " Toggle modifiable for current buffer
 nnoremap <silent> <space>s<space> :setl ma! ma?<cr>
+nnoremap <silent> ;m :setl ma! ma?<cr>
 
 " Toggle transient nowrite (scrath) for current buffer, the buffer
 " will be deleted when it hides
@@ -206,10 +208,30 @@ endif
 nnoremap <silent> gf gF
 nnoremap <silent> gF gf
 
-" Perform a replacement to empty and extract the 1st capture group of the last search into variable t, use `:put=t` to
-" insert extractions into text. To avoid the original text being deleted, add `\zs` at the end of the search pattern
-nnoremap <silent> <space>ev<space> :<c-u>let t = []<cr>:%s//\=add(t, submatch(1))[1:0]/g<cr>:echo "Use :put=t to insert extracted matches"<cr>
-xnoremap <silent> <space>ev<space> :<c-u>let t = []<cr>:<c-u>'<,'>s//\=add(t, submatch(1))[1:0]/g<cr>:echo "Use :put=t to insert extracted matches"<cr>
+" Perform a no-op replacement and extract the matches of the last search into variable t, use `:put=t` to
+" insert extractions into text.
+nnoremap <silent> <space>ev<space> :<c-u>let t = []<cr>:%s//\=add(t, submatch(0))[-1]/g<cr>:echo "Use :put=t to insert extracted matches"<cr>
+xnoremap <silent> <space>ev<space> :<c-u>let t = []<cr>:<c-u>'<,'>s//\=add(t, submatch(0))[-1]/g<cr>:echo "Use :put=t to insert extracted matches"<cr>
+
+
+"########## Kitty Modifier Shortcuts ##########{{{
+noremap  <silent> <A-h> _
+inoremap <silent> <A-h> <ESC>I
+noremap  <silent> <A-l> g_
+inoremap <silent> <A-l> <ESC>A
+nnoremap <silent> <A-c> "+yy
+xnoremap <silent> <A-c> "+y
+cnoremap <silent> <A-v> <C-R>+
+inoremap <silent> <A-v> <C-R>+
+nnoremap <silent> <A-v> "+p
+xnoremap <silent> <A-v> "+p
+noremap  <silent> <A-a> mjggVG
+inoremap <silent> <D-;> <ESC>mzA;<ESC>`za
+" Move current visual-line selection up and down
+xnoremap <silent> <A-k> :<C-U>call utils#MoveSelection('up')<CR>
+xnoremap <silent> <A-j> :<C-U>call utils#MoveSelection('down')<CR>
+
+"}}}
 
 " File types "{{{
 " ---------------------------------------------------------------------
@@ -223,7 +245,7 @@ au BufNewFile,BufRead *.mdx set filetype=markdown
 " Flow
 au BufNewFile,BufRead *.flow set filetype=javascript
 
-set suffixesadd=.js,.es,.jsx,.json,.css,.less,.sass,.styl,.php,.py,.md
+set suffixesadd+=.js,.es,.jsx,.json,.css,.less,.sass,.styl,.php,.py,.md,.ts,.tsx
 
 autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 "}}}
@@ -253,6 +275,7 @@ nnoremap ,tq :e <C-R>=printf("%s/saved_macros.vim", stdpath("config"))<CR><CR><C
 nnoremap ,tc :e <C-R>=printf("%s/core/commands.vim", stdpath("config"))<CR><CR><C-L>
 nnoremap ,tk :e <C-R>=printf("%s/core/mappings.vim", stdpath("config"))<CR><CR><C-L>
 nnoremap ,tp :e <C-R>=printf("%s/lua/plugins.lua", stdpath("config"))<CR><CR><C-L>
+nnoremap ,tN :e <c-r>=printf("%s/lua/config/vim-navigator.lua", stdpath("config"))<cr><cr><c-l>
 
 nnoremap ,tff :sp <C-R>=printf("%s/preset-commands.vim", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf noma<cr>
 nnoremap ,tfs :e <C-R>=printf("%s/script_scratch.vim", stdpath("config"))<CR><CR><C-L>:setl bh=delete noswf<cr>
@@ -267,8 +290,8 @@ nnoremap ,th :help <c-r>=expand('%:t')<cr> \| <c-r>=line('.')<cr><cr><c-w>o
 
 nnoremap ,U :MundoShow<CR>
 
-nnoremap ,u mpgUiwe`p:delm p<cr>
-inoremap ,u <ESC>gUiwgi
+nnoremap ,u mpgUiW"pciW<C-R>=substitute(@p,'-','_','ge')<CR><ESC>`p:delm p<cr>
+inoremap ,u <ESC>mpgUiW"pciW<C-R>=substitute(@p,'-','_','ge')<CR><ESC>`p:delm p<CR>a
 
 nnoremap ,y "+
 xnoremap ,y "+
@@ -296,6 +319,10 @@ nnoremap ,y0 <CMD>let @+=@0<CR><CMD>echo "Register 0 copied to system clipboard"
 nnoremap ;y  <CMD>let @+=@0<CR><CMD>echo "Register 0 copied to system clipboard"<CR>
 nnoremap ,y9 <CMD>let @0=@+<CR><CMD>echo "system clipboard copied to Register 0"<CR>
 
+"convert register mode in the default yank register (@0)
+nnoremap <silent> yl :call setreg('0', @0, 'l')<CR>
+nnoremap <silent> yc :call setreg('0', substitute(@0, '\n$', '', ''), 'c')<CR>
+
 nnoremap ,n :norm<space>
 vnoremap ,n :norm<space>
 
@@ -306,10 +333,16 @@ nnoremap ,M 01kA<cr>
 
 inoremap ,f <C-R>=expand("%:")<left><left>
 cnoremap ,f <C-R>=expand("%:")<left><left>
+abbrev ,c <C-R>=getcwd()<cr>
+abbrev muid <C-R>=substitute(system('uuidgen'), '\n\+$', '', '')<cr>
+abbrev mdate <C-R>=substitute(system('date'), '\n\+$', '', '')<cr>
 
 cnoremap ,w <C-R><C-W>
 cnoremap ,W <C-R>=expand("<cWORD>")<cr>
 
+xnoremap ,e g_
+xnoremap ,E <ESC>_vg_
+nnoremap ,E _vg_
 " }}}
 
 "########## Semicolon Combinations ##########" {{{
@@ -342,9 +375,6 @@ vnoremap ;s <cmd>BufferLineCyclePrev<cr>
 nnoremap ;f <cmd>BufferLineCycleNext<cr>
 vnoremap ;f <cmd>BufferLineCycleNext<cr>
 
-nmap ;v %
-xmap ;v %
-omap ;v %
 
 function! ZdSmartQuit(force)
   let cmd = "bdelete"
@@ -352,6 +382,10 @@ function! ZdSmartQuit(force)
   let listed_win_count = len(filter(range(1, winnr('$')), 'buflisted(winbufnr(v:val))'))
   let filtered_tab = exists('t:bufferline_tab_filter_enabled') && t:bufferline_tab_filter_enabled
   " if &filetype == 'toggleterm' || !buflisted(bufnr())
+  if &filetype == 'minifiles'
+    exec 'lua MiniFiles.close()'
+    return
+  endif
   if !buflisted(bufnr())
     if winnr('$') > 1 || tabpagenr('$') > 1
       " Usually unlisted buffer is managed by plugin and better keep it
@@ -397,12 +431,69 @@ xnoremap <silent> ;Q :<c-u>call ZdSmartQuit(1)<cr>
 
 noremap <silent> ;wq :bp\|silent! bd#\|bn<cr>
 noremap <silent> ;wQ <CMD>tabclose<CR>
-nnoremap ;u g;
-nnoremap ;i g,
 
-nnoremap ;e <C-T>
-
+" Markdown formats
+xnoremap <silent> ;ei <ESC>`>a <ESC>gvdi__<ESC>Pllxhh
+nnoremap <silent> ;ei viw<ESC>`>a <ESC>gvdi__<ESC>Pllxhh
+xnoremap <silent> ;eb <ESC>`>a <ESC>gvdi****<ESC>hPlllxhhh
+nnoremap <silent> ;eb viw<ESC>`>a <ESC>gvdi****<ESC>hPlllxhhh
+xnoremap <silent> ;el <ESC>`>a <ESC>gv"pdi[]<ESC>"pPla()<ESC>"+Pf)lx
+xnoremap <silent> ;eL <ESC>`>a <ESC>gv"pdi[]()<ESC>"pPllxF]i
+nnoremap <silent> ;em I<BAR><ESC>A<BAR><CR><BAR>:--:<BAR><CR><BAR>* *<BAR><ESC>hhi<SPACE>
+xnoremap <silent> ;ec :g/^$/d<CR>:nohl<CR>
 "}}}
+
+"########## Auto Filling Vertical Split Windows ##########" {{{
+let g:collapsed_vertical_window_size = 20
+
+function! ResizeAutoFillingVerticalWindowWidths()
+  let l:win_count = winnr('$')
+  let l:fill_width = &columns - g:collapsed_vertical_window_size * (l:win_count - 1)
+  " Iterate through each window except the last one
+  for l:winNr in range(1, l:win_count)
+    " Build and execute the command to resize the window's width
+    if l:winNr == winnr()
+      execute "vert " . l:winNr . "resize " . l:fill_width
+    else
+      execute "vert " . l:winNr . "resize " . g:collapsed_vertical_window_size
+    endif
+  endfor
+endfunction
+
+function! FilledWindowMove(direction)
+  let l:current_winnr = winnr()
+  let l:target_winnr = l:current_winnr + a:direction
+  execute l:target_winnr . "wincmd x"
+  execute l:target_winnr . "wincmd w"
+endfunction
+
+function! ClossAutoFilledWindowToRight()
+  let l:current_winnr = winnr()
+  let l:win_count = winnr('$')
+  let l:p = l:win_count
+  while l:p > l:current_winnr
+    silent! execute l:p . "wincmd c"
+    let l:p = l:p - 1
+  endwhile
+  call ResizeAutoFillingVerticalWindowWidths()
+  norm mp0`p
+  delm p
+endfunction
+
+noremap <silent> ;vv :set nowrap<CR>zz<c-w>v:call ResizeAutoFillingVerticalWindowWidths()<CR>
+noremap <silent> ;vm :call ResizeAutoFillingVerticalWindowWidths()<CR>
+noremap <silent> ;vq :tabclose<CR>
+noremap <silent> <space>tq<space> :tabclose<CR>
+noremap <silent> ;vt :tab sp<CR>
+noremap <silent> <space>tt<space> :tab sp<CR>
+nmap <silent> ;vd ;vvgdzz
+nmap <silent> ;vf ;vvgfzz
+xmap <silent> ;vf <ESC>;vvgvgfzz
+nmap <silent> ;vc ;q;vmmp0`p:delm p<CR>
+nmap <silent> ;vr :call ClossAutoFilledWindowToRight()<CR>
+"}}}
+
+
 
 "########## Insert mode j Combinations ##########" {{{
 " supported by jdhao/better-escape.vim
@@ -412,24 +503,46 @@ nnoremap ;e <C-T>
 " }}}
 
 "########## Folds ##########{{{
-"Fold by keyword
+"-- Fold by keyword
+" Fold by the last search keyword
 nnoremap <Leader>z/ :setlocal foldexpr=(getline(v:lnum)=~@/)?0:(getline(v:lnum-1)=~@/)\\|\\|(getline(v:lnum+1)=~@/)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
+" Fold by the current word or selection
 vnoremap <Leader>z* "sy:setlocal foldexpr=(getline(v:lnum)=~@s)?0:(getline(v:lnum-1)=~@s)\\|\\|(getline(v:lnum+1)=~@s)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
 nnoremap <Leader>z* "syiw:setlocal foldexpr=(getline(v:lnum)=~@s)?0:(getline(v:lnum-1)=~@s)\\|\\|(getline(v:lnum+1)=~@s)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
 
 "Fold except selection
 vnoremap <Leader>zv <Esc>:set foldmethod=manual<CR>zE`<kzfgg`>jzfG`<
 
-nnoremap <silent> <Space>ddj<Space> :let &foldlevel=foldlevel('.')<cr>
-nnoremap <silent> <Space>ddk<Space> :let &foldlevel=&foldlevel-1<cr>
-nnoremap <silent> <Space>ddl<Space> :let &foldlevel=&foldlevel+1<cr>
+" Fold level +1 for the whole buffer
+nnoremap <silent> <Space>ddj<Space> :let &foldlevel=&foldlevel+1<cr>:set foldlevel?<cr>
+" Fold level -1 for the whole buffer
+nnoremap <silent> <Space>ddk<Space> :let &foldlevel=&foldlevel-1<cr>:set foldlevel?<cr>
+" Fold to the current level for the whole buffer
+nnoremap <silent> <Space>ddl<Space> :let &foldlevel=foldlevel('.')<cr>:set foldlevel?<cr>
+
+" Collapse everthing except the path to current cursor
 nnoremap <silent> <Space>ddu<Space> zMzv
+
+" Collapse everything except the current method
+" nnoremap <silent> <Space>ddm<Space> mpzMzvj[mzczO`p:delm p<cr>
+nmap <silent> <Space>ddm<Space> mpzMzvj[mzczO`p:delm p<cr>
+
+" Fold by the last search keyword
 nnoremap <silent> <Space>ddi<Space> :setlocal foldexpr=(getline(v:lnum)=~@/)?0:(getline(v:lnum-1)=~@/)\\|\\|(getline(v:lnum+1)=~@/)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
+" Fold by the current word or selection
 vnoremap <silent> <Space>ddii<Space> "sy:setlocal foldexpr=(getline(v:lnum)=~@s)?0:(getline(v:lnum-1)=~@s)\\|\\|(getline(v:lnum+1)=~@s)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
 nnoremap <silent> <Space>ddii<Space> "syiw:setlocal foldexpr=(getline(v:lnum)=~@s)?0:(getline(v:lnum-1)=~@s)\\|\\|(getline(v:lnum+1)=~@s)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>:set foldmethod=manual<CR><CR>
+
+" Fold except selection
 vnoremap <silent> <Space>ddo<Space> <Esc>:set foldmethod=manual<CR>zE`<kzfgg`>jzfG`<
+
+" Enable syntax folding and collapse everthing except the path to current cursor
 nnoremap <silent> <Space>dd;<Space> :syntax on<cr>:set fdm=syntax<cr>zMzvzz
+
+" back to treesitter folding
 nnoremap <silent> <Space>ddt<Space> :setl foldmethod=expr<cr>:setl foldexpr=nvim_treesitter#foldexpr()<cr>
+
+" Fold vim help file
 nmap <silent> <Space>ddh<Space> m`/^\S\+\.txt\\|^\|\\|^<\\| \~$\\|\*.\+\*$<cr><space>ddi<space>:nohl<cr>``zMzv
 "}}}
 
@@ -561,14 +674,16 @@ inoremap <silent> <tab>f <ESC><C-6>
 nnoremap <silent> yuu mp_yg_`p:delm p<cr>
 "Copy a line without line break to clipboard
 nnoremap <silent> yul mp_"+yg_`p:delm p<cr>
-"Copy a block without line break to clipboard
-nnoremap <silent> yub mp"+yip`p:delm p<cr>
+"Copy a block to clipboard
+nnoremap <silent> yup mp"+yip`p:delm p<cr>
 "Copy a code block in markdown file to clipboard
 nnoremap <silent> yuc mp?^\s*```<cr>1jV/^\s*```<cr>1k"+y`p:nohl<cr>:delm p<cr>
 "Copy buffer to clipboard
 nnoremap <silent> yua :%y+<cr>
 "Copy buffer to default register
 nnoremap <silent> yus :%y"<cr>
+"Copy contant between bracket to clipboard (need targets.vim plugin)
+nnoremap <silent> yuB mpyib`p:delm p<cr>
 
 "Paste clipboard content in a new scratch buffer
 nnoremap <silent> yui :tabnew<cr>:0put *<cr>:setl bh=delete bt=nowrite<cr>gg0:$g/^$/d<cr>:nohl<cr>
@@ -579,8 +694,9 @@ nnoremap <silent> <space>cpp<space> :let @*=expand("%:p")<cr>:echo '-= File path
 "Copy file name
 nnoremap <silent> <space>cpf<space> :let @*=expand("%:t")<cr>:echo '-= File name copied=-'<cr>
 "Copy bookmark position reference
-nnoremap <silent> <space>cpb<space> :let @*=expand("%:p").':'.line(".").':'.col(".")<cr>:echo '-= Cursor bookmark copied=-'<cr>
-"Copy bitbuckit link for current position
+nnoremap <silent> <space>cpb<space> :let @*='📝 '.expand("%:p").':'.line(".").':'.col(".")<cr>:echo '-= Cursor bookmark copied=-'<cr>
+nnoremap <silent> <space>cpbb<space> mp_"py50l:let @*='(`'.@p.'`)'.' 📝 '.expand("%:p").':'.line(".").':'.col(".").' ['.system('git log -n 1 --pretty=format:%h -- '.expand('%:p')).']'<cr>`p:echo '-= Cursor bookmark copied=-'<cr>
+
 nnoremap <silent> <space>cpgw<space> :<c-r>=printf("AsyncRun -silent codelink.clj -f '%s' -l %d -c", expand("%:p"), line("."))<cr><cr>:echo '-= Web link with revision copied =-'<cr>
 vnoremap <silent> <space>cpgw<space> :<c-u><c-r>=printf("AsyncRun -silent codelink.clj -f '%s' -l %d -e %d -c", expand("%:p"), line("'<"), line("'>"))<cr><cr>:echo '-= Web link with revision copied =-'<cr>
 
@@ -602,7 +718,7 @@ inoremap <silent> √ <c-r>+
 cnoremap <silent> √ <c-r>+
 
 " Move previous selection to current position
-nnoremap <silent> <space>mv<space> mz:'<,'>t.<cr>:'<,'>d<cr>`z
+nnoremap <silent> <space>mv<space> mp:'<,'>t.<cr>:'<,'>d<cr>`p
 
 " Paste as relative path
 
@@ -610,50 +726,43 @@ nnoremap <silent> <space>mv<space> mz:'<,'>t.<cr>:'<,'>d<cr>`z
 " current file
 function! InsertRelativePathFromClipboard()
   " Get the absolute path from the clipboard
-  let clipboard_path = getreg('+')
+  let clipboardPath = getreg('+')
 
   " Get the absolute path of the current buffer's file
-  let current_buffer_path = expand('%:p')
+  let currentBufferPath = expand('%:p')
 
   " Split the paths into components
-  let clipboard_path_components = split(clipboard_path, '/')
-  let current_buffer_path_components = split(current_buffer_path, '/')
+  let clipboardPathComponents = split(clipboardPath, '/')
+  let currentBufferPathComponents = split(currentBufferPath, '/')
 
   " Find the common prefix
-  let common_prefix_length = 0
-  while common_prefix_length < len(clipboard_path_components) &&
-        \ common_prefix_length < len(current_buffer_path_components) &&
-        \ clipboard_path_components[common_prefix_length] ==# current_buffer_path_components[common_prefix_length]
-    let common_prefix_length += 1
+  let commonPrefixLength = 0
+  while commonPrefixLength < len(clipboardPathComponents) &&
+        \ commonPrefixLength < len(currentBufferPathComponents) &&
+        \ clipboardPathComponents[commonPrefixLength] ==# currentBufferPathComponents[commonPrefixLength]
+    let commonPrefixLength += 1
   endwhile
 
   " Calculate the relative path
-  let up_dirs = len(current_buffer_path_components) - common_prefix_length - 1
-  let down_dirs = clipboard_path_components[common_prefix_length:]
-  let relative_path = repeat('../', up_dirs) . join(down_dirs, '/')
+  let upDirs = len(currentBufferPathComponents) - commonPrefixLength - 1
+  let downDirs = clipboardPathComponents[commonPrefixLength:]
+  let relativePath = repeat('../', upDirs) . join(downDirs, '/')
 
   " Insert the relative path at the cursor position
-  execute 'normal! i' . relative_path
+  execute 'normal! i' . relativePath
 endfunction
 
 nnoremap <leader>rp :call InsertRelativePathFromClipboard()<cr>
-inoremap <leader>rp <C-o>:call InsertRelativePathFromClipboard()<cr>
+inoremap <leader>rp <space><C-o>:call InsertRelativePathFromClipboard()<cr><right><del>
 "}}}
 
 "########## Macro Related ##########{{{
 nnoremap <leader>mm :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 nnoremap <leader>mC :<c-u><c-r><c-r>='command! let @n='. string(getreg(v:register))<cr> <bar> norm! @n<c-f><esc>0Ea<space>
-
-" execute macro in q register
-nnoremap QQ @q
-" apply macro in q register to each line of the selection
-vnoremap QQ :norm! @q<cr>
-" apply macro in q register repeatedly (9999 times)
-nnoremap QR 9999@q
 "}}}
 
 "########## Font ##########{{{
-let g:guifontname = 'DejaVuSansMono\ Nerd\ Font\ Mono'
+let g:guifontname = 'RecMonoCasual\ Nerd\ Font\ Mono'
 let s:default_guifontheight = 18
 let g:guifontheight = s:default_guifontheight
 exec "set guifont=" . g:guifontname . ":h" . string(g:guifontheight)
@@ -689,7 +798,8 @@ nnoremap <silent> º :call FunChangeFontSize()<CR>
 command! -nargs=* -complete=shellcmd R :call ScratchBuffer('shell.output', 's') | r !<args>
 command! -nargs=* -complete=shellcmd RV :call ScratchBuffer('shell.output', 'v') | r !<args>
 
-command! -range ExecVimL call execute(getline(<line1>, <line2>), '')
+command! -range ExecVimL call execute(substitute(join(getline(<line1>, <line2>), " \n "), '\n\s*\\', ' ', 'g'), '')
+command! -range ExecVimL1 let a = join(getline(<line1>, <line2>), " \n ")
 command! -range ExecLua call execute('lua ' . join(getline(<line1>, <line2>), " \n "), '')
 nnoremap <silent> <space>r<space> :ExecVimL<cr>:<c-u>echo "Current line executld"<cr>
 xnoremap <silent> <space>r<space> :ExecVimL<cr>:<c-u>echo "Selected range executed"<cr>
@@ -785,12 +895,19 @@ nnoremap <silent> <space>fefO<space> <cmd>SymbolsOutlineClose<cr>
 "}}}
 
 "########## Run Command ##########{{{
-nmap <silent> <space>sh<space> yy<space>ttss<space>P:.!zsh<cr>
-xmap <silent> <space>sh<space> y<space>ttss<space>P:%!zsh<cr>
+nmap <space>sh<space> <cmd>lua require'toggleterm'.exec(vim.fn.getline('.'), 2)<cr>
+xmap <space>sh<space> "ny:lua require'toggleterm'.exec(vim.fn.getreg('n'), 2)<cr>
+
+command! ShInline let @n='mp"pyy}}:=line("$")==line(".")?"":"norm! 1k"vip"pp:.!zsh`p' | norm! @n
+nnoremap <space>shi<space> <cmd>ShInline<CR>
+
+command! TocInline let @n='dip:<C-R>=line("$")==line(".")?"":"norm! 1k"<CR><CR>:r !exa --long --icons --group-directories-first --no-permissions --no-user --no-time --level=3 <C-R>=expand("%:p:h")<CR><CR>' | norm! @n
+nnoremap <space>sht<space> <cmd>ShInline<CR>
+
 "}}}
 
 "########## VimCalc3 ##########{{{
-nnoremap <silent> \cal <cmd>Calc<CR>
+nnoremap <silent> \cl <cmd>Calc<CR>
 "}}}
 
 "########## Simple Slides ##########{{{
@@ -811,6 +928,15 @@ function! EnableSlide()
   nnoremap <silent> <buffer> <c-t><c-y> :e ~/.config/nvim/toilet_font.vim<CR><C-L>
   nnoremap <silent> <buffer> <c-t><c-u> :e ~/.config/nvim/cowfiles.vim<CR><C-L>
 endfunction
+"}}}
+
+"########## Text Objects ##########{{{
+onoremap ih) :<c-u>norm! m`vi)o``<cr>
+onoremap ih( :<c-u>norm! m`vi)``<cr>
+onoremap ih] :<c-u>norm! m`vi]o``<cr>
+onoremap ih[ :<c-u>norm! m`vi]``<cr>
+onoremap ih} :<c-u>norm! m`vi}o``<cr>
+onoremap ih{ :<c-u>norm! m`vi}``<cr>
 "}}}
 
 " MODELLINE {{{

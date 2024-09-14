@@ -25,10 +25,10 @@ require("neo-tree").setup({
       -- ["t"] = "open_tab_drop",
       ["w"] = "open_with_window_picker",
       --["P"] = "toggle_preview", -- enter preview mode, which shows the current node without focusing
-      ["z"] = {
-        "close_node",
-        nowait = false,  -- allow other native z commands such as zz
-      },
+      -- ["z"] = {
+      --   nil,
+      --   nowait = false,  -- allow other native z commands such as zz
+      -- },
       ["zm"] = "close_node",
       ["zc"] = "close_node",
       ["zM"] = "close_all_nodes",
@@ -50,10 +50,12 @@ require("neo-tree").setup({
       ["m"] = "move", -- takes text input for destination, also accepts the optional config.show_path option like "add".
       ["q"] = "close_window",
       ["R"] = "refresh",
-      ["?"] = "show_help",
       ["<"] = "prev_source",
       [">"] = "next_source",
     }
   },
+  -- filesystem = {
+  --   hijack_netrw_behavior = "open_current",
+  -- },
 })
 vim.cmd('source ' .. vim.g.nvimrc .. '/lua/config/neo-tree_keymaps.vim')

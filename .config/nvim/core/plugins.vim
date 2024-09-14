@@ -64,7 +64,8 @@ let g:Lf_RgConfig = [
       \"--max-columns=500",
       \"--glob=!tags",
       \"--glob=!tags.*",
-      \"--glob=!*.min.js"
+      \"--glob=!*.min.js",
+      \"--glob=!.git/"
       \]
 
 " Store the last rg search pattern to register r
@@ -109,7 +110,19 @@ let g:Lf_WorkingDirectoryMode = 'c'
 " Change keybinding in LeaderF prompt mode, use ctrl-n and ctrl-p to navigate items.
 let g:Lf_CommandMap = {'<C-J>': ['<C-N>'], '<C-K>': ['<C-P>']}
 
-let g:Lf_PreviewCode = 1
+let g:Lf_PreviewCode = 0
+let g:Lf_PreviewResult = {
+        \ 'File': 0,
+        \ 'Buffer': 0,
+        \ 'Mru': 0,
+        \ 'Tag': 0,
+        \ 'BufTag': 0,
+        \ 'Function': 0,
+        \ 'Line': 0,
+        \ 'Colorscheme': 0,
+        \ 'Rg': 0,
+        \ 'Gtags': 0
+        \}
 
 let g:Lf_NormalMap = {
       \ "_": [
@@ -122,23 +135,23 @@ let g:Lf_FolderAcceptSelectionCmd = 'Dirbuf'
 
 " Space key combinations
 nnoremap <space>pf<space> :LeaderfFile<CR>
-xnoremap <space>pf<space> :<c-u><c-r>=printf("Leaderf file --regexMode --input %s", leaderf#Rg#visual())<cr><cr>
-nnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s", expand("<cword>"))<cr><cr>
-xnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s", leaderf#Rg#visual())<cr><cr>
-nnoremap <space>efjj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s -g \"!*test*\"", expand("<cword>"))<cr><cr>
-xnoremap <space>efjj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode -F -e %s -g \"!*test*\"", leaderf#Rg#visual())<cr><cr>
-nnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --stayOpen -e \"%s\"", escape(expand("<cword>"), "\""))<cr><left><c-f>0f"l
-xnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --stayOpen -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
+xnoremap <space>pf<space> :<c-u><c-r>=printf("Leaderf file --regexMode --hidden --input %s", leaderf#Rg#visual())<cr><cr>
+nnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden -F -e %s", expand("<cword>"))<cr><cr>
+xnoremap <space>efj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden -F -e %s", leaderf#Rg#visual())<cr><cr>
+nnoremap <space>efjj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden -F -e %s -g \"!*test*\"", expand("<cword>"))<cr><cr>
+xnoremap <space>efjj<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden -F -e %s -g \"!*test*\"", leaderf#Rg#visual())<cr><cr>
+nnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden --stayOpen -e \"%s\"", escape(expand("<cword>"), "\""))<cr><left><c-f>0f"l
+xnoremap <space>efh<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden --stayOpen -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
 
-nnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf rg --regexMode --stayOpen -e \"\"")<cr><left>
-xnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --stayOpen -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
+nnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf rg --regexMode --hidden --stayOpen -e \"\"")<cr><left>
+xnoremap <space>efk<space> :<c-u><c-r>=printf("Leaderf! rg --regexMode --hidden --stayOpen -e %s", leaderf#Rg#visual())<cr><left><c-f>0f"l
 
 nnoremap <space>efjk<space> :<c-u>Leaderf! rg --recall<cr>
 nmap <space>efkj<space> <space>efjk<space>
 
 nnoremap <space>efl<space> :<c-u>Leaderf! buffer<cr>:setl nowrap<cr>
-nnoremap <space>efu<space> :<c-u><c-r>=printf("Leaderf line --stayOpen --regexMode --input %s", expand("<cword>"))<cr><cr>
-xnoremap <space>efu<space> :<c-u><c-r>=printf("Leaderf line --stayOpen --regexMode --input %s", leaderf#Rg#visual())<cr><cr>
+nnoremap <space>efu<space> :<c-u><c-r>=printf("Leaderf! line --stayOpen --regexMode --input %s", expand("<cword>"))<cr><cr>
+xnoremap <space>efu<space> :<c-u><c-r>=printf("Leaderf! line --stayOpen --regexMode --input %s", leaderf#Rg#visual())<cr><cr>
 nnoremap <space>efi<space> :<c-u>Leaderf line --regexMode --input<space>''<left>
 xnoremap <space>efi<space> :<c-u><c-r>=printf("Leaderf line --stayOpen --regexMode --input \"%s\" ", leaderf#Rg#visual())<cr>
 "nnoremap <space>efo<space> :<c-u>TagbarToggle<cr>
@@ -383,19 +396,30 @@ nnoremap <leader>dp :<C-U>GdbStartPDB python -m pdb %<CR>
 let g:fugitive_summary_format = "%as-[%an]: %s"
 nnoremap <space>dsj<space> :Git log -n 20 --pretty=format:"%h\|\|%as-[%an]: %s" -- %<cr>
 nnoremap <space>dsjj<space> :Git log --pretty=format:"%h\|\|%as-[%an]: %s" -- %<cr>
-nnoremap <space>dsjk<space> :Gclog -- %<cr>
-xnoremap <space>dsjk<space> :Gclog<cr>
-nmap <space>dskj<space> <space>dsjk<space>
-xmap <space>dskj<space> <space>dsjk<space>
+nnoremap <space>dsjf<space> :!fork log -- %<cr>
+nnoremap <space>dsjs<space> :!smerge log %<cr>
+nnoremap <space>dsn<space> :!fork commit<cr>
+nnoremap <space>dsl<space> :Gclog -- %<cr>
+xnoremap <space>dsl<space> :Gclog<cr>
 nnoremap <space>dskl<space> :Gclog -n 20 -- %<cr>
 xnoremap <space>dskl<space> :Gclog -n 20<cr>
 nmap <space>dslk<space> <space>dskl<space>
 xmap <space>dslk<space> <space>dskl<space>
 nnoremap <space>dsk<space> 0"ayiw:hide<cr>:rightbelow Gvdiff <c-r>a<cr>
-nnoremap <space>dskk<space> 0"ayiw:hide<cr>:2TermExec cmd="clear && git difftool -t difft -y <c-r>a -- <c-r>=expand('%:p')<cr> <bar> delta" go_back=0 direction=float size=95<cr>
-nnoremap <space>dskkk<space> 0"ayiw:hide<cr>:2TermExec cmd="clear && git difftool -t unifydifft -y <c-r>a..HEAD -- <c-r>=expand('%:p')<cr> <bar> delta" go_back=0 direction=float size=95<cr>
+" Use Wilfred/difftastic to do structural diff
+nnoremap <space>dskk<space> 0"ayiw:hide<cr>:2TermExec cmd="cd '<c-r>=expand('%:p:h')<cr>' && clear && git difftool -t difft -y <c-r>a -- <c-r>=expand('%:p')<cr> <bar> delta" go_back=0 direction=float size=95<cr>
+nnoremap <space>dskkk<space> 0"ayiw:hide<cr>:2TermExec cmd="cd '<c-r>=expand('%:p:h')<cr>' && clear && git difftool -t unifydifft -y <c-r>a..HEAD -- <c-r>=expand('%:p')<cr> <bar> delta" go_back=0 direction=float size=95<cr>
+
+nnoremap <space>dssd<space> 0"ayiw:hide<cr>:<c-r>=printf("AsyncRun -silent git difftool -t smerge -y %s -- %s", getreg("a"), expand("%:p"))<cr><cr>
+nnoremap <space>dssm<space> :<c-u>AsyncRun -silent smerge <c-r>=expand("%:p:h")<cr><cr>
+nnoremap <space>dssj<space> :<c-u>AsyncRun -silent -cwd=<c-r>=expand("%:p:h")<cr> smerge log <c-r>=expand("%:p")<cr><cr>
+nnoremap <space>dssb<space> :<c-u>AsyncRun -silent -cwd=<c-r>=expand("%:p:h")<cr> smerge blame <c-r>=expand("%:p")<cr><cr>
+
+nnoremap <space>dstm<space> 0"ayiw:hide<cr>:<c-r>=printf("AsyncRun -silent git difftool -t meld -y %s -- %s", getreg("a"), expand("%:p"))<cr><cr>
+nnoremap <space>dstk<space> 0"ayiw:hide<cr>:<c-r>=printf("AsyncRun -silent git difftool -t kdiff3 -y %s -- %s", getreg("a"), expand("%:p"))<cr><cr>
 
 nnoremap <space>dsu<space> :Git blame<cr>
+" Find changes of keyword under cursor in history
 nnoremap <space>dsi<space> :<c-u><c-r>=printf("Git log --follow -p -S %s -- %s <bar> setl fdm=syntax", string(expand('<cWORD>')), expand('%:p'))<cr><c-f>0f'l
 xnoremap <space>dsi<space> "py:<c-u><c-r>=printf("Git log --follow -p -S %s -- %s <bar> setl fdm=syntax", string(@p), expand('%:p'))<cr><c-f>0f'l
 "}}}

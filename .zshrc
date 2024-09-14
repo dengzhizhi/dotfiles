@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 #
 # Executes commands at the start of an interactive session.
 #
@@ -16,8 +23,20 @@ fi
 # setopt PROMPT_SUBST
 # autoload -U compinit
 # compinit -D
+# prompt kylewest
 promptinit
-prompt kylewest
+
+# Colorize terminal
+# alias ls='exa --icons'
+alias ll='exa --tree --long --icons --group-directories-first --level=1'
+# alias lll='exa --tree --long --icons --group-directories-first --color=always --level=3 | less'
+function lll() {
+    exa --tree --long --icons --group-directories-first --color=always --level=3 $@ | less
+}
+
+# export LSCOLORS="ExGxBxDxCxEgEdxbxgxcxd"
+# export GREP_OPTIONS="--color"
+
 # Stop wget from creating ~/.wget-hsts file. I don't care about HSTS (HTTP
 # Strict Transport Security) for wget; it's not as if I'm logging into my bank
 # with it.
@@ -31,33 +50,42 @@ export LEDGER_FILE=~/Dropbox/ledger/default_en.ledger
 #export GOPATH=~/dev/go
 
 alias ledger_default="export LEDGER_FILE=~/Dropbox/ledger/default_en.ledger"
+export PATH="$HOME/.local/bin:$HOME/bin/nvim/0.10.1/bin:$HOME/bin:$HOME/Library/Application Support/JetBrains/Toolbox/scripts:$JAVA_HOME/bin:/Applications/MacVim.app/Contents/bin:$PATH"
+export NEOVIM_BIN="/Users/zdeng/bin/nvim/0.10.1/bin/nvim"
 
-export PATH="/Users/zdeng/.local/bin:/Users/zdeng/bin/nvim/0.9.0/bin:/Users/zdeng/bin:$JAVA_HOME/bin:/Applications/MacVim.app/Contents/bin:$PATH"
-
-alias nvimc="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:enable_coc=1'"
-alias nvim0="/Users/zdeng/bin/nvim/0.9.0/bin/nvim"
-alias nvim1="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=1'"
-alias nvim2="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=2'"
-alias nvim3="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=3'"
-alias nvim4="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=4'"
-alias nvim5="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
+alias nvimc="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:enable_coc=1'"
+alias nvim0="$HOME/bin/nvim/0.10.1/bin/nvim"
+alias nvim1="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=1'"
+alias nvim2="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=2'"
+alias nvim3="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=3'"
+alias nvim4="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=4'"
+# alias nvim5="$HOME/bin/nvim/0.9.5/bin/nvim --cmd 'let g:ide_level=5'"
+# nvim5 is defined in ~/bin so that can be used in EDITOR and VISUAL
 alias nvim6="nvim-mini"
 
-alias nvim91="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=1'"
-alias nvim92="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=2'"
-alias nvim93="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=3'"
-alias nvim94="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=4'"
-alias nvim95="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
+alias nvim91="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=1'"
+alias nvim92="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=2'"
+alias nvim93="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=3'"
+alias nvim94="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=4'"
+alias nvim95="$HOME/bin/nvim/0.10.1/bin/nvim --cmd 'let g:ide_level=5'"
 
 
-alias nvim-astro="NVIM_APPNAME=AstroNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
-alias nvim-lazy="NVIM_APPNAME=LazyNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
-alias nvim-nvchad="NVIM_APPNAME=NvChad /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
-alias nvim-kickstart="NVIM_APPNAME=KickstartNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
-alias nvim-jdhao="NVIM_APPNAME=JdhaoNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim"
+alias nvim-astro="NVIM_APPNAME=AstroNvim $HOME/bin/nvim/0.10.1/bin/nvim"
+alias nvim-lazy="NVIM_APPNAME=LazyNvim $HOME/bin/nvim/0.10.1/bin/nvim"
+alias nvim-nvchad="NVIM_APPNAME=NvChad $HOME/bin/nvim/0.10.1/bin/nvim"
+alias nvim-kickstart="NVIM_APPNAME=KickstartNvim $HOME/bin/nvim/0.10.1/bin/nvim"
+alias nvim-jdhao="NVIM_APPNAME=JdhaoNvim $HOME/bin/nvim/0.10.1/bin/nvim"
 function nvim-mini() {
-    NVIM_APPNAME=MiniNvim /Users/zdeng/bin/nvim/0.9.0/bin/nvim $@
+    NVIM_APPNAME=MiniNvim /Users/zdeng/bin/nvim/0.10.1/bin/nvim $@
 }
+
+# ask local AI
+alias ai-llama="ollama run llama3.1:8b-instruct-q4_1"
+alias ai-mistral="ollama run mistral-nemo:12b-instruct-2407-q8_0"
+alias ai-qwen="ollama run qwen2:7b-instruct-q8_0"
+alias ai-phi="ollama run phi3:14b-medium-128k-instruct-q5_1"
+alias ai-deepseekcoder="ollama run deepseek-coder-v2:16b-lite-instruct-q4_1"
+alias askai="ollama run llama3.1:8b-instruct-q4_1"
 
 function nvims() {
     items=("default" "AstroNvim" "LazyNvim" "NvChad" "KickstartNvim" "JdhaoNvim" "MiniNvim")
@@ -68,12 +96,12 @@ function nvims() {
     elif [[ $config == "default" ]]; then
         config=""
     fi
-    NVIM_APPNAME=$config /Users/zdeng/bin/nvim/0.9.0/bin/nvim $@
+    NVIM_APPNAME=$config /Users/zdeng/bin/nvim/0.10.1/bin/nvim $@
 }
 
 
-export EDITOR="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
-export VISUAL="/Users/zdeng/bin/nvim/0.9.0/bin/nvim --cmd 'let g:ide_level=5'"
+export EDITOR="nvim4"
+export VISUAL="nvim4"
 # GNU Screen sets -o vi if EDITOR=vi, so we have to force it back.
 set -o emacs
 
@@ -200,9 +228,10 @@ alias glog="git log | bat"
 
 # enhancements
 alias ping='prettyping'
-alias vim=/Users/zdeng/bin/nvim/0.9.0/bin/nvim
+alias vim=/Users/zdeng/bin/nvim/0.10.1/bin/nvim
 alias vi=/usr/local/bin/vim
 alias du="ncdu --color dark -rr -x --exclude .git --exclude node_modules"
+alias no-color="perl -pe 's/\\e\\[?.[0-9;]*[a-zA-Z]//g'"
 
 # emacs
 alias e='emacs -nw'
@@ -213,9 +242,6 @@ alias gst="tig status"
 # lazygit
 alias lg="lazygit"
 
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 export HISTSIZE=100000
 export HISTFILESIZE=100000000000
@@ -258,7 +284,7 @@ fdr() {
       get_parent_dirs $(dirname "$1")
     fi
   }
-  local DIR=$(get_parent_dirs $(realpath "${1:-$PWD}") | fzf-tmux --tac)
+  local DIR=$(get_parent_dirs $(realpath "${1:-$PWD}") | fzf --prompt="Parent Folders: " --height=~50% --layout=reverse --border --exit-0)
   cd "$DIR"
 }
 
@@ -276,10 +302,21 @@ function switchjava() {
 }
 switchjava 11
 
+# jenv
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+
+function chpwd () {
+    [ ! -z "$NVIM" ] && nv -x "lcd $PWD"
+}
+
+# bun
+export PATH="$HOME/.bun/bin:$PATH"
+
 # antlr4
-# export CLASSPATH=".:/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH"
-# alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
-# alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
+export CLASSPATH=".:/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH"
+alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.12.0-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
 
 #lesspipe
 
@@ -349,6 +386,31 @@ alias cqq="cq -o json --no-pretty "
 
 # Sublime Text CLI
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+(( ! ${+functions[p10k]} )) || p10k finalize
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# bun completions
+[ -s "/Users/zdeng/.bun/_bun" ] && source "/Users/zdeng/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# cargo
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# cheatsheet
+alias cs='cheat $(cheat -l | awk ''{print $1}'' | fzf --preview ''cheat {} -c'')'
+
+source ~/.afm-git-configrc
+
+# ImageMagick
+export DYLD_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_LIBRARY_PATH"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

@@ -43,7 +43,7 @@ let g:mapleader = '\'
 let g:vimsyn_embed = 'l'
 
 " Use English as main language
-language en_US.utf-8
+" language en_US.utf-8
 
 " Enable folding in markdown
 let g:markdown_folding = 1
@@ -82,11 +82,12 @@ if exists("g:neovide")
   "let g:neovide_cursor_vfx_mode = "pixiedust"
   "let g:neovide_cursor_vfx_mode = "ripple"
   "let g:neovide_cursor_vfx_mode = "sonicboom"
+  "let g:neovide_cursor_vfx_mode = "sonicboom"
+  set guifont=RecMonoCasual\ Nerd\ Font\ Mono
   let g:neovide_cursor_animation_length=0.05
   let g:neovide_cursor_trail_size = 0.5
   let g:neovide_scroll_animation_length = 0
   let g:neovide_cursor_antialiasing = v:true
   let g:neovide_input_macos_alt_is_meta = v:false
-  set guifont=IBM\ Plex\ Mono
 endif
 "}

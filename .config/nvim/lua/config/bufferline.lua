@@ -18,6 +18,9 @@ require("bufferline").setup({
     name_formatter = function(buf)  -- buf contains:
       -- Prefix buffer title with status icons for better overview
       local buf_name = buf.name
+      if buf.path ~= nil and string.match(buf_name, 'index%.[jt]sx?') ~= nil then
+        buf_name = string.match(buf.path, ".*/(.*/[^/]+)$")  -- when the file is index.js, include the parent folder name
+      end;
       if vim.b[buf.bufnr].tab_title then
         buf_name = vim.b[buf.bufnr].tab_title
       end
@@ -75,7 +78,7 @@ require("bufferline").setup({
 
     left_trunc_marker = "",
     right_trunc_marker = "",
-    max_name_length = 13,
+    max_name_length = 20,
     max_prefix_length = 10,
     tab_size = 10,
     diagnostics = false,
@@ -91,14 +94,9 @@ require("bufferline").setup({
   },
 })
 
--- nnoremap <silent>[b :BufferLineCycleNext<CR>
--- nnoremap <silent>b] :BufferLineCyclePrev<CR>
-
 vim.cmd('source ' .. vim.g.nvimrc .. '/lua/config/bufferline_keymaps.vim')
 
 
--- nnoremap <silent> ;wf :lua vim.t.bufferline_tab_filter_enabled=not vim.t.bufferline_tab_filter_enabled<CR>
--- nnoremap <silent> ;wa :lua vim.t.bufferline_tab_filter_enabled=not vim.t.bufferline_tab_filter_enabled<CR>
 vim.keymap.set('n', ';wf', function()
   vim.t.bufferline_tab_filter_enabled = not vim.t.bufferline_tab_filter_enabled
   vim.cmd [[redraw!]]

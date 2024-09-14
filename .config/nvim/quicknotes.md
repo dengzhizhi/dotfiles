@@ -1,5 +1,6 @@
-# Add your notes here
+# General
 
+# ModelLine
 " MODELLINE {{{
-" vim: set ts=2 sts=-1 sw=0 et tw=70 ft=markdown fdm=marker:
+" vim: set ts=2 sts=-1 sw=0 et tw=70 ft=markdown:
 " }}}

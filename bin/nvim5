@@ -1,0 +1,2 @@
+#!/bin/zsh
+$HOME/bin/nvim/0.10.0/bin/nvim --cmd 'let g:ide_level=5' $@

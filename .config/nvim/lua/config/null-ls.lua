@@ -1,7 +1,7 @@
 local null_ls = require("null-ls")
 
 null_ls.setup({
-    cmd = {"/Users/zdeng/bin/nvim/0.8.0/bin/nvim"},
+    cmd = {"/Users/zdeng/bin/nvim/0.10.0/bin/nvim"},
     debounce = 60000,
     default_timeout = 5000,
     sources = {

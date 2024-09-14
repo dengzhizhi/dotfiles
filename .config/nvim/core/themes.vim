@@ -35,9 +35,17 @@
 " endfunction
 
 " colorscheme tokyonight-storm
-if exists('g:started_by_firenvim')
-  set background=light
-else
-  set background=dark
+if exists('g:vscode')
+  if exists('g:started_by_firenvim')
+    set background=light
+  else
+    set background=dark
+  endif
 endif
 
+function! SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc

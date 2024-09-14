@@ -75,7 +75,7 @@ augroup END
 
 function! s:custom_highlight() abort
   " For yank highlight
-  highlight YankColor ctermfg=59 ctermbg=41 guifg=#34495E guibg=#2ECC71
+  highlight YankColor ctermfg=59 ctermbg=41 guifg=#FEFAE0 guibg=#E36414
 
   " For cursor colors
   highlight Cursor cterm=bold gui=bold guibg=#00c918 guifg=black

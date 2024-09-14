@@ -30,6 +30,7 @@ local function uuid()
 end
 
 local dateTagLambda = function(args, snip) return os.date("<%Y-%m-%d %a>") end
+local dateTimeTagLambda = function(args, snip) return os.date("<%H:%M:%S>") end
 local uuidLambda = function(args, snip) return uuid() end
 
 ls.add_snippets("all", {
@@ -52,6 +53,22 @@ ls.add_snippets("markdown", {
   s("###d", {
     t("### "),
     f(dateTagLambda, {}),
+    t(" ")
+  }),
+
+  s("#t", {
+    t("# "),
+    f(dateTimeTagLambda, {}),
+    t(" ")
+  }),
+  s("##t", {
+    t("## "),
+    f(dateTimeTagLambda, {}),
+    t(" ")
+  }),
+  s("###t", {
+    t("### "),
+    f(dateTimeTagLambda, {}),
     t(" ")
   }),
 })

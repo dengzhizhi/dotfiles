@@ -1,0 +1,2 @@
+#!/bin/zsh
+NVIM_APPNAME=MiniNvim /Users/zdeng/bin/nvim/0.9.5/bin/nvim $@

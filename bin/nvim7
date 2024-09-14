@@ -1,0 +1,2 @@
+#!/bin/zsh
+NVIM_APPNAME=NoPlugin $HOME/bin/nvim/0.10.0/bin/nvim $@

@@ -160,7 +160,7 @@ endfunc
 
 func! SdcvLookUp(word)
   norm! ggdG
-  let l:sdcv_cmd = "sdcv -0 -n"
+  let l:sdcv_cmd = "sdcv -0nxe"
   if g:sdcv_data_dir != ''
     let l:sdcv_cmd = l:sdcv_cmd . " -2 " . g:sdcv_data_dir
   endif
@@ -279,7 +279,7 @@ func! SdcvDefinitionBufferInit(word)
 endfunc
 
 func! Say(word) abort
-  call system("say \"". a:word . "\"")
+  call system("say -v 'Zoe (Premium)' \"". a:word . "\"")
 endfunc
 
 nnoremap <silent> ,dd viw"ay:call ScratchBuffer('word.definition', 's'):call SdcvDefinitionBufferInit("a"):call SdcvLookUp("a")
@@ -404,27 +404,33 @@ command! -range Date <line1>,<line2>:norm! I=strftime('%Y-%m-%d')
 command! BreakUrlParam s/[?&]/\r\0/g | nohl
 
 """ Markdown preview
-command! Glow exec "3TermExec cmd='clear && glow " . expand("%:p") . " -w " . (&columns - 5) . " -s " . stdpath("config") . "/glow_dracula.json -p less' direction=tab"
+command! Glow exec "3TermExec cmd='clear && glow " . expand("%:p") . " -w " . (&columns - 5) . " -s " . stdpath("config") . "/glow_dracula.json' direction=tab -p /bin/less"
 
 """ Call diagon on the current markdown code block to  generate ascii art underneath
-command! DiagonSeq let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Sequencevic:g/^$/d`z' | norm! @n
-command! DiagonTree let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Tree --style="unicode right top"vic:g/^$/d`z' | norm! @n
-command! DiagonTree2 let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Treevic:g/^$/d`z' | norm! @n
-command! DiagonTree3 let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Tree --style="unicode right center"vic:g/^$/d`z' | norm! @n
-command! DiagonDAG let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon GraphDAGvic:g/^$/d`z\ ' | norm! @n
-command! DiagonFlow let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!diagon Flowchartvic:g/^$/d`z' | norm! @n
-command! Plantuml let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!java -jar ~/bin/plantuml.jar -pipe -tutxtvic:g/^$/d`z' | norm! @n
-command! GraphEasy let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!graph-easy --as=boxartvic:g/^$/d`z' | norm! @n
-command! GraphEasy2 let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!graph-easy --as=asciivic:g/^$/d`z' | norm! @n
-command! GroffPic let @n='mzvic"py`>0jjj:=getline(".")=="```"?"norm dackdd":"norm k"ko``````O"ppkddvic:!groff -Tascii -pvic:g/^$/d`z' | norm! @n
-
+command! DiagonSeq let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!diagon Sequence<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! DiagonTree let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!diagon Tree --style="unicode right top"<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! DiagonTree2 let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!diagon Tree<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! DiagonTree3 let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!diagon Tree --style="unicode right center"<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! DiagonDAG let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!diagon GraphDAG<CR>vic:g/^$/d<CR>`z\ <C-L>' | norm! @n
+command! DiagonFlow let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!diagon Flowchart<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! Plantuml let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!java -jar ~/bin/plantuml.jar -pipe -tutxt<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! GraphEasy let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!graph-easy --as=boxart<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! GraphEasy2 let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!graph-easy --as=ascii<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
+command! GroffPic let @n='mzvic"py`>0jjj:<C-R>=getline(".")=="```"?"norm dackdd":"norm k"<CR><CR>ko<CR>```<CR>```<ESC>O<ESC>"ppkddvic:!groff -Tascii -p<CR>vic:g/^$/d<CR>`z<C-L>' | norm! @n
 
 """ Change a yourube url to embed link, copy the url in system
 """ clipboard then run this command, you don't need to paste it into
 """ vim
 command! YoutubeEmbed let @n=' ttss ,yP0fmlvf=c/embed/yul;q' | norm! @n
 "}}}
+
+"########## Awk #########{{{
+""" Sum selected lines
+command! -range SumSelection <line1>,<line2>!awk '{print; total+=$1}END{print "+-----"; print total}'
+"}}}
+
 "########## Project Bookmarks #########{{{
+
 let g:project_bookmark = {
       \'closure': '~/dev/zhizhi/github/closure-templates/',
       \'dict': '~/.local/share/nvim/plugged/vim-dict/dict/',
@@ -436,6 +442,7 @@ let g:project_bookmark = {
       \'vimplug': stdpath('data') . '/lazy/',
       \'kitty': '~/.config/kitty'
       \}
+
 func! s:go_bookmark(bookmark, tab_only)
   if has_key(g:project_bookmark, a:bookmark)
     let cd_cmd = a:tab_only ? 'tcd' : 'cd'
@@ -456,10 +463,10 @@ call utils#Cabbrev('gg', 'Go')
 call utils#Cabbrev('tg', 'TabGo')
 call utils#Cabbrev('tgn', 'TabGoNew')
 "}}}
-"########## Current Ticket Notes ##########{{{
-let g:ticket="TT-1087"
+"########## Current JIRA Ticket Notes ##########{{{
+let g:ticket="JDAG-1087"
 source ~/.config/nvim/ticket.vim
-let g:project_temp_folder='/Users/zdeng/dev/zhizhi/workjournal/obsidian/TicketNotes'
+let g:project_temp_folder='/Users/zdeng/dev/zhizhi/workjournal/obsidian/JiraTicketNotes'
 func! s:ensureTicketNotesFolder()
   let l:temp_folder = g:project_temp_folder. '/' . g:ticket
   if empty(glob(l:temp_folder))
@@ -512,7 +519,7 @@ nnoremap <silent> <space>tf<space> :TicketNotesListFolder<cr>
 command! Todo exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"TODO \" . g:ticket)\<CR>\<CR>"
 command! TBookmark exec "norm! :\<C-U>\<C-R>=printf(\"Leaderf! rg -F -e '%s'\", \"BOOKMARK \" . g:ticket)\<CR>\<CR>"
 command! NoteTitle s/let g:ticket="\([^"]\+\)"\s\+"/title:: \1 /
-command! ObsidianNote let @n = '0df"ExldwxyyPElDOki---tags:  - jiraticketObsidianLink: obsidian://open?vault=obsidian&file=JiraTicketNotes%2FJgJA%2Fnotes---jI# o## Links(Ticket) 🎫(Branch) 🔀(PR) 💪(FF) 🚩(FD) 🚚{jjjjjjI- ' | norm @n
+command! ObsidianNote let @n = '0df"ExldwxyyPElDOki---tags:  - jiraticketo ObsidianLink: obsidian://open?vault=obsidian&file=JiraTicketNotes%2FJgJA%2Fnotes---jI# o## Links(Ticket) 🎫(Branch) 🔀(PR) 💪(FF) 🚩(FD) 🚚{jjjjjjI- ' | norm @n
 
 nmap ,td aTODO <c-r>=g:ticket<cr><space>
 imap ,td  TODO <c-r>=g:ticket<cr><space>
@@ -567,6 +574,30 @@ nnoremap <space>epp<space> :e <c-r>*<cr>
 
 "}}}
 "########## Merge ##########{{{
+" Need this git config
+" [diff]
+" 	tool = nvimdiff
+" [difftool "nvimdiff"]
+"     cmd = nvim --cmd 'let g:ide_level=3' -c 'set so=100' -c 'norm! M' -f -d \"$LOCAL\" \"$REMOTE\"
+" [difftool "smerge"]
+"     cmd = smerge mergetool "$LOCAL" "$REMOTE" "$LOCAL" -o "$REMOTE"
+"     trustExitCode = true
+" [merge]
+" 	tool = nvimdiff
+" [mergetool "nvimdiff"]
+"     # default vim
+"     # cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+"
+"     # vim with `set splitbelow splitright` option
+"     # cmd = nvim -d $MERGED $REMOTE $BASE $LOCAL -c '$wincmd w' -c 'wincmd J'
+"     cmd = nvim --cmd 'let g:ide_level=3' -d $MERGED $REMOTE $BASE $LOCAL -c 'wincmd J'
+"
+"     trustExitCode = true
+"     keepBackup = false
+" [mergetool "smerge"]
+"     cmd = smerge mergetool "$BASE" "$LOCAL" "$REMOTE" -o "$MERGED"
+"     trustExitCode = true
+
 let s:mergeSources = {
       \  'L':      4,
       \  'LOCAL':  4,
@@ -760,7 +791,9 @@ call utils#Cabbrev('fds', 'set fdm=syntax \| norm zMzv')
 call utils#Cabbrev('gl', 'Glow')
 
 " List and manage current buffer's folder with dirbuf plugin
-call utils#Cabbrev('ls', 'Dirbuf %')
+call utils#Cabbrev('ls', 'Oil --float ')
+call utils#Cabbrev('lss', 'lua MiniFiles.open(vim.api.nvim_buf_get_name(0), false)')
+call utils#Cabbrev('lsh', 'lua MiniFiles.open()')
 
 " Fix issues when switching colortheme
 call utils#Cabbrev('dark', 'set background=dark')
@@ -768,7 +801,15 @@ call utils#Cabbrev('dark', 'set background=dark')
 " Create folder for the current file
 call utils#Cabbrev('md', '!mkdir -p %:p:h')
 
+" Add numeric bullets
+call utils#Cabbrev('ol', '!cq -i lines -o lines -- ''\#\| (let [p (-> . count str count)] (\#(->> \%1 (map vector (iterate (partial + \%3) \%2)) \#map (str (format (str "\%" p "d. ") (first .)) (second .))) . 1 1))''')
 
+" Insert lipsum mocked text
+call utils#Cabbrev('lipsum', 'let @n=system("curl -s -X POST https://lipsum.com/feed/json -d ''amount=1'' -d ''what=paras'' -d ''start=false'' \| jq -r ''.feed.lipsum''") \| norm "np')
+
+" external git commands
+call utils#Cabbrev('smerge', '!smerge')
+call utils#Cabbrev('fork', '!fork')
 "}}}
 
 " MODELLINE {{{

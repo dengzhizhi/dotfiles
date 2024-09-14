@@ -1,3 +1,6 @@
+-- Example for configuring Neovim to load user-installed installed Lua rocks:
+package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua"
+
 local utils = require("utils")
 local fn = vim.fn
 
@@ -8,12 +11,15 @@ local ide_level = vim.g.ide_level ~= nil and vim.g.ide_level or 0
 -- 2 - skywind300 dict
 local autocomplete_level = vim.g.autocomplete_level or math.min(ide_level, 3)
 
-local enable_clojure = vim.g.enable_clojure and (ide_level <= 1 and 1 or 0) or 0
+local enable_clojure = vim.g.enable_clojure and (ide_level <= 3 and 1 or 0) or 0
 
 local enable_coc = vim.g.enable_coc ~= nil and vim.g.enable_coc or 0
 local enable_lsp = (enable_coc == 0) and (vim.g.enable_lsp ~= nil and vim.g.enable_lsp or (ide_level >= 3 and 0 or 1)) or 0
-print('Ide Level = ' .. ide_level)
-print('Lsp support = ' .. (enable_lsp == 1 and 'nvim-lsp' or (enable_coc == 1 and 'coc' or 'no lsp')))
+
+if not vscode then
+  print('Ide Level = ' .. ide_level)
+  print('Lsp support = ' .. (enable_lsp == 1 and 'nvim-lsp' or (enable_coc == 1 and 'coc' or 'no lsp')))
+end
 
 
 require("lazy").setup({
@@ -47,6 +53,7 @@ require("lazy").setup({
       -- end
       -- vim.keymap.set("", "<f1>", toggle_profile)
     end,
+    enable = false,
     cond = not vscode,
   },
 
@@ -56,6 +63,7 @@ require("lazy").setup({
     cond = ide_level <= 4,
   },
   {'tpope/vim-surround'},
+  {'vim-scripts/ReplaceWithRegister'},
   {
     'nvim-neo-tree/neo-tree.nvim',
     branch = "v2.x",
@@ -65,7 +73,6 @@ require("lazy").setup({
       "MunifTanjim/nui.nvim",
     },
     config = function() require('config.neo-tree') end,
-    cmd={"Neotree", "NeoTreeReveal", "NeoTreeShow"},
     cond = ide_level <= 4 and not vscode,
   },
 
@@ -73,6 +80,12 @@ require("lazy").setup({
   { 'el-iot/buffer-tree-explorer',
     cond = ide_level <= 4 and not vscode,
   },
+
+  -- {
+  --   'bsdelf/bufferhint',
+  --   config = function() require('config.bufferhint') end,
+  --   cond = ide_level <= 4 and not vscode,
+  -- },
 
   -- Git
   -- Disable it beca it creates lots of git processes and jams the cpu in monolith repo
@@ -89,6 +102,19 @@ require("lazy").setup({
     tag = 'release',
     config = function() require('config.gitsigns') end,
     cond = ide_level <= 2 and not vscode,
+  },
+  {
+    'iberianpig/tig-explorer.vim',
+    dependencies = { 'rbgrouleff/bclose.vim' },
+    cmd={
+      "TigOpenCurrentFile",
+      "TigOpenProjectRootDir",
+      "TigGrep",
+      "TigGrepResume",
+      "TigBlame",
+      "TigOpenFileWithCommit",
+    },
+    cond = ide_level <= 4 and not vscode,
   },
   -- DiffView
   {
@@ -133,10 +159,22 @@ require("lazy").setup({
     config = function() require('config.fm-nvim') end,
     cond = ide_level <= 4 and not vscode,
   },
+  -- {
+  --   'elihunter173/dirbuf.nvim',
+  --   cmd = {'Dirbuf'},
+  --   config = function() require('config.dirbuf') end,
+  --   cond = ide_level <= 4 and not vscode,
+  -- },
   {
-    'elihunter173/dirbuf.nvim',
-    cmd = {'Dirbuf'},
-    config = function() require('config.dirbuf') end,
+    'stevearc/oil.nvim',
+    dependencies = { "kyazdani42/nvim-web-devicons" },
+    config = function() require('config.oil') end,
+    cond = ide_level <= 4 and not vscode,
+  },
+  {
+    'echasnovski/mini.files',
+    version = false,
+    config = function() require('config.minifiles') end,
     cond = ide_level <= 4 and not vscode,
   },
 
@@ -145,9 +183,26 @@ require("lazy").setup({
     cond = ide_level <= 6 and not vscode,
   },
 
-  {'machakann/vim-highlightedyank',
-    cond = ide_level <= 1,
+  {
+    'tzachar/highlight-undo.nvim',
+    config = function() require('highlight-undo').setup({}) end,
+    cond = ide_level <= 4,
   },
+
+  -- {'machakann/vim-highlightedyank',
+  --   cond = ide_level <= 1,
+  -- },
+
+  -- {
+  --   'mei28/luminate.nvim',
+  --   event = { 'VeryLazy' },
+  --   config = function()
+  --     require'luminate'.setup({
+  --       -- if you want to customize, see Usage!
+  --     })
+  --   end,
+  --   cond = ide_level <= 5 and not vscode,
+  -- },
 
   -- Welcome page
   {'mhinz/vim-startify',
@@ -177,9 +232,22 @@ require("lazy").setup({
     config = function() require('config.vim-highlighter') end,
     cond = ide_level <= 4,
   },
+  {
+    'echasnovski/mini.hipatterns',
+    version = false,
+    config = function() require('config.mini-hipatterns') end,
+    cond = ide_level <= 4,
+  },
+  {
+    'skywind3000/vim-color-patch',
+    init = function()
+      vim.g.cpatch_path = '~/.config/nvim-color-patch'
+    end,
+    cond = ide_level <= 4,
+  },
 
   {'crusj/bookmarks.nvim',
-    config = function() require('config.bookmarks') end,
+    config = function() reqire('config.bookmarks') end,
     branch = 'main',
     dependencies = { 'kyazdani42/nvim-web-devicons' },
     cond = ide_level <= 2 and not vscode,
@@ -198,9 +266,6 @@ require("lazy").setup({
     cond = not vscode,
   },
   -- Animation support
-  {'anuvyklack/animation.nvim', dependencies = 'anuvyklack/middleclass',
-    cond = ide_level <= 1 and not vscode,
-  },
   {"anuvyklack/windows.nvim",
     dependencies = {
       "anuvyklack/middleclass",
@@ -215,108 +280,6 @@ require("lazy").setup({
     end,
     cond = ide_level <= 1 and not vscode,
   },
-  {"shortcuts/no-neck-pain.nvim",
-    version = "*",
-    cmd = {'NoNeckPain', 'NoNeckPainResize', 'NoNeckPainWidthUp', 'NoNeckPainWidthDown'},
-    config = function() require('config.no-neck-pain') end,
-    cond = not vscode,
-  },
-
-  -- {
-  --   "folke/edgy.nvim",
-  --   event = "VeryLazy",
-  --   cond = ide_level <= 3 and vim.fn.has('nvim-0.9.0') and not vscode,
-  --   opts = {
-  --     fix_win_height = true,
-  --     animate = { enabled = false },
-  --     options = {
-  --       left = { size = 50 },
-  --     },
-  --     bottom = {
-  --       {
-  --         ft = "toggleterm",
-  --         size = { height = 0.4 },
-  --         -- exclude floating windows
-  --         filter = function(buf, win)
-  --           return vim.api.nvim_win_get_config(win).relative == ""
-  --         end,
-  --       },
-  --       { ft = "qf", title = "QuickFix" },
-  --       {
-  --         ft = "help",
-  --         size = { height = 20 },
-  --         -- only show help buffers
-  --         filter = function(buf)
-  --           return vim.bo[buf].buftype == "help"
-  --         end,
-  --       },
-  --       {
-  --         title = "Bookmarks",
-  --         ft = "markdown",
-  --         size = { height = 0.4 },
-  --         filter = function(buf)
-  --           return vim.api.nvim_buf_get_name(buf) == vim.fn.stdpath('config') .. "/bookmarks.md"
-  --         end,
-  --       },
-  --       {
-  --         title = "Quick Notes",
-  --         ft = "markdown",
-  --         size = { height = 0.4 },
-  --         filter = function(buf)
-  --           return vim.api.nvim_buf_get_name(buf) == vim.fn.stdpath('config') .. "/quicknotes.md"
-  --         end,
-  --       },
-  --       {
-  --         title = "Preset Commands",
-  --         ft = "vim",
-  --         size = { height = 0.4 },
-  --         filter = function(buf)
-  --           return vim.api.nvim_buf_get_name(buf) == vim.fn.stdpath('config') .. "/preset-commands.vim"
-  --         end,
-  --       },
-  --     },
-  --     left = {
-  --       -- Neo-tree filesystem always takes half the screen height
-  --       {
-  --         title = "Neo-Tree",
-  --         ft = "neo-tree",
-  --         filter = function(buf)
-  --           return vim.b[buf].neo_tree_source == "filesystem"
-  --         end,
-  --         size = { height = 0.6, width = 50 },
-  --       },
-  --       {
-  --         title = "Neo-Tree Git",
-  --         ft = "neo-tree",
-  --         filter = function(buf)
-  --           return vim.b[buf].neo_tree_source == "git_status"
-  --         end,
-  --         pinned = true,
-  --         open = "Neotree position=right git_status",
-  --       },
-  --       {
-  --         title = "Neo-Tree Buffers",
-  --         ft = "neo-tree",
-  --         filter = function(buf)
-  --           return vim.b[buf].neo_tree_source == "buffers"
-  --         end,
-  --         pinned = true,
-  --         open = "Neotree position=top buffers",
-  --       },
-  --       -- any other neo-tree windows
-  --       "neo-tree",
-  --     },
-  --   },
-  -- },
-
-  -- {
-  --   'gen740/SmoothCursor.nvim',
-  --   opts = {
-  --     fancy = {
-  --       enable = false,
-  --     },
-  --   },
-  -- },
 
   -- Quickly open terminal
   {'akinsho/toggleterm.nvim',
@@ -354,6 +317,11 @@ require("lazy").setup({
       vim.g.rbql_backend_language = 'js'
     end,
     cond = ide_level == 0 and not vscode,
+  },
+
+  {
+    'HiPhish/rainbow-delimiters.nvim',
+    cond = ide_level <= 2 and not vscode,
   },
 
   -- Clojure
@@ -435,7 +403,7 @@ require("lazy").setup({
         '~/.config/nvim/dict',
       }
     end,
-    cond = autocomplete_level == 2 and not vscode,
+    cond = (autocomplete_level >= 2 and auto) and not vscode,
   },
 
   { 'williamboman/mason.nvim',
@@ -536,10 +504,21 @@ require("lazy").setup({
     -- dependencies = {'dhananjaylatkar/cscope_maps.nvim'},
     cond = ide_level == 3 and enable_coc ~= 1 and enable_lsp ~= 1 and not vscode,
   },
+  -- {'skywind3000/gutentags_plus',
+  --  init = function()
+  --    vim.g.gutentags_plus_switch = true
+  --  end,
+  --  dependencies = {'vim-gutentags'},
+  --  cond = ide_level == 3 and enable_coc ~= 1 and enable_lsp ~= 1 and not vscode,
+  -- },
 
   {'majutsushi/tagbar',
     cond = ide_level == 3 and enable_coc ~= 1 and enable_lsp ~= 1 and not vscode,
   },
+
+  -- {'liuchengxu/vista.vim',
+  --   cond = ide_level <= 3 and not vscode,
+  -- },
 
   -- Plantuml
   {'aklt/plantuml-syntax', ft={'pu', 'uml', 'puml', 'plantuml'}},
@@ -553,7 +532,7 @@ require("lazy").setup({
   {
     'j-hui/fidget.nvim',
     config=true,
-    cond = ide_level <= 2 and not vscode,
+    cond = ide_level <= 4 and enable_lsp == 1 and not vscode,
   },
 
   -- Pretty diagnostics list
@@ -573,10 +552,10 @@ require("lazy").setup({
     cond = ide_level <= 2 and vim.g.is_mac and not vscode,
     config = function() require('config.treesitter') end,
   },
-  { 'nvim-treesitter/nvim-treesitter-context',
-    dependencies = 'nvim-treesitter',
-    cond = vim.g.is_mac and ide_level <= 2 and not vscode,
-  },
+  -- { 'nvim-treesitter/nvim-treesitter-context',
+  --   dependencies = 'nvim-treesitter',
+  --   cond = vim.g.is_mac and ide_level <= 2 and not vscode,
+  -- },
   { 'nvim-orgmode/orgmode',
     dependencies = 'nvim-treesitter',
     cond = vim.g.is_mac and ide_level <= 1 and not vscode,
@@ -624,6 +603,13 @@ require("lazy").setup({
   },
 
   -- {
+  --   'kevinhwang91/nvim-ufo',
+  --   dependencies = { 'kevinhwang91/promise-async' },
+  --   config = function() require('config.nvim-ufo') end,
+  --   cond = vim.g.is_mac and ide_level <= 4 and not vscode,
+  -- },
+
+  -- {
   --   'HampusHauffman/block.nvim',
   --   config = function()
   --     require("block").setup({
@@ -667,7 +653,7 @@ require("lazy").setup({
 
   -- Super fast buffer jump (replacing easy-motion)
   {
-    'phaazon/hop.nvim',
+    'smoka7/hop.nvim',
     event = 'VimEnter',
     config = function()
       vim.defer_fn(function() require('config.nvim_hop') end, 2000)
@@ -704,7 +690,7 @@ require("lazy").setup({
     'haya14busa/vim-asterisk',
     event = 'VimEnter',
     config = function() require('config.vim-asterisk') end,
-    cond = ide_level <= 2,
+    cond = ide_level <= 4,
   },
 
   -- File search, tag search and more
@@ -729,7 +715,7 @@ require("lazy").setup({
   {
     'dyng/ctrlsf.vim',
     config = function() require('config.ctrlsf') end,
-    cond = ide_level <= 2 and not vscode,
+    cond = ide_level <= 4 and not vscode,
   },
 
   {
@@ -737,11 +723,18 @@ require("lazy").setup({
     dependencies = {
       {'nvim-lua/popup.nvim'},
       {'nvim-lua/plenary.nvim'},
+      -- {'nvim-telescope/telescope-fzf-native.nvim'},
+      {'Marskey/telescope-sg'},
       -- {'benfowler/telescope-luasnip.nvim', lazy = true, module = 'telescope._extensions.luasnip'},
     },
     config = function()
       require('config.telescope')
     end,
+    cond = ide_level <= 4 and not vscode,
+  },
+
+  {
+    'Marskey/telescope-sg',
     cond = ide_level <= 4 and not vscode,
   },
 
@@ -763,13 +756,13 @@ require("lazy").setup({
   { 'kkharji/sqlite.lua' },
 
   -- Choose chrome bookmarks with telescope
-  {
-    'dhruvmanila/telescope-bookmarks.nvim',
-    dependencies = { 'telescope.nvim', 'kkharji/sqlite.lua' },
-    version = '*',
-    config = function() require('config.telescope-bookmarks') end,
-    cond = ide_level <= 2 and not vscode,
-  },
+  -- {
+  --   'dhruvmanila/telescope-bookmarks.nvim',
+  --   dependencies = { 'telescope.nvim', 'kkharji/sqlite.lua' },
+  --   version = '*',
+  --   config = function() require('config.telescope-bookmarks') end,
+  --   cond = ide_level <= 2 and not vscode,
+  -- },
 
   {
     'danielfalk/smart-open.nvim',
@@ -779,6 +772,15 @@ require("lazy").setup({
     end,
     cond = ide_level <= 4 and not vscode,
   },
+
+  -- {
+  --   "nvim-telescope/telescope-frecency.nvim",
+  --   config = function()
+  --     require"telescope".load_extension("frecency")
+  --   end,
+  --   dependencies = {"kkharji/sqlite.lua"},
+  --   cond = ide_level <= 4 and not vscode,
+  -- },
 
   {
     'ahmedkhalf/project.nvim',
@@ -793,6 +795,12 @@ require("lazy").setup({
     dependencies = { 'telescope.nvim' },
     cond = ide_level <= 4 and not vscode,
   },
+
+  -- {
+  --   'nvim-telescope/telescope-fzf-native.nvim',
+  --   build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+  --   cond = ide_level <= 4 and not vscode,
+  -- },
 
   -- bookmarking
 
@@ -817,19 +825,24 @@ require("lazy").setup({
   },
 
   -- A list of colorscheme plugin you may want to try. Find what suits you.
-  {'lifepillar/vim-gruvbox8'},
-  {'navarasu/onedark.nvim'},
-  {'sainnhe/edge'},
-  {'sainnhe/sonokai'},
+  {'lifepillar/vim-gruvbox8',
+    cond = not vscode,
+  },
+  {'navarasu/onedark.nvim',
+    cond = not vscode,
+  },
+  {'sainnhe/edge', cond = not vscode},
+  {'sainnhe/sonokai', cond = not vscode},
   {'sainnhe/gruvbox-material',
+    cond = not vscode,
     -- config = function()
     --   vim.cmd [[colorscheme gruvbox-material]]
     -- end
   },
-  {'shaunsingh/nord.nvim'},
-  {'sainnhe/everforest'},
-  {'EdenEast/nightfox.nvim'},
-  {'rebelot/kanagawa.nvim'},
+  {'shaunsingh/nord.nvim', cond = not vscode},
+  {'sainnhe/everforest', cond = not vscode},
+  {'EdenEast/nightfox.nvim', cond = not vscode},
+  {'rebelot/kanagawa.nvim', cond = not vscode},
   {
     'folke/tokyonight.nvim',
     config = function()
@@ -837,6 +850,7 @@ require("lazy").setup({
         --  the night style
         style = 'storm',
         sidebars = { 'qf', 'vista_kind', 'terminal', 'packer' },
+        plugins = { markdown = true },
         on_colors = function(colors)
           colors.border = '#565f89'
           colors.error = '#ff0000'
@@ -880,6 +894,7 @@ require("lazy").setup({
     config = function()
       vim.cmd('colorscheme doom-one')
     end,
+    cond = not vscode,
   },
   {'uloco/bluloco.nvim'},
   {'catppuccin/nvim', name = 'catppuccin'},
@@ -902,7 +917,15 @@ require("lazy").setup({
   {
     'lukas-reineke/indent-blankline.nvim',
     event = 'VimEnter',
+    main = 'ibl',
     config = function() require('config.indent-blankline') end,
+    cond = ide_level <= 5 and not vscode,
+  },
+
+  {
+    'echasnovski/mini.indentscope',
+    version = false,
+    config = function() require('mini.indentscope').setup() end,
     cond = ide_level <= 5 and not vscode,
   },
 
@@ -914,6 +937,12 @@ require("lazy").setup({
   -- Highlight URLs inside vim
   {'itchyny/vim-highlighturl', event = 'VimEnter',
     cond = ide_level <= 2,
+  },
+
+  {
+    'jaxbot/semantic-highlight.vim',
+    cond = ide_level <= 4 and not vscode,
+    config = function() require('config.semantic-highlight') end,
   },
 
   -- notification plugin
@@ -942,7 +971,6 @@ require("lazy").setup({
       vim.g.browser_search_builtin_engines = {
         google = 'https://google.com/search?q="%s"',
         obsidian ='obsidian://search?vault=obsidian&query=%s',
-        hello = 'https://hello.atlassian.net/wiki/search?text=%s',
         -- clojuredocs ='https://clojuredocs.org/search?q=%s',
         -- wikipedia = 'https://en.wikipedia.org/wiki/%s',
         -- stackoverflow = 'https://stackoverflow.com/search?q="%s"',
@@ -992,7 +1020,18 @@ require("lazy").setup({
   -- Show undo history visually
   {'simnalamburt/vim-mundo',
     cmd = {'MundoToggle', 'MundoShow'},
-    cond = ide_level <= 4 and not vscode,
+    cond = ide_level <= 4,
+  },
+
+  -- Keep undo file across external file changes
+  {'kevinhwang91/nvim-fundo',
+   dependencies = {'kevinhwang91/promise-async'},
+    build = function() require('fundo').install() end,
+    config = function()
+      vim.o.undofile = true
+      require('fundo').setup()
+    end,
+    cond = ide_level <= 4,
   },
 
   -- Repeat vim motions
@@ -1018,10 +1057,30 @@ require("lazy").setup({
     cond = ide_level <= 6,
   },
 
+  {
+    'skywind3000/vim-navigator',
+    dependencies={ 'skywind3000/vim-quickui' },
+    config = function() require('config.vim-navigator') end,
+    cond = ide_level <= 4 and not vscode
+  },
+
   -- Auto format tools
   { 'sbdchd/neoformat',
     cmd = { 'Neoformat' },
     cond = ide_level <= 4 and not vscode
+  },
+
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {
+      file_types = { "markdown" },
+    },
+    ft = { "markdown" },
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'kyazdani42/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    config = function() require('config.render-markdown') end,
+    cond = ide_level <= 4 and not vscode,
   },
 
   -- Another markdown plugin
@@ -1055,6 +1114,43 @@ require("lazy").setup({
     cond = ide_level <= 4 and not vscode,
   },
 
+  --  [markdown markmap]
+  --  https://github.com/Zeioth/markmap.nvim
+  {
+    "Zeioth/markmap.nvim",
+    build = "yarn global add markmap-cli",
+    cmd = { "MarkmapOpen", "MarkmapSave", "MarkmapWatch", "MarkmapWatchStop" },
+    opts = {
+      html_output = "/tmp/markmap.html", -- (default) Setting a empty string "" here means: [Current buffer path].html
+      hide_toolbar = false, -- (default)
+      grace_period = 3600000 -- (default) Stops markmap watch after 60 minutes. Set it to 0 to disable the grace_period.
+    },
+    config = function(_, opts) require("markmap").setup(opts) end
+  },
+
+  -- {
+  --   "iamcco/markdown-preview.nvim",
+  --   cond = ide_level <= 4 and (vim.g.is_win or vim.g.is_mac) and not vscode,
+  --   build = function()
+  --     fn["mkdp#util#install"]()
+  --   end,
+  --   ft = { "markdown" },
+  -- },
+
+  -- Preview in Glow
+  -- {
+  --   "ellisonleao/glow.nvim",
+  --   cmd = { "Glow" },
+  --   config = function()
+  --     require('glow').setup({
+  --       pager = true,
+  --       width = 120,
+  --       width_ratio = 0.5,
+  --       height_ratio = 0.9,
+  --     })
+  --   end,
+  --   cond = ide_level <= 2 and not vscode,
+  -- },
 
   {'chrisbra/unicode.vim', event = 'VimEnter',
     cond = ide_level <= 2 and not vscode,
@@ -1114,8 +1210,9 @@ require("lazy").setup({
   },
 
   {"ojroques/vim-oscyank",
-    cond = vim.g.is_linux,
-    cmd = {'OSCYank', 'OSCYankReg'}},
+    cond = vim.g.is_linux and not vscode,
+    cmd = {'OSCYank', 'OSCYankReg'}
+  },
 
   -- show and trim trailing whitespaces
   {'jdhao/whitespace.nvim', event = 'VimEnter',
@@ -1137,7 +1234,7 @@ require("lazy").setup({
   -- { 'rlue/vim-barbaric' },
 
   -- Terraform filetype
-  { 'hashivim/vim-terraform', ft={"terraform"} },
+  { 'hashivim/vim-terraform', ft={"terraform"}, cond = not vscode },
 
   -- Disable time consuming features for large files
   {
@@ -1148,9 +1245,12 @@ require("lazy").setup({
           filesize = 2, -- size of the file in MiB, the plugin round file sizes to the closest MiB
           pattern = { "*" }, -- autocmd pattern
           features = { -- features to disable
+            "indent_blankline",
+            "illuminate",
             "lsp",
             "treesitter",
             "syntax",
+            "matchparen",
             "vimopts",
             "filetype",
           },
@@ -1159,17 +1259,75 @@ require("lazy").setup({
     end,
     cond = not vscode,
   },
+
+  -- AI
+  -- {
+  --   "jackMort/ChatGPT.nvim",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require("chatgpt").setup()
+  --   end,
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-telescope/telescope.nvim"
+  --   },
+  --   cond = ide_level <= 4 and not vscode,
+  -- },
   {
-    "jackMort/ChatGPT.nvim",
+    -- "David-Kunz/gen.nvim",
+    dir="~/dev/github/gen.nvim",
+    cond = ide_level <= 4 and not vscode,
+    config=function() require('config.gen') end,
+  },
+
+  {
+    "zbirenbaum/copilot.lua",
+    cond = ide_level <= 4 and vim.g.ai_engine == "copilot" and not vscode,
+    cmd = "Copilot",
+    event = "InsertEnter",
+    -- init = function()
+    --   -- disable copilot for markdown files
+    --   vim.g.copilot_filetypes = {
+    --     markdown = false,
+    --     org = false,
+    --   }
+    -- end,
+    config=function() require('config.copilot') end,
+  },
+  {
+    "meeehdi-dev/bropilot.nvim",
+    cond = ide_level <= 4 and vim.g.ai_engine == "bropilot" and not vscode,
     event = "VeryLazy",
-    config = function()
-      require("chatgpt").setup()
-    end,
     dependencies = {
-      "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
+      "j-hui/fidget.nvim",
     },
-    cond = ide_level <= 4,
-  }
+    config=function() require('config.bropilot') end,
+  },
+
+  -- {
+  --   "3rd/diagram.nvim",
+  --   dependencies = {
+  --     "3rd/image.nvim",
+  --   },
+  --   opts = { -- you can just pass {}, defaults below
+  --     renderer_options = {
+  --       mermaid = {
+  --         background = nil, -- nil | "transparent" | "white" | "#hex"
+  --         theme = nil, -- nil | "default" | "dark" | "forest" | "neutral"
+  --       },
+  --     }
+  --   },
+  --   config=function() require('config.diagram') end,
+  --   cond = ide_level <= 4 and not vscode,
+  -- },
+
+  -- VSCode plugins
+  {
+    'vscode-neovim/vscode-multi-cursor.nvim',
+    event = 'VeryLazy',
+    cond = vscode,
+    config=function() require('config.vscode-multi-cursor') end,
+  },
 })

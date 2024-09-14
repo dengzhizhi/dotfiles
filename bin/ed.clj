@@ -24,7 +24,7 @@
         :parse-fn #(Integer/parseInt %)
       ]
      ["-e" "--editor EDITOR"
-      "The editor to open the file, the value can be 'idea', 'webstorm', 'pycharm', 'vscode', 'sublime', 'vim-kitty'.
+      "The editor to open the file, the value can be 'idea', 'webstorm', 'pycharm', 'vscode', 'sublime', 'vimr', 'vim-kitty', 'zed'.
             for vim-kitty to work, install kitty (https://github.com/kovidgoyal/kitty), add `allow_remote_control yes` and
             `listen_on unix:/tmp/mykitty` in its config file `~/.config/kitty/kitty.conf`. See https://sw.kovidgoyal.net/kitty/remote-control/ for detail."
         :default "vim-kitty"
@@ -34,31 +34,39 @@
                       (= % "pycharm")
                       (= % "vscode")
                       (= % "vim-kitty")
-                      (= % "sublime"))
+                      (= % "vimr")
+                      (= % "sublime")
+                      (= % "zed"))
                    "Unknown editor"]
       ]
      ["-h" "--help"]
     ])
 
-
-
 ;; Use your own uuid key for nvim remote channel
 (defn nvim-remote-pipe []
   (str (System/getenv "HOME") "/.cache/nvim/server-1d4dbb68-42a4-7929-a9c2-7f89385676a3.pipe"))
 
-;; default kitty remote channel
+;; the neovim command
+(def nvim "/Users/zdeng/bin/nvim/0.10.0/bin/nvim")
+
+;; default kitty remote channel, I couldn't get other channel setup working so let's stick to the default
 (def kitty-channel "unix:/tmp/mykitty")
 
 (defn open-in-vim-kitty [opts]
   (let [
         kitty-activation-ex-cmd (str ":AsyncRun -silent /Applications/kitty.app/Contents/MacOS/kitty @ --to " kitty-channel " focus-window")
         set-cursor-ex-cmd (str (max (:line opts) 1) "G0" (:column opts) "|zz")]
-    (process ["/Users/zdeng/bin/nvim/0.8.0/bin/nvim" "--server" (nvim-remote-pipe) "--remote" (:file opts)])
-    (process ["/Users/zdeng/bin/nvim/0.8.0/bin/nvim" "--server" (nvim-remote-pipe) "--remote-send"
+    (process [nvim "--server" (nvim-remote-pipe) "--remote" (:file opts)])
+    (process [nvim "--server" (nvim-remote-pipe) "--remote-send"
               (str "<esc>" set-cursor-ex-cmd ":AsyncRun -silent " kitty-activation-ex-cmd "<cr>")] )))
 
 (defn open-vim-kitty [opts]
-  (process ["/Applications/kitty.app/Contents/MacOS/kitty" "@" "--to" kitty-channel "send-text" (str "/Users/zdeng/bin/nvim/0.8.0/bin/nvim --listen " (nvim-remote-pipe) "\n")]))
+  (process ["/Applications/kitty.app/Contents/MacOS/kitty" "@" "--to" kitty-channel "send-text" (str nvim " --listen " (nvim-remote-pipe) "\n")]))
+
+(defn open-in-vimr [opts]
+  (process ["vimr" "--line" (:line opts) (:file opts)]))
+
+(defn open-vimr [opts] (process "vimr"))
 
 (defn open-in-idea [opts]
   (process [(:editor opts)
@@ -77,6 +85,11 @@
   (process ["subl" (str (:file opts) ":" (:line opts) ":" (:column opts))]))
 
 (defn open-sublime [opts] ($ subl))
+
+(defn open-in-zed [opts]
+  (process ["zed" (str (:file opts) ":" (:line opts) ":" (:column opts))]))
+
+(defn open-zed [opts] ($ zed))
 
 (defn destruct-location-ref [content]
   "Desctruct a location ref in <filename>:<line>:<col> format"
@@ -120,15 +133,18 @@
         extracted-opts (as-> opts $
                          (if stdin? (extract-opts $) $)
                          (or (some-> $ :file strict-destruct-location-ref) $)
+                         (update $ :file #(clojure.string/replace % #"^.*__vscode_neovim__-file://" "")) ;; fix file path from vscode_neovim plugin
                          (merge opts $))
         file? (not= (:file extracted-opts) "") ]
     (cond
       (or (= editor "idea")
           (= editor "webstorm")
           (= editor "pycharm")) ((if file? open-in-idea open-idea) extracted-opts)
-      (= editor "vscode") ((if file? open-in-vscode open-vscode) extracted-opts)
+      (= editor "vscode")    ((if file? open-in-vscode open-vscode) extracted-opts)
       (= editor "vim-kitty") ((if file? open-in-vim-kitty open-vim-kitty) extracted-opts)
-      (= editor "sublime") ((if file? open-in-sublime open-sublime) extracted-opts))))
+      (= editor "vimr")      ((if file? open-in-vimr open-vimr) extracted-opts)
+      (= editor "sublime")   ((if file? open-in-sublime open-sublime) extracted-opts)
+      (= editor "zed") ((if file? open-in-zed open-zed) extracted-opts))))
 
 (let [
       parsed-opts (parse-opts *command-line-args* cli-options)

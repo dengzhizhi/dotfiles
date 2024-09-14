@@ -21,7 +21,8 @@ local custom_attach = function(client, bufnr)
   local opts = { silent = true, buffer = bufnr }
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
   vim.keymap.set("n", "<C-]>", vim.lsp.buf.definition, opts)
-  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+  -- vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+  -- vim.keymap.set("n", "m", vim.lsp.buf.hover)
   -- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
   vim.keymap.set("n", "<M-p>", vim.lsp.buf.signature_help, opts)
   vim.keymap.set("n", "<space>wa<space>", vim.lsp.buf.add_workspace_folder, opts)
@@ -188,10 +189,10 @@ lspconfig.tsserver.setup {
 -- set up sumneko lua language server
 
 -- local sumneko_binary_path = vim.fn.exepath("lua-language-server")
-local sumneko_binary_path = "/Users/zdeng/tools/lua-language-server/bin/lua-language-server"
+local sumneko_binary_path = "/opt/homebrew/bin/lua-language-server"
 if vim.g.is_mac or vim.g.is_linux and sumneko_binary_path ~= "" then
   -- local sumneko_root_path = vim.fn.fnamemodify(sumneko_binary_path, ":h:h:h")
-  local sumneko_root_path = "/Users/zdeng/tools/lua-language-server"
+  local sumneko_root_path = "/opt/homebrew/bin/lua-language-server"
 
   local runtime_path = vim.split(package.path, ";")
   table.insert(runtime_path, "lua/?.lua")

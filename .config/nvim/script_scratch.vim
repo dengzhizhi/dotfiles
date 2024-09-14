@@ -1,5 +1,3 @@
-" This is a playground for vimscript that needs to use `source %` to load
-
 " like easy motion {{{
 let s:easymotion_key=['j','l','k','h','a','s','d','f','g','q','w','e','r','u','i','o','p','c','v','b','n','m','t','y','z','x']
 let s:easymotion_leader=[';',',',' ',"'",'.','/','[','\',']']|let s:easymotion_leader_dict={';':0,',':0,'.':0,"'":0,' ':0,'/':0,'[':0,'\':0,']':0}
@@ -78,28 +76,34 @@ func! s:GetRecentClose()
 endfunc
 nnoremap <silent><nowait><space>q :call <sid>GetRecentClose()<cr>
 
-" set mouse
-func MouseConfig()
-	set mouse=a
-	set mousemodel=popup_setpos
-	" you can define menu self
-	" visual model
-	vnoremenu PopUp.Yank\ Text "+y
-	vnoremenu PopUp.Cut\ Text "+d
-	vnoremenu PopUp.Del\ Text "_d
-	vnoremenu PopUp.Paste\ Text "+p
-	" normal model
-	nnoremenu PopUp.Paste\ Text "+p
-	nnoremenu PopUp.Select\ All ggVG
-	nnoremenu PopUp.Back\ Pos <c-o>zz
-	nnoremenu PopUp.Next\ Pos <c-i>zz
-	" fold
-	nnoremenu PopUp.Open\ Fold  zO
-	nnoremenu PopUp.Close\ Fold zC
-	" close
-	nnoremenu PopUp.-Sep- :<cr>
-	nnoremenu PopUp.Close\ Mouse :set mouse=""<cr>
+"" includeexpr
+function! MyIncludeExpr(fname)
+  " Capture the values of the necessary Vim variables
+  let l:current_file = a:fname
+  let l:current_file_fullpath = expand("%:p")
+  let l:current_pwd = getcwd()
+
+  " Declare the possible prefixes
+  let l:prefixes = [".ts", ".js", ".tsx", ".jsx", ".css"]
+
+  echo l:current_file
+  echo l:current_pwd
+
+  " Custom file name transformation logic for gF goes here
+
+  " Return the original fname if no matching include found
+  return a:fname
+endfunction
+
+" quick ui test
+" display vim messages in the textbox
+function! DisplayMessages()
+    let x = ''
+    redir => x
+    silent! messages
+    redir END
+    let x = substitute(x, '[\n\r]\+\%$', '', 'g')
+    let content = filter(split(x, "\n"), 'v:key != ""')
+    let opts = {"close":"button", "title":"Vim Messages"}
+    call quickui#textbox#open(content, opts)
 endfunc
-call MouseConfig() " default set mouse enable
-nnoremap <silent><nowait>=m :call MouseConfig()<cr>
-nnoremap <silent><nowait>\m :set mouse=""<cr>

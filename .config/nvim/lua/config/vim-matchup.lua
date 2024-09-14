@@ -1,9 +1,12 @@
-require'nvim-treesitter.configs'.setup {
-  matchup = {
-    enable = true,              -- mandatory, false will disable the whole extension
-    disable = { "c", "ruby" },  -- optional, list of language that will be disabled
-  },
-}
+if not vim.g.vscode then
+  require'nvim-treesitter.configs'.setup {
+    matchup = {
+      enable = true,              -- mandatory, false will disable the whole extension
+      disable = { "c", "ruby" },  -- optional, list of language that will be disabled
+    },
+  }
+end
+
 vim.api.nvim_create_autocmd(
   { "BufEnter" },
   {

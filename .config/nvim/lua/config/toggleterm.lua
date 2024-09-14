@@ -1,4 +1,5 @@
 local toggleterm = require("toggleterm")
+local Terminal  = require('toggleterm.terminal').Terminal
 
 toggleterm.setup {
   open_mapping = [[<F7>]],
@@ -7,5 +8,3 @@ toggleterm.setup {
   start_in_insert = true,
   direction = 'horizontal'
 }
-
-vim.api.nvim_set_keymap("n", "<F8>", ":ToggleTermToggleAll<cr>", {})

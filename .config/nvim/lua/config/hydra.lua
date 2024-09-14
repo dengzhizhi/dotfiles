@@ -16,10 +16,12 @@ local function restore_hop_keys()
       hop.opts.keys = hop_keys_backup
    end
 end
-vim.defer_fn(ensure_hop_keys_backup, 3500)
+vim.defer_fn(ensure_hop_keys_backup, 5000)
 
 local opt = { nowait = true, silent = true }
 local xopt = { mode = { 'x' }, nowait = true, silent = true  }
+local expr_opt = { nowait = true, silent = true, expr = true }
+local x_expr_opt = { mode = { 'x' }, nowait = true, silent = true, expr = true }
 
 Hydra({
    name = 'Side scroll',
@@ -42,8 +44,37 @@ Hydra({
       { 's', 'zs' },
       { 'e', 'ze', { desc = 'start & end s/e' } },
 
-      { 'q', nil, { exit = true, nowait = true } },
-      { 'esc', nil, { exit = true, nowait = true, desc = "exit" } },
+      { 'q',    nil, { exit = true, nowait = true } },
+      { '<cr>', nil, { exit = true, nowait = true } },
+      { 'esc',  nil, { exit = true, nowait = true, desc = "exit" } },
+   },
+})
+
+Hydra({
+   name = 'Vertical Fill Window',
+   mode = 'n',
+   body = ';v',
+   config = {
+      timeout = 30000,
+      on_enter = function()
+         require('lualine').refresh()
+      end,
+      on_exit = function()
+         require('lualine').refresh()
+      end,
+   },
+   heads = {
+      { 'h', '<c-w>h:call ResizeAutoFillingVerticalWindowWidths()<CR>zzmp0`p:delm p<CR>', { silent = true }},
+      { 'l', '<c-w>l:call ResizeAutoFillingVerticalWindowWidths()<CR>zzmp0`p:delm p<CR>', { silent = true, desc = 'move ←/→' } },
+      { 'H', ':call FilledWindowMove(-1)<CR>:call ResizeAutoFillingVerticalWindowWidths()<CR>zzmp0`p:delm p<CR>', { silent = true } },
+      { 'L', ':call FilledWindowMove(1)<CR>:call ResizeAutoFillingVerticalWindowWidths()<CR>zzmp0`p:delm p<CR>', { silent = true, desc = 'reposition ←/→' } },
+      { ',', ':let g:collapsed_vertical_window_size=max([g:collapsed_vertical_window_size-1, 5])<CR>:call ResizeAutoFillingVerticalWindowWidths()<CR>', { silent = true } },
+      { '.', ':let g:collapsed_vertical_window_size=min([g:collapsed_vertical_window_size+1, 200])<CR>:call ResizeAutoFillingVerticalWindowWidths()<CR>', { silent = true, desc = 'size -/+' } },
+
+      { 'q',    nil, { exit = true, nowait = true } },
+      { '<cr>', nil, { exit = true, nowait = true } },
+      { '<space>', nil, { exit = true, nowait = true } },
+      { 'esc',  nil, { exit = true, nowait = true, desc = "exit" } },
    },
 })
 
@@ -54,9 +85,9 @@ local manage_buffer_head_hint = [[
  _1_ _2_ _3_ _4_ _5_ _6_ _7_ _8_ _9_: Select by number
  ^
  Window selection     Tab selection
-      _d_                 _u_     _o_
- _s_     _g_
-      _f_
+     ↑ _d_                 _u_ ←   → _o_
+ _s_ ←   → _g_
+     ↓ _f_
 ]]
 
 Hydra({
@@ -65,7 +96,7 @@ Hydra({
    body = ';b',
    hint = manage_buffer_head_hint,
    config = {
-      color = 'amaranth',
+      color = 'pink',
       invoke_on_body = true,
       hint = {
          type = 'window',
@@ -114,9 +145,9 @@ Hydra({
 })
 
 -- local left_hand_hint = [[
---        _d_          hp _D_                 p _<space>d_
---  _s_ w  w _g_   _S_ c  c _G_    _<space>s_ 40  40 _<space>g_
---        _f_          hp _F_                 p _<space>f_
+--       ↑ _d_          ↑hp _D_                 ↑p _<space>d_
+--  _s_ ←w  w→ _g_   _S_ ←c  c→ _G_    _<space>s_ ←40  40→ _<space>g_
+--       ↓ _f_          ↓hp _F_                 ↓p _<space>f_
 --  ^
 --  _w_:  line start   _r_:  line end   _cs_: back              _cg_: forward
 --  _x_:  Hop word     _cx_: Hop line   _ad_: Goto Definition   _af_: Goto File
@@ -184,9 +215,9 @@ Hydra({
 })
 
 -- local right_hand_hint = [[
---        _k_          hp _K_                p _<space>k_
---  _h_ w  w _l_   _H_ c  c _L_    _<space>h_ 40  40 _<space>l_
---        _j_          hp _J_                p _<space>j_
+--       ↑ _k_          ↑hp _K_                ↑p _<space>k_
+--  _h_ ←w  w→ _l_   _H_ ←c  c→ _L_    _<space>h_ ←40  40→ _<space>l_
+--       ↓ _j_          ↓hp _J_                ↓p _<space>j_
 --  ^
 --  _u_:  line start   _o_:  line end   _,h_: back              _,l_: forward
 --  _._:  Hop word     _,._: Hop line   _;k_: Goto Definition   _;j_: Goto File
@@ -256,10 +287,17 @@ Hydra({
 
 local venn_head_hint = [[
  Draw lines   _<space>b_ Draw Box
-      _K_      _<space>v_ Block Visual
- _H_     _L_    _<space>o_ Add 100 lines
-      _J_      _;k_       Hop
+     ↑ _K_      _<space>v_ Block Visual
+ _H_ ←   → _L_    _<space>o_ Add 100 lines
+     ↓ _J_      _;k_       Hop
+              _<space>f_ fill
+ Line Style:
+ _<space>1_ normal _<space>2_ double _<space>3_ Heavy
+ Overlay:
+ _<space>4_ normal _<space>5_ double _<space>6_ Heavy
 ]]
+
+vim.g.venn_style = ''
 
 Hydra({
    name = 'Venn',
@@ -277,22 +315,29 @@ Hydra({
       on_enter = function()
          vim.wo.ve = 'all'
          vim.wo.cuc = true
-         vim.cmd[[IndentBlanklineDisable]]
+         -- vim.cmd[[IndentBlanklineDisable]]
          require('lualine').refresh()
       end,
       on_exit = function()
-         vim.cmd[[IndentBlanklineEnable]]
+         -- vim.cmd[[IndentBlanklineEnable]]
          require('lualine').refresh()
       end,
    },
    heads = {
-      { 'H',        '<C-V>h:VBox<CR>',    opt},
-      { 'L',        '<C-V>l:VBox<CR>',    opt},
-      { 'J',        '<C-V>j:VBox<CR>',    opt},
-      { 'K',        '<C-V>k:VBox<CR>',    opt},
-      { '<space>b', ':VBox<CR>',          xopt},
+      { 'H',        "'<C-V>h:VBox' .. g:venn_style .. '<CR>'", expr_opt},
+      { 'L',        "'<C-V>l:VBox' .. g:venn_style .. '<CR>'", expr_opt},
+      { 'J',        "'<C-V>j:VBox' .. g:venn_style .. '<CR>'", expr_opt},
+      { 'K',        "'<C-V>k:VBox' .. g:venn_style .. '<CR>'", expr_opt},
+      { '<space>b', "':VBox' .. g:venn_style .. '<CR>'",       x_expr_opt},
       { '<space>v', '<C-V>',              opt},
       { '<space>o', '<ESC>mz100o<ESC>`z', opt},
+      { '<space>f', ':VFill<CR>', xopt},
+      { '<space>1', ":let g:venn_style=''<CR>",   opt},
+      { '<space>2', ":let g:venn_style='D'<CR>",  opt},
+      { '<space>3', ":let g:venn_style='H'<CR>",  opt},
+      { '<space>4', ":let g:venn_style='O'<CR>",  opt},
+      { '<space>5', ":let g:venn_style='DO'<CR>", opt},
+      { '<space>6', ":let g:venn_style='HO'<CR>", opt},
       { ';k',
          '<cmd>lua require("hop").hint_patterns({}, ".....")<cr>',
          {
@@ -362,5 +407,42 @@ Hydra({
       { '<esc>', nil, {exit = true, nowait = true}},
       { 'q', nil, {exit = true, nowait = true}},
       { '<cr>',  nil, {exit = true, nowait = true, desc = "quit"}},
+   },
+})
+
+Hydra({
+   name = 'Slide',
+   mode = 'n',
+   body = '<space>sl<space>',
+   config = {
+      color = 'pink',
+      invoke_on_body = true,
+      on_enter = function()
+         vim.wo.ve = 'all'
+         vim.wo.nu = false
+         vim.wo.so = 0
+         vim.o.cmdheight = 1
+         vim.wo.fdm = 'manual'
+         -- vim.g.toilet_font = 'Calvin S'
+         vim.cmd[[IndentBlanklineDisable]]
+         require('lualine').refresh()
+      end,
+      on_exit = function()
+         vim.cmd[[IndentBlanklineEnable]]
+         require('lualine').refresh()
+      end,
+   },
+   heads = {
+      { '<PageDown>', [[:setl lazyredraw<cr>/\(\n\{10\}.\|\%^\)/e<cr>:nohl<cr>ztms:setl nolazyredraw<cr>]], opt },
+      { ']',          [[:setl lazyredraw<cr>/\(\n\{10\}.\|\%^\)/e<cr>:nohl<cr>ztms:setl nolazyredraw<cr>]], opt },
+      { '<c-j>',      [[:setl lazyredraw<cr>/\(\n\{10\}.\|\%^\)/e<cr>:nohl<cr>ztms:setl nolazyredraw<cr>]], opt },
+      { '<PageUp>',   [[:setl lazyredraw<cr>?\(\n\{10\}.\|\%^\)?e<cr>:nohl<cr>ztms:setl nolazyredraw<cr>]], opt },
+      { '[',          [[:setl lazyredraw<cr>?\(\n\{10\}.\|\%^\)?e<cr>:nohl<cr>ztms:setl nolazyredraw<cr>]], opt },
+      { '<c-k>',      [[:setl lazyredraw<cr>?\(\n\{10\}.\|\%^\)?e<cr>:nohl<cr>ztms:setl nolazyredraw<cr>]], opt },
+      { '<c-t><c-t>', [[:.!toilet -w 300 -f "<c-r>=g:toilet_font<cr>"<cr>:<c-u>StripTrailingWhitespace<cr>]], opt },
+      { '<c-t><c-y>', [[:e ~/.config/nvim/toilet_font.vim<CR><C-L>]], opt },
+      { '<c-t><c-r>', [[:.!cowsay -f <c-r>=g:cowsay_file<cr><cr>:<c-u>StripTrailingWhitespace<cr>]], opt },
+      { '<c-t><c-u>', [[:e ~/.config/nvim/cowfiles.vim<CR><C-L>]], opt },
+      { 'Q',          nil, opt },
    },
 })

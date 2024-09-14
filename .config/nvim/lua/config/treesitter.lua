@@ -19,7 +19,7 @@ require("nvim-treesitter.configs").setup({
     "clojure",
     "tsx",
     -- "markdown",
-    "help",
+    -- "help",
     "comment",
     "latex",
     "java"
@@ -33,13 +33,13 @@ require("nvim-treesitter.configs").setup({
     }
   },
   incremental_selection = {
-    enable = true,
+    enable = false,
 
     keymaps = {
-      init_selection = "<CR>",
-      node_incremental = "<CR>",
-      scope_incremental = "<S-CR>",
-      node_decremental = "<BS>",
+      init_selection = "<BS>",
+      node_incremental = "<BS>",
+      scope_incremental = "<S-BS>",
+      node_decremental = "<C-BS>",
     },
   },
   textsubjects = {

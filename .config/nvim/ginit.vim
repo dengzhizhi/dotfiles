@@ -16,7 +16,7 @@ endif
 if exists('g:fvim_loaded')
   set termguicolors
   colorscheme gruvbox8_hard
-  set guifont=Hack\ NF:h13
+  set guifont=RecMonoCasual\ Nerd\ Font\ Mono:h13
   " Cursor tweaks
   FVimCursorSmoothMove v:true
   FVimCursorSmoothBlink v:true

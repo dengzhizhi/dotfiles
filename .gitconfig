@@ -2,6 +2,7 @@
     excludesfile = /Users/zdeng/.gitignore_global
     # Use delta as default pager, pipe it to less so it won't clear screen when exit
     pager = delta --pager "less"
+	quotepath = false
     # Other options for fancy diff pager
     #pager = diff-so-fancy | less --tabs=4 -RFX
     #pager = less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS --chop-long-lines
@@ -176,6 +177,9 @@
     # alias: pom - push origin master
     pom = push origin master
 
+    # alias: fp - force push with lease
+    fp = "push --force-with-lease"
+
     # shortcuts to list a few git logs for speed
     # alias: l3 - last 3 logs in detail
     l3 = "! git --no-pager log --decorate -n 3 | bat -P"
@@ -244,6 +248,8 @@
     corf = "! git fetch --all && git checkout $(git branch -r | fzy | awk '{ st = index($0, \"/\");print substr($0, st+1)}')"
     # alias: corf - check out remote branch that already in local with fzy selection
     cor = "! git checkout $(git branch -r | fzy | awk '{ st = index($0, \"/\");print substr($0, st+1)}')"
+    # alias: coh - show check out history
+    coh = "! git reflog --grep-reflog='checkout: moving' -n 40"
     # alias: af - add a file with fzy selection
     af = "! git add $(git ls-files -m | fzy --multi)"
     # alias: df - diff a file with fzy selection
